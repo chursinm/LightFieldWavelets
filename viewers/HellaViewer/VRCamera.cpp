@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "VRCamera.h"
 
+using namespace glm;
 
 VRCamera::VRCamera(float nearClip, float farClip): m_NearClip(nearClip), m_FarClip(farClip)
 {
@@ -25,7 +26,9 @@ void VRCamera::update()
 
 	if (trackedDevicePose[vr::k_unTrackedDeviceIndex_Hmd].bPoseIsValid)
 	{
-		m_HMDPosition = inverse(convertSteamMatrix(trackedDevicePose[vr::k_unTrackedDeviceIndex_Hmd].mDeviceToAbsoluteTracking));
+		auto steamMatrix = trackedDevicePose[vr::k_unTrackedDeviceIndex_Hmd].mDeviceToAbsoluteTracking;
+		m_HMDPosition = vec3(steamMatrix.m[0][3], steamMatrix.m[1][3], steamMatrix.m[2][3]);
+		m_HMDTransformation = inverse(convertSteamMatrix(steamMatrix));
 	}
 	else
 	{
@@ -33,14 +36,20 @@ void VRCamera::update()
 	}
 }
 
+vec3 VRCamera::getPosition(vr::Hmd_Eye eye)
+{
+	mat4x4& eyeMatrix = eye == vr::Eye_Left ? m_LeftEyePosition : m_RightEyePosition;
+	return m_HMDPosition + inverse(eyeMatrix)[3].xyz;
+}
+
 mat4x4 VRCamera::getMVP(vr::Hmd_Eye eye)
 {
 	switch (eye)
 	{
 	case vr::Eye_Left:
-		return m_LeftEyeProjection * m_LeftEyePosition * m_HMDPosition;
+		return m_LeftEyeProjection * m_LeftEyePosition * m_HMDTransformation;
 	case vr::Eye_Right:
-		return m_RightEyeProjection * m_RightEyePosition * m_HMDPosition;
+		return m_RightEyeProjection * m_RightEyePosition * m_HMDTransformation;
 	default:
 		throw "invalid eye on camera.getmvp";
 	}
@@ -57,7 +66,7 @@ mat4x4 VRCamera::getEyePositionMatrix(vr::IVRSystem & vrInterface, vr::Hmd_Eye e
 {
 	vr::HmdMatrix34_t matEye = vrInterface.GetEyeToHeadTransform(eye);
 
-	return inverse(convertSteamMatrix(matEye));
+	return inverse(convertSteamMatrix(matEye)); //TODO transpose
 }
 
 mat4x4 VRCamera::convertSteamMatrix(const vr::HmdMatrix34_t &mat)
