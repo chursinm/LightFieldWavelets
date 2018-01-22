@@ -39,7 +39,9 @@ void VRCamera::update()
 vec3 VRCamera::getPosition(vr::Hmd_Eye eye)
 {
 	mat4x4& eyeMatrix = eye == vr::Eye_Left ? m_LeftEyePosition : m_RightEyePosition;
-	return m_HMDPosition + inverse(eyeMatrix)[3].xyz;
+	auto eyeVector = inverse(m_HMDTransformation) * ((eyeMatrix)[3]);
+	//TODO rotation of the hmd
+	return eyeVector.xyz; //  m_HMDPosition - eyeVector;
 }
 
 mat4x4 VRCamera::getMVP(vr::Hmd_Eye eye)
