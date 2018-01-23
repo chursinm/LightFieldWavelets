@@ -1,5 +1,4 @@
 #version 400 compatibility
-in vec2 uv;
 in vec4 vertex;
 uniform uint eye;
 uniform mat4 ivp;
@@ -24,6 +23,15 @@ bool intersectRayPlane(
     return false;
 }
 
+bool checkerboard(vec3 worldIntersection)
+{
+	//2D
+	float x = worldIntersection.x;
+	float y = worldIntersection.z;
+
+	return mod(x, 10) >= 5 != mod(y, 10) >= 5;
+}
+
 void main(void)
 {
 	vec3 planepos = vec3(0.f,-1.f,0.f);
@@ -36,14 +44,12 @@ void main(void)
 	float dist = 0.f;
 	bool intersectsplane = intersectRayPlane(eyepos, eyedir, planepos, planedir, dist);
 
-	if(intersectsplane)
+	if(intersectsplane) // checkerboard
 	{
-		vec3 worldIntersection = eyepos + eyedir * dist;
-		if(abs(worldIntersection.x) < 10.f && abs(worldIntersection.z) < 10.f)
-			gl_FragColor = vec4(1,0,0,0);
-		else
-			gl_FragColor = vec4(0,1,0,0);
+		gl_FragColor = vec4(checkerboard(eyepos + eyedir * dist));
 	}
-	else
-	gl_FragColor = vec4(.1f);
+	else // background color
+	{
+		gl_FragColor = vec4(.1f);
+	}
 }

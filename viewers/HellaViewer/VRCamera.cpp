@@ -32,16 +32,15 @@ void VRCamera::update()
 	}
 	else
 	{
-		std::cout << "No valid pose for the HMD" << std::endl;
+		WARN_TIMED("No valid pose for the HMD", 2)
 	}
 }
 
 vec3 VRCamera::getPosition(vr::Hmd_Eye eye)
 {
 	mat4x4& eyeMatrix = eye == vr::Eye_Left ? m_LeftEyePosition : m_RightEyePosition;
-	auto eyeVector = inverse(m_HMDTransformation) * ((eyeMatrix)[3]);
-	//TODO rotation of the hmd
-	return eyeVector.xyz; //  m_HMDPosition - eyeVector;
+	auto eyeVector = inverse(m_HMDTransformation) * inverse(eyeMatrix) * vec4(0,0,0,1);
+	return eyeVector.xyz * (1/eyeVector.w); 
 }
 
 mat4x4 VRCamera::getMVP(vr::Hmd_Eye eye)
