@@ -242,7 +242,6 @@ void RenderContext::render()
 void RenderContext::renderQuad(vr::Hmd_Eye eye)
 {
 
-	//glDisable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(m_StereoProgram);
 	glUniform1ui(glGetUniformLocation(m_StereoProgram, "eye"), eye);
@@ -252,13 +251,6 @@ void RenderContext::renderQuad(vr::Hmd_Eye eye)
 	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "ivp"), 1, GL_FALSE, &ivp[0][0]);
 	auto eyepos = m_Camera.getPosition(eye);
 	glUniform3fv(glGetUniformLocation(m_StereoProgram, "eyepos"), 1, &eyepos[0]);
-
-	/*glBegin(GL_QUADS);
-	glVertex3f(-10.0f, 0.f, -10.0f);
-	glVertex3f(10.0f, 0.f, -10.0f);
-	glVertex3f(10.0f, 0.f, 10.0f);
-	glVertex3f(-10.0f, 0.f, 10.0f);
-	glEnd();*/
 
 	glBegin(GL_QUADS);
 	glVertex2f(-1.0f, -1.0f);
