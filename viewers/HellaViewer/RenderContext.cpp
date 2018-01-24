@@ -2,7 +2,7 @@
 #include "RenderContext.h"
 
 
-RenderContext::RenderContext()
+RenderContext::RenderContext(): m_LastFrameTime(0u), m_ShiftDown(false), m_pSecCamera(nullptr)
 {
 }
 
@@ -148,6 +148,7 @@ bool RenderContext::initializeOpenVR()
 
 	m_pHMD->GetRecommendedRenderTargetSize(&m_RenderWidth, &m_RenderHeight);
 
+	m_pSecCamera = new TrackballCamera(m_RenderWidth, m_RenderHeight);
 	m_Camera.setup(*m_pHMD);
 
 	return true;
@@ -158,6 +159,13 @@ bool RenderContext::handleSDL()
 	SDL_Event sdlEvent;
 	bool quitProgram = false;
 
+	auto currentFrameTime = SDL_GetPerformanceCounter();
+	auto deltaTime = (double)((currentFrameTime - m_LastFrameTime) * 1000 / SDL_GetPerformanceFrequency());
+	m_LastFrameTime = currentFrameTime;
+	auto cameraSpeedInSceneUnitPerMS = 0.01f;
+	if (m_ShiftDown) cameraSpeedInSceneUnitPerMS *= 10.f;
+	
+
 	while (SDL_PollEvent(&sdlEvent) != 0)
 	{
 		if (sdlEvent.type == SDL_QUIT)
@@ -166,19 +174,42 @@ bool RenderContext::handleSDL()
 		}
 		else if (sdlEvent.type == SDL_KEYDOWN)
 		{
-			if (sdlEvent.key.keysym.sym == SDLK_ESCAPE
-				|| sdlEvent.key.keysym.sym == SDLK_q)
+			switch (sdlEvent.key.keysym.sym)
 			{
-				quitProgram = true;
-			}
-			else if (sdlEvent.key.keysym.sym == SDLK_SPACE)
-			{
+			case SDLK_ESCAPE:
+			case SDLK_SPACE:
 				auto leftpos = m_Camera.getPosition(vr::Eye_Left);
 				auto rightpos = m_Camera.getPosition(vr::Eye_Right);
 
 				std::cout << "Left eye position: " << leftpos.x << ", " << leftpos.y << ", " << leftpos.z << std::endl;
 				std::cout << "Right eye position: " << rightpos.x << ", " << rightpos.y << ", " << rightpos.z << std::endl << std::endl;
+				break;
+			case SDLK_LSHIFT:
+				m_ShiftDown = true;
+				break;
+			case SDLK_w:
+				m_pSecCamera->move(-cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
+				break;
+			case SDLK_s:
+				m_pSecCamera->move(cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
+				break;
+			case SDLK_a:
+				m_pSecCamera->move(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
+				break;
+			case SDLK_d:
+				m_pSecCamera->move(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime); 
+				break;
+			case SDLK_q:
+				m_pSecCamera->pan(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime);
+				break;
+			case SDLK_e:
+				m_pSecCamera->pan(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
+				break;
 			}
+		}
+		else if (sdlEvent.type == SDL_KEYUP && sdlEvent.key.keysym.sym == SDLK_LSHIFT)
+		{
+			m_ShiftDown = false;
 		}
 		else if (sdlEvent.type == SDL_WINDOWEVENT &&
 			sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED)
@@ -246,10 +277,11 @@ void RenderContext::renderQuad(vr::Hmd_Eye eye)
 	glUseProgram(m_StereoProgram);
 	glUniform1ui(glGetUniformLocation(m_StereoProgram, "eye"), eye);
 	auto vp = m_Camera.getMVP(eye);
-	auto ivp = glm::inverse(vp);
+	auto ivp = inverse(m_pSecCamera->projectionMatrix() * m_pSecCamera->viewMatrix());  //glm::inverse(vp);
 	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "vp"), 1, GL_FALSE, &vp[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "ivp"), 1, GL_FALSE, &ivp[0][0]);
 	auto eyepos = m_Camera.getPosition(eye);
+	eyepos = m_pSecCamera->getPosition();
 	glUniform3fv(glGetUniformLocation(m_StereoProgram, "eyepos"), 1, &eyepos[0]);
 
 	glBegin(GL_QUADS);
@@ -361,7 +393,7 @@ void RenderContext::resize(int width, int height)
 {
 	m_nCompanionWindowWidth = width;
 	m_nCompanionWindowHeight = height;
-	std::cout << "resizing window to " << width << "x" << height << std::endl;
+	WARN_TIMED("resizing window to " << width << "x" << height, 1)
 
 }
 

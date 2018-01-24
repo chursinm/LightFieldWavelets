@@ -1,6 +1,7 @@
 #pragma once
 #include "ShaderManager.h"
 #include "VRCamera.h"
+#include "TrackballCamera.h"
 
 struct FramebufferDesc
 {
@@ -35,6 +36,9 @@ private: //functions
 private:
 	bool m_bVblank=false;
 	VRCamera m_Camera;
+	TrackballCamera* m_pSecCamera;
+	Uint64 m_LastFrameTime;
+	bool m_ShiftDown;
 
 private: // OpenGL
 	FramebufferDesc m_LeftEyeFramebuffer;

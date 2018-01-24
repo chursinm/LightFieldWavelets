@@ -39,6 +39,12 @@
     <ClInclude Include="VRCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CudaPropertyViewer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackballCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -54,6 +60,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VRCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaPropertyViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackballCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

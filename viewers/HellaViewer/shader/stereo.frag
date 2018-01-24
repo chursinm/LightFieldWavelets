@@ -1,5 +1,6 @@
 #version 400 compatibility
 in vec4 vertex;
+//in vec4 worldVertex;
 uniform uint eye;
 uniform mat4 ivp;
 uniform vec3 eyepos;
@@ -32,12 +33,13 @@ bool checkerboard(vec3 worldIntersection)
 	return mod(x, 10) >= 5 != mod(y, 10) >= 5;
 }
 
-void main(void)
+vec4 fragmentColor(vec4 clipspaceVertex)
 {
 	vec3 planepos = vec3(0.f,-1.f,0.f);
 	vec3 planedir = vec3(0.f,1.f,0.f);
 
-	vec4 worldVertex = ivp * vertex;
+	// TODO interpolate worldVertex from vertexShader
+	vec4 worldVertex = ivp * clipspaceVertex;
 	vec3 worldVertex3 = worldVertex.xyz / worldVertex.w;
 	vec3 eyedir = normalize(worldVertex3 - eyepos);
 
@@ -46,10 +48,28 @@ void main(void)
 
 	if(intersectsplane) // checkerboard
 	{
-		gl_FragColor = vec4(checkerboard(eyepos + eyedir * dist));
+		return vec4(checkerboard(eyepos + eyedir * dist));
 	}
 	else // background color
 	{
-		gl_FragColor = vec4(.1f);
+		return vec4(.1f);
 	}
+
+}
+
+void main(void)
+{
+	// interpolation
+	// width, height
+	vec4 viewportOffset = vec4(1.f/1512.f, 1.f/1680.f, 0.f, 0.f);
+
+	vec4 accumulator = vec4(0.f);
+	accumulator += fragmentColor(vertex + viewportOffset);
+	accumulator += fragmentColor(vertex - viewportOffset);
+	accumulator += fragmentColor(vertex + (viewportOffset * vec4(-1.f, 1.f, 0.f, 0.f)));
+	accumulator += fragmentColor(vertex + (viewportOffset * vec4(1.f, -1.f, 0.f, 0.f)));
+	accumulator /= 4.f;
+
+
+	gl_FragColor = accumulator;
 }

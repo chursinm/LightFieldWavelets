@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "VRCamera.h"
+#include <glm/gtx/string_cast.hpp>
 
 using namespace glm;
 
@@ -15,6 +16,7 @@ void VRCamera::setup(vr::IVRSystem & vrInterface)
 {
 	m_LeftEyeProjection = getProjectionMatrix(vrInterface, vr::Eye_Left);
 	m_RightEyeProjection = getProjectionMatrix(vrInterface, vr::Eye_Right);
+	//WARN_ONCE(glm::to_string(m_RightEyeProjection))
 	m_LeftEyePosition = getEyePositionMatrix(vrInterface, vr::Eye_Left);
 	m_RightEyePosition = getEyePositionMatrix(vrInterface, vr::Eye_Right);
 }
