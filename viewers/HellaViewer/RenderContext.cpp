@@ -32,8 +32,8 @@ RenderContext::~RenderContext()
 
 bool RenderContext::initialize()
 {
-	bool quit = false;
-	if (!initializeSDL()) { quit = true; }
+	bool success = true;
+	if (!initializeSDL()) { success = false; }
 	if (initializeOpenVR())
 	{
 		m_VREnabled = true;
@@ -45,15 +45,19 @@ bool RenderContext::initialize()
 		m_RenderHeight = 720u;
 		m_pTrackballCamera = new TrackballCamera(m_RenderWidth, m_RenderHeight);
 	}
-	if (!initializeGL()) { quit = true; }
+	if (!initializeGL()) { success = false; }
 
 
-	return quit;
+	return success;
 }
 
 bool RenderContext::initializeGL()
 {
 	std::cout << "GL Version: " << glGetString(GL_VERSION) << std::endl;
+	GLint max_texture_size;
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
+	std::cout << "GL_MAX_TEXTURE_SIZE: " << max_texture_size << std::endl;
+	
 
 	// Some default GL settings.
 	glClearColor(0, 0, 0, 255);
