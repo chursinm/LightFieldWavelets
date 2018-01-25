@@ -18,9 +18,7 @@ class RenderContext
 public:
 	RenderContext();
 	~RenderContext();
-	bool initializeGL();
-	bool initializeSDL();
-	bool initializeOpenVR();
+	bool initialize();
 	/**
 		returns true, if the loop should cancel
 	*/
@@ -28,6 +26,9 @@ public:
 	void render();
 
 private: //functions
+	bool initializeGL();
+	bool initializeSDL();
+	bool initializeOpenVR();
 	void renderQuad(vr::Hmd_Eye eye);
 	void renderStereoTargets();
 	void renderCompanionWindow();
@@ -35,9 +36,12 @@ private: //functions
 
 private:
 	bool m_bVblank=false;
-	VRCamera m_Camera;
-	TrackballCamera* m_pSecCamera;
-	Uint64 m_LastFrameTime;
+	// TODO common Camera Interface
+	VRCamera m_VRCamera;
+	TrackballCamera* m_pTrackballCamera;
+	bool m_VREnabled;
+	Uint64 m_LastFrameTime, m_FrameCounter;
+	double m_AccumulatedFrameTime;
 	bool m_ShiftDown;
 
 private: // OpenGL

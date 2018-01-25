@@ -2,7 +2,7 @@
 #include "RenderContext.h"
 
 
-RenderContext::RenderContext(): m_LastFrameTime(0u), m_ShiftDown(false), m_pSecCamera(nullptr)
+RenderContext::RenderContext(): m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_ShiftDown(false), m_pTrackballCamera(nullptr), m_VREnabled(false)
 {
 }
 
@@ -30,23 +30,34 @@ RenderContext::~RenderContext()
 	SDL_Quit();
 }
 
+bool RenderContext::initialize()
+{
+	bool quit = false;
+	if (!initializeSDL()) { quit = true; }
+	if (initializeOpenVR())
+	{
+		m_VREnabled = true;
+	}
+	else
+	{
+		m_VREnabled = false;
+		m_RenderWidth = 1280u;
+		m_RenderHeight = 720u;
+		m_pTrackballCamera = new TrackballCamera(m_RenderWidth, m_RenderHeight);
+	}
+	if (!initializeGL()) { quit = true; }
+
+
+	return quit;
+}
+
 bool RenderContext::initializeGL()
 {
 	std::cout << "GL Version: " << glGetString(GL_VERSION) << std::endl;
 
 	// Some default GL settings.
-	// TODO adapt to our program
 	glClearColor(0, 0, 0, 255);
 	glClearDepth(1.0f);
-	/*glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glDisable(GL_CULL_FACE);
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_NORMALIZE);*/
 
 	// Create GL programs
 	ShaderManager& psm = ShaderManager::instance();
@@ -148,8 +159,7 @@ bool RenderContext::initializeOpenVR()
 
 	m_pHMD->GetRecommendedRenderTargetSize(&m_RenderWidth, &m_RenderHeight);
 
-	m_pSecCamera = new TrackballCamera(m_RenderWidth, m_RenderHeight);
-	m_Camera.setup(*m_pHMD);
+	m_VRCamera.setup(*m_pHMD);
 
 	return true;
 }
@@ -160,8 +170,11 @@ bool RenderContext::handleSDL()
 	bool quitProgram = false;
 
 	auto currentFrameTime = SDL_GetPerformanceCounter();
-	auto deltaTime = (double)((currentFrameTime - m_LastFrameTime) * 1000 / SDL_GetPerformanceFrequency());
+	auto deltaTime = ((currentFrameTime - m_LastFrameTime) * 1000 / (double)SDL_GetPerformanceFrequency());
 	m_LastFrameTime = currentFrameTime;
+	m_AccumulatedFrameTime += deltaTime;
+	m_FrameCounter++;
+
 	auto cameraSpeedInSceneUnitPerMS = 0.01f;
 	if (m_ShiftDown) cameraSpeedInSceneUnitPerMS *= 10.f;
 	
@@ -177,9 +190,11 @@ bool RenderContext::handleSDL()
 			switch (sdlEvent.key.keysym.sym)
 			{
 			case SDLK_ESCAPE:
+				quitProgram = true;
+				break;
 			case SDLK_SPACE:
-				auto leftpos = m_Camera.getPosition(vr::Eye_Left);
-				auto rightpos = m_Camera.getPosition(vr::Eye_Right);
+				auto leftpos = m_VRCamera.getPosition(vr::Eye_Left);
+				auto rightpos = m_VRCamera.getPosition(vr::Eye_Right);
 
 				std::cout << "Left eye position: " << leftpos.x << ", " << leftpos.y << ", " << leftpos.z << std::endl;
 				std::cout << "Right eye position: " << rightpos.x << ", " << rightpos.y << ", " << rightpos.z << std::endl << std::endl;
@@ -188,28 +203,66 @@ bool RenderContext::handleSDL()
 				m_ShiftDown = true;
 				break;
 			case SDLK_w:
-				m_pSecCamera->move(-cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
+				m_pTrackballCamera->move(-cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
 				break;
 			case SDLK_s:
-				m_pSecCamera->move(cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
+				m_pTrackballCamera->move(cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
 				break;
 			case SDLK_a:
-				m_pSecCamera->move(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
+				m_pTrackballCamera->move(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
 				break;
 			case SDLK_d:
-				m_pSecCamera->move(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime); 
+				m_pTrackballCamera->move(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime); 
 				break;
 			case SDLK_q:
-				m_pSecCamera->pan(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime);
+				m_pTrackballCamera->pan(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime);
 				break;
 			case SDLK_e:
-				m_pSecCamera->pan(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
+				m_pTrackballCamera->pan(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
+				break;
+			case SDLK_r:
+				m_pTrackballCamera->reset();
+				break;
+			case SDLK_t:
+				if (m_FrameCounter)
+				{
+					std::cout << "Avg Frametime in ms over " << m_FrameCounter << " frames: " << m_AccumulatedFrameTime / m_FrameCounter << std::endl;
+					m_AccumulatedFrameTime = 0;
+					m_FrameCounter = 0;
+				}
 				break;
 			}
 		}
 		else if (sdlEvent.type == SDL_KEYUP && sdlEvent.key.keysym.sym == SDLK_LSHIFT)
 		{
 			m_ShiftDown = false;
+		}
+		else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
+		{
+			if (SDL_SetRelativeMouseMode(SDL_TRUE) != 0)
+			{
+				WARN("couldn't enable relative mouse mode" << SDL_GetError());
+			}
+		}
+		else if (sdlEvent.type == SDL_MOUSEBUTTONUP)
+		{
+			if (SDL_SetRelativeMouseMode(SDL_FALSE) != 0)
+			{
+				WARN("couldn't enable relative mouse mode" << SDL_GetError());
+			}
+		}
+		else if (sdlEvent.type == SDL_MOUSEMOTION)
+		{
+			auto motionEvent = sdlEvent.motion;
+			auto buttonsHeld = motionEvent.state;
+			if(buttonsHeld & SDL_BUTTON_LMASK)
+			{
+				m_pTrackballCamera->rotate(glm::uvec2(m_RenderWidth / 2, m_RenderHeight / 2), glm::uvec2(m_RenderWidth / 2 + motionEvent.xrel, m_RenderHeight / 2 - motionEvent.yrel));
+			}
+			else if (buttonsHeld & SDL_BUTTON_RMASK)
+			{
+				m_pTrackballCamera->pan(cameraSpeedInSceneUnitPerMS * motionEvent.xrel, cameraSpeedInSceneUnitPerMS * motionEvent.yrel);
+			}
 		}
 		else if (sdlEvent.type == SDL_WINDOWEVENT &&
 			sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED)
@@ -230,10 +283,13 @@ void RenderContext::render()
 		renderStereoTargets();
 		renderCompanionWindow();
 
-		vr::Texture_t leftEyeTexture = { (void*)(uintptr_t)m_LeftEyeFramebuffer.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
-		vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture);
-		vr::Texture_t rightEyeTexture = { (void*)(uintptr_t)m_RightEyeFramebuffer.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
-		vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture);
+		if (m_VREnabled)
+		{
+			vr::Texture_t leftEyeTexture = { (void*)(uintptr_t)m_LeftEyeFramebuffer.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+			vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture);
+			vr::Texture_t rightEyeTexture = { (void*)(uintptr_t)m_RightEyeFramebuffer.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
+			vr::VRCompositor()->Submit(vr::Eye_Right, &rightEyeTexture);
+		}
 	}
 
 	if (m_bVblank)
@@ -267,7 +323,10 @@ void RenderContext::render()
 
 
 	printerr();
-	m_Camera.update();
+	if(m_VREnabled)
+	{
+		m_VRCamera.update();
+	}
 }
 
 void RenderContext::renderQuad(vr::Hmd_Eye eye)
@@ -275,13 +334,19 @@ void RenderContext::renderQuad(vr::Hmd_Eye eye)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(m_StereoProgram);
+	auto vp = m_VRCamera.getMVP(eye);
+	auto ivp = glm::inverse(vp);
+	auto eyepos = m_VRCamera.getPosition(eye);
+	if (!m_VREnabled)
+	{
+		vp = m_pTrackballCamera->projectionMatrix() * m_pTrackballCamera->viewMatrix();
+		ivp = inverse(vp);
+		eyepos = m_pTrackballCamera->getPosition();
+	}
+	
 	glUniform1ui(glGetUniformLocation(m_StereoProgram, "eye"), eye);
-	auto vp = m_Camera.getMVP(eye);
-	auto ivp = inverse(m_pSecCamera->projectionMatrix() * m_pSecCamera->viewMatrix());  //glm::inverse(vp);
 	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "vp"), 1, GL_FALSE, &vp[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "ivp"), 1, GL_FALSE, &ivp[0][0]);
-	auto eyepos = m_Camera.getPosition(eye);
-	eyepos = m_pSecCamera->getPosition();
 	glUniform3fv(glGetUniformLocation(m_StereoProgram, "eyepos"), 1, &eyepos[0]);
 
 	glBegin(GL_QUADS);

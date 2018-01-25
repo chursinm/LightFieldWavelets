@@ -46,8 +46,14 @@ vec4 fragmentColor(vec4 clipspaceVertex)
 	float dist = 0.f;
 	bool intersectsplane = intersectRayPlane(eyepos, eyedir, planepos, planedir, dist);
 
+	
 	if(intersectsplane) // checkerboard
 	{
+		float dotSize = 0.001f / dist;
+		if(dot(clipspaceVertex.xy,clipspaceVertex.xy) < dotSize) // targetting dot
+		{
+			return vec4(1.f,0.f,0.f,1.f);
+		}
 		return vec4(checkerboard(eyepos + eyedir * dist));
 	}
 	else // background color
@@ -71,5 +77,5 @@ void main(void)
 	accumulator /= 4.f;
 
 
-	gl_FragColor = accumulator;
+	gl_FragColor = fragmentColor(vertex);
 }

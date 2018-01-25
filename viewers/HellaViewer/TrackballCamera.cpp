@@ -5,7 +5,7 @@
 using namespace glm;
 
 
-TrackballCamera::TrackballCamera(glm::uvec2 viewportSize) : m_Position(0.0f, 1.0f, 0.0f), m_Rotation(), m_ViewportSize(viewportSize)
+TrackballCamera::TrackballCamera(glm::uvec2 viewportSize) : m_Position(0.0f, 1.0f, 0.0f), m_Rotation(1.f, 0.f, 0.f, 0.f), m_ViewportSize(viewportSize)
 {
 }
 
@@ -44,18 +44,17 @@ void TrackballCamera::zoom(float dx)
 
 void TrackballCamera::rotate(const uvec2& currentCursorPosition, const uvec2& lastCursorPosition)
 {
+	static const auto epsilon = 1e-6f;
 	vec3 current = calculateTrackballPosition(currentCursorPosition);
 	vec3 last = calculateTrackballPosition(lastCursorPosition);
 
-	// TODO why am i doing this again?
-	current.x = -current.x;
-	last.x = -last.x;
-
 	// see: http://web.cse.ohio-state.edu/~hwshen/781/Site/Slides_files/trackball.pdf
-	vec3 rotationAxis = cross(last, current);
-	float rotationAngle = std::acos(dot(current, last));
-	//rotationAxis = rotation.inverted().rotatedVector(rotationAxis.normalized()); // rotationAxis is in view-space and needs to be rotated into object space
-	m_Rotation *= glm::rotate(quat(), rotationAngle * 180.f / static_cast<float>(M_PI), rotationAxis);
+	auto dotP = dot(current, last);
+	if (abs(dotP - 1.f) < epsilon) return; // no rotation happened
+	float rotationAngle = std::acos(dotP);
+	vec3 rotationAxis = normalize(cross(last, current));
+	
+	m_Rotation = glm::rotate(m_Rotation, rotationAngle, rotationAxis);
 	m_Rotation = normalize(m_Rotation);
 }
 
@@ -86,7 +85,6 @@ mat4x4 TrackballCamera::viewMatrix() const
 	vec3 forward = normalize(m_Rotation * c_Forward);
 	vec3 up = normalize(m_Rotation * c_Up);
 	vec3 right = normalize(m_Rotation * c_Side);
-	
 
 	auto positionMatrix = mat4x4(1.f);
 	positionMatrix[3] = vec4(-m_Position, 1.f); // setzt letzte Spalte
@@ -142,8 +140,8 @@ mat4x4 TrackballCamera::projectionMatrix() const
 
 void TrackballCamera::reset()
 {
-	m_Rotation = quat();
-	m_Position = vec3(0.0f, 1.0f, -1.0f);
+	m_Rotation = quat(1.f, 0.f, 0.f, 0.f);
+	m_Position = vec3(0.0f, 1.0f, 0.0f);
 }
 
 vec3 TrackballCamera::getPosition() const
