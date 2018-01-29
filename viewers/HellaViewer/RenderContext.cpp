@@ -235,6 +235,20 @@ bool RenderContext::handleSDL()
 					m_FrameCounter = 0;
 				}
 				break;
+			case SDLK_m:
+
+#define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
+#define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
+
+				GLint total_mem_kb = 0;
+				glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX,
+					&total_mem_kb);
+
+				GLint cur_avail_mem_kb = 0;
+				glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX,
+					&cur_avail_mem_kb);
+				std::cout << "Total Mem: " << total_mem_kb << ", Avail Mem: " << cur_avail_mem_kb << std::endl;
+				break;
 			}
 		}
 		else if (sdlEvent.type == SDL_KEYUP && sdlEvent.key.keysym.sym == SDLK_LSHIFT)

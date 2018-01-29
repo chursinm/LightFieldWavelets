@@ -39,10 +39,13 @@
     <ClInclude Include="VRCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CudaPropertyViewer.h">
+    <ClInclude Include="TrackballCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TrackballCamera.h">
+    <ClInclude Include="CameraArrayRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,15 +65,24 @@
     <ClCompile Include="VRCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CudaPropertyViewer.cpp">
+    <ClCompile Include="TrackballCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TrackballCamera.cpp">
+    <ClCompile Include="CameraArrayRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="HellaViewer.cpp">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="CudaPropertyViewer.h">
+      <Filter>Header Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="CudaPropertyViewer.cpp">
       <Filter>Source Files</Filter>
     </CudaCompile>
   </ItemGroup>
