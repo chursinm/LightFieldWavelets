@@ -2,7 +2,7 @@
 #include "RenderContext.h"
 
 
-RenderContext::RenderContext(): m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_ShiftDown(false), m_pTrackballCamera(nullptr), m_VREnabled(false)
+RenderContext::RenderContext(): m_CameraArrayRenderer(), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_ShiftDown(false), m_pTrackballCamera(nullptr), m_VREnabled(false)
 {
 }
 
@@ -47,6 +47,7 @@ bool RenderContext::initialize()
 	}
 	if (!initializeGL()) { success = false; }
 
+	if(!m_CameraArrayRenderer.initialize()) { success = false; }
 
 	return success;
 }
@@ -347,16 +348,17 @@ void RenderContext::renderQuad(vr::Hmd_Eye eye)
 {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glUseProgram(m_StereoProgram);
 	auto vp = m_VRCamera.getMVP(eye);
 	auto ivp = glm::inverse(vp);
 	auto eyepos = m_VRCamera.getPosition(eye);
-	if (!m_VREnabled)
+	if(!m_VREnabled)
 	{
 		vp = m_pTrackballCamera->projectionMatrix() * m_pTrackballCamera->viewMatrix();
 		ivp = inverse(vp);
 		eyepos = m_pTrackballCamera->getPosition();
 	}
+
+	glUseProgram(m_StereoProgram);
 	
 	glUniform1ui(glGetUniformLocation(m_StereoProgram, "eye"), eye);
 	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "vp"), 1, GL_FALSE, &vp[0][0]);
@@ -371,6 +373,10 @@ void RenderContext::renderQuad(vr::Hmd_Eye eye)
 	glEnd();
 
 	glUseProgram(0);
+
+	glDisable(GL_DEPTH_TEST);
+	m_CameraArrayRenderer.render(vp, eyepos);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void RenderContext::renderStereoTargets()

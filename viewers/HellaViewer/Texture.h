@@ -57,6 +57,7 @@ public:
 		}
 	}
 	bool finished();
+	GLuint textureID();
 
 private:
 	/*

@@ -27,6 +27,11 @@ bool Texture::finished()
 	return m_IsFinished;
 }
 
+GLuint Texture::textureID()
+{
+	return m_GLID;
+}
+
 void Texture::transferToGPU(SDL_Surface* surface)
 {
 	if(!surface)

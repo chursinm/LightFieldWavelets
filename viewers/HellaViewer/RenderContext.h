@@ -2,6 +2,7 @@
 #include "ShaderManager.h"
 #include "VRCamera.h"
 #include "TrackballCamera.h"
+#include "CameraArrayRenderer.h"
 
 struct FramebufferDesc
 {
@@ -33,6 +34,10 @@ private: //functions
 	void renderStereoTargets();
 	void renderCompanionWindow();
 	void printerr();
+
+
+private: // external rendering components
+	CameraArrayRenderer m_CameraArrayRenderer;
 
 private:
 	bool m_bVblank=false;
