@@ -236,10 +236,6 @@ bool RenderContext::handleSDL()
 				}
 				break;
 			case SDLK_m:
-
-#define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
-#define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
-
 				GLint total_mem_kb = 0;
 				glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX,
 					&total_mem_kb);

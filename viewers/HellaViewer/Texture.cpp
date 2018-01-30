@@ -6,14 +6,12 @@
 
 Texture::Texture(const std::string & filename): m_Filename(filename), m_IsFinished(false), m_Width(0), m_Height(0), m_GLID(0)
 {
+	fetchFile();
 }
-
-//Texture::Texture(const Texture & ref): m_Filename(ref.m_Filename), m_SurfaceFuture(), m_IsFinished(ref.m_IsFinished), m_Width(ref.m_Width), m_Height(ref.m_Height), m_GLID(ref.m_GLID)
-//{
-//}
 
 Texture::~Texture()
 {
+	glDeleteTextures(1, &m_GLID);
 }
 
 void Texture::fetchFile()
@@ -24,31 +22,9 @@ void Texture::fetchFile()
 	});
 }
 
-void Texture::asyncTransferToGPU(unsigned int waitForMS)
+bool Texture::finished()
 {
-	if(m_IsFinished) { return; }
-	if(!m_SurfaceFuture.valid())
-	{
-		WARN_TIMED("Invalid future, was fetchFile() called?", 2)
-		return;
-	}
-
-	{
-		auto status = m_SurfaceFuture.wait_for(std::chrono::milliseconds(waitForMS));
-		if(status == std::future_status::deferred)
-		{
-			std::cout << "deferred\n";
-		}
-		else if(status == std::future_status::timeout)
-		{
-			std::cout << "timeout\n";
-		}
-		else if(status == std::future_status::ready)
-		{
-			transferToGPU(m_SurfaceFuture.get());
-		}
-	}
-
+	return m_IsFinished;
 }
 
 void Texture::transferToGPU(SDL_Surface* surface)
@@ -56,7 +32,7 @@ void Texture::transferToGPU(SDL_Surface* surface)
 	if(!surface)
 	{
 		WARN("Couldnt load surface " << m_Filename.c_str());
-		return;
+		throw TextureException();
 	}
 
 	GLuint TextureID = 0;
@@ -84,10 +60,17 @@ void Texture::transferToGPU(SDL_Surface* surface)
 
 	m_Width = surface->w;
 	m_Height = surface->h;
-	m_IsFinished = true;
-	m_GLID = TextureID;
 
 	SDL_FreeSurface(surface);
 
-	WARN_ONCE("Texture loaded" << TextureID)
+	GLenum err = glGetError();
+	if(err != GL_NO_ERROR)
+	{
+		WARN("Failed to upload texture to via opengl: " << gluErrorString(err));
+		throw TextureException();
+	}
+
+	m_IsFinished = true;
+	m_GLID = TextureID;
+	WARN_TIMED("Texture loaded" << TextureID, 1);
 }
