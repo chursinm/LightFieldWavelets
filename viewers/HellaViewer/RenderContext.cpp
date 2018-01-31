@@ -208,24 +208,31 @@ bool RenderContext::handleSDL()
 				m_ShiftDown = true;
 				break;
 			case SDLK_w:
+				if(m_pTrackballCamera)
 				m_pTrackballCamera->move(-cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
 				break;
 			case SDLK_s:
+				if(m_pTrackballCamera)
 				m_pTrackballCamera->move(cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
 				break;
 			case SDLK_a:
+				if(m_pTrackballCamera)
 				m_pTrackballCamera->move(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
 				break;
 			case SDLK_d:
+				if(m_pTrackballCamera)
 				m_pTrackballCamera->move(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime); 
 				break;
 			case SDLK_q:
+				if(m_pTrackballCamera)
 				m_pTrackballCamera->pan(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime);
 				break;
 			case SDLK_e:
+				if(m_pTrackballCamera)
 				m_pTrackballCamera->pan(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
 				break;
 			case SDLK_r:
+				if(m_pTrackballCamera)
 				m_pTrackballCamera->reset();
 				break;
 			case SDLK_t:
@@ -244,7 +251,12 @@ bool RenderContext::handleSDL()
 				GLint cur_avail_mem_kb = 0;
 				glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX,
 					&cur_avail_mem_kb);
-				std::cout << "Total Mem: " << total_mem_kb << ", Avail Mem: " << cur_avail_mem_kb << std::endl;
+
+				GLint max_texture_units = 0;
+				glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
+					&max_texture_units);
+				
+				std::cout << "Total Mem: " << total_mem_kb << ", Avail Mem: " << cur_avail_mem_kb << ", Max Texture units: " << max_texture_units << std::endl;
 				break;
 			}
 		}
@@ -272,10 +284,12 @@ bool RenderContext::handleSDL()
 			auto buttonsHeld = motionEvent.state;
 			if(buttonsHeld & SDL_BUTTON_LMASK)
 			{
+				if(m_pTrackballCamera)
 				m_pTrackballCamera->rotate(glm::uvec2(m_RenderWidth / 2, m_RenderHeight / 2), glm::uvec2(m_RenderWidth / 2 + motionEvent.xrel, m_RenderHeight / 2 - motionEvent.yrel));
 			}
 			else if (buttonsHeld & SDL_BUTTON_RMASK)
 			{
+				if(m_pTrackballCamera)
 				m_pTrackballCamera->pan(cameraSpeedInSceneUnitPerMS * motionEvent.xrel, cameraSpeedInSceneUnitPerMS * motionEvent.yrel);
 			}
 		}

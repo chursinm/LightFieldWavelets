@@ -35,10 +35,10 @@ CameraArray CameraArrayParser::parse(const std::string & filename)
 	auto cameraElement = lightfieldElement->FirstChildElement(cameraElementKey);
 	while(cameraElement)
 	{
-		auto camera = std::make_unique<ArrayCamera>();
 		auto texturePath = cameraElement->Attribute(texturePathAttributeKey);
 		auto u = cameraElement->DoubleAttribute(uAttributeKey);
 		auto v = cameraElement->DoubleAttribute(vAttributeKey);
+		auto camera = std::make_unique<ArrayCamera>();
 		camera->tex = std::make_unique<Texture>(path.parent_path().append(texturePath).string());
 		camera->uv = glm::vec2(u, v);
 
@@ -52,7 +52,10 @@ CameraArray CameraArrayParser::parse(const std::string & filename)
 	}
 
 	// assuming squared grid
-	unsigned int gridWidth = std::sqrt(cameras.size());
+	auto gridWidthUnchecked = std::sqrt(cameras.size());
+	auto gridWidthUncheckedInt = static_cast<unsigned int>(gridWidthUnchecked + 0.5);
+	if(gridWidthUncheckedInt * gridWidthUncheckedInt != cameras.size()) { throw std::runtime_error("Camera grid is not a square"); }
+	auto gridWidth = gridWidthUncheckedInt;
 	auto gridSize = glm::uvec2(gridWidth, gridWidth);
 
 	return { std::move(cameras), gridSize, minUv, maxUv };

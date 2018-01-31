@@ -9,6 +9,11 @@ Texture::Texture(const std::string & filename): m_Filename(filename), m_IsFinish
 	fetchFile();
 }
 
+Texture::Texture(const std::string & filename, GLuint glid) : m_Filename(filename), m_IsFinished(false), m_Width(0), m_Height(0), m_GLID(glid)
+{
+	fetchFile();
+}
+
 Texture::~Texture()
 {
 	glDeleteTextures(1, &m_GLID);
@@ -40,9 +45,11 @@ void Texture::transferToGPU(SDL_Surface* surface)
 		throw TextureException();
 	}
 
-	GLuint TextureID = 0;
-	glGenTextures(1, &TextureID);
-	glBindTexture(GL_TEXTURE_2D, TextureID);
+	if(m_GLID == 0)
+	{
+		glGenTextures(1, &m_GLID);
+	}
+	glBindTexture(GL_TEXTURE_2D, m_GLID);
 
 	auto Mode = GL_RGB;
 
@@ -58,8 +65,8 @@ void Texture::transferToGPU(SDL_Surface* surface)
 
 	glGenerateMipmap(GL_TEXTURE_2D);  //Generate num_mipmaps number of mipmaps here.
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -76,6 +83,5 @@ void Texture::transferToGPU(SDL_Surface* surface)
 	}
 
 	m_IsFinished = true;
-	m_GLID = TextureID;
-	WARN_TIMED("Texture loaded" << TextureID, 1);
+	WARN("Texture loaded at glid " << m_GLID, 1);
 }

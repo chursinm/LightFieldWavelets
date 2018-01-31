@@ -24,6 +24,12 @@ public:
 	Call asyncTransferToGPU() to create the opengl texture.
 	*/
 	Texture(const std::string& filename);
+	/*
+	Starts an asynchronous fetch for filename.
+	Call asyncTransferToGPU() to create the opengl texture.
+	Will store the texture at glid.
+	*/
+	Texture(const std::string& filename, GLuint glid);
 	~Texture();
 
 	/*
