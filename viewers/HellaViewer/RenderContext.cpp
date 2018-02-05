@@ -207,6 +207,14 @@ bool RenderContext::handleSDL()
 			case SDLK_LSHIFT:
 				m_ShiftDown = true;
 				break;
+			case SDLK_o:
+				m_CameraArrayRenderer.m_FocalPlane += cameraSpeedInSceneUnitPerMS * deltaTime;
+				std::cout << "Focal plane: " << m_CameraArrayRenderer.m_FocalPlane << std::endl;
+				break;
+			case SDLK_l:
+				m_CameraArrayRenderer.m_FocalPlane -= cameraSpeedInSceneUnitPerMS * deltaTime;
+				std::cout << "Focal plane: " << m_CameraArrayRenderer.m_FocalPlane << std::endl;
+				break;
 			case SDLK_w:
 				if(m_pTrackballCamera)
 				m_pTrackballCamera->move(-cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);

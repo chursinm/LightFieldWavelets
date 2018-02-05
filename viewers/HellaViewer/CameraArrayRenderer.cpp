@@ -10,7 +10,7 @@ using namespace glm;
 // think in meters
 #define AVERAGE_CAMERA_DISTANCE_X 0.4f
 
-CameraArrayRenderer::CameraArrayRenderer()
+CameraArrayRenderer::CameraArrayRenderer(): m_FocalPlane(3.f)
 {
 	m_CameraArray = CameraArrayParser::parse(DEMO_FILE);
 }
@@ -92,25 +92,35 @@ bool CameraArrayRenderer::initialize()
 	return true;
 }
 
-void CameraArrayRenderer::render(glm::mat4x4 viewProjection, glm::vec3 eyePosition)
+void CameraArrayRenderer::render(glm::mat4x4 viewProjection, glm::vec3 worldspaceEyePosition)
 {
+	auto mvp = viewProjection * m_CameraArrayQuadsModelMatrix;
+	auto imvp = inverse(viewProjection);
+
+	/// CALCULATE FOCAL PLANE
+	auto a4 = m_CameraArrayQuadsModelMatrix * vec4(m_CameraArray.cameras[0]->uv, 0.f, 1.f);
+	auto cR = vec3(0.f, 0.f, -1.f);
+	auto a = vec3(a4.xyz * (1.f / a4.w));
+	auto worldspaceFocalPlanePosition = a + cR * m_FocalPlane;
+	auto worldspaceFocalPlaneDirection = -cR;
+	/// END CALCULATE FOCAL PLANE
+
+
+
 	glUseProgram(m_GlProgram);
 	glDisable(GL_CULL_FACE);
 
 	//glUniformMatrix4fv(glGetUniformLocation(m_GlProgram, "mvp"), 1, GL_FALSE, &viewProjection[0][0]);
 	//glUniformMatrix4fv(glGetUniformLocation(m_GlProgram, "inverse_mvp"), 1, GL_FALSE, &inverse(viewProjection)[0][0]);
-	//glUniform3fv(glGetUniformLocation(m_GlProgram, "worldSpace_eyePosition"), 1, &eyePosition[0]);
-
-	auto mvp = viewProjection * m_CameraArrayQuadsModelMatrix;
-	glUniformMatrix4fv(glGetUniformLocation(m_GlProgram, "mvp"), 1, GL_FALSE, &mvp[0][0]);
-	glUniform2uiv(glGetUniformLocation(m_GlProgram, "cameraGridDimension"), 1, &m_CameraArray.cameraGridDimension[0]);
 	
-	/*auto it = m_CameraArray.cameras.begin();
-	auto& firstCamera = *it;
-	auto firstCameraUv = firstCamera->uv;
-	auto secondCameraUv = (*(it+1))->uv;
-	glBindTexture(GL_TEXTURE_2D, firstCamera->tex->textureID());*/
-
+	glUniform3fv(glGetUniformLocation(m_GlProgram, "worldspaceEyePosition"), 1, &worldspaceEyePosition[0]);
+	glUniformMatrix4fv(glGetUniformLocation(m_GlProgram, "mvp"), 1, GL_FALSE, &mvp[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(m_GlProgram, "ivp"), 1, GL_FALSE, &imvp[0][0]);
+	glUniform2uiv(glGetUniformLocation(m_GlProgram, "cameraGridDimension"), 1, &m_CameraArray.cameraGridDimension[0]);
+	glUniform3fv(glGetUniformLocation(m_GlProgram, "worldspaceFocalPlanePosition"), 1, &worldspaceFocalPlanePosition[0]);
+	glUniform3fv(glGetUniformLocation(m_GlProgram, "worldspaceFocalPlaneDirection"), 1, &worldspaceFocalPlaneDirection[0]);
+	glUniform1fv(glGetUniformLocation(m_GlProgram, "focalPlaneDistance"), 1, &m_FocalPlane);
+	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
 	glVertexPointer(3, GL_FLOAT, sizeof(glm::vec3), (void*)0);

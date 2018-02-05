@@ -14,6 +14,7 @@ public:
 	bool initialize();
 	//void update();
 	void render(glm::mat4x4 viewProjection, glm::vec3 eyePosition);
+	float m_FocalPlane;
 private:
 	CameraArray m_CameraArray;
 	GLuint m_VertexBuffer, m_IndexBuffer;

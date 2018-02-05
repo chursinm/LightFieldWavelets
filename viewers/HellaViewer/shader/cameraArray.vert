@@ -3,9 +3,13 @@
 uniform mat4 mvp;
 uniform uvec2 cameraGridDimension;
 uniform uint quadID;
+uniform mat4 ivp;
+uniform vec3 worldspaceFocalPlanePosition;
+uniform vec3 worldspaceFocalPlaneDirection;
+uniform vec3 worldspaceEyePosition;
 
 out vec2 uv;
-out vec4 clipspaceCameraplaneVertex;
+sample out vec4 clipspaceCameraplaneVertex;
 flat out vec4 clipspaceCameraplaneCamera;
 
 void main(void)
