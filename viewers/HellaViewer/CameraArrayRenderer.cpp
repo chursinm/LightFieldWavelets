@@ -8,7 +8,7 @@ using namespace glm;
 #define DEMO_FILE "E:/crohmann/old_input/stanford_chess_lightfield/rectified/chess.xml"
 //#define DEMO_FILE "../rectified/chess.xml"
 // think in meters
-#define AVERAGE_CAMERA_DISTANCE_X 0.4f
+#define AVERAGE_CAMERA_DISTANCE_X 0.2f
 
 CameraArrayRenderer::CameraArrayRenderer(): m_FocalPlane(3.f)
 {
@@ -24,7 +24,7 @@ bool CameraArrayRenderer::initialize()
 {
 	// Create GL programs
 	auto& psm = ShaderManager::instance();
-	m_GlProgram = psm.from("shader/cameraArray.vert", "shader/cameraArray.frag");
+	m_GlProgram = psm.from("shader/cameraArray.vert", "shader/cameraArray.geom", "shader/cameraArray.frag");
 	if(m_GlProgram == 0)
 		return false;
 
@@ -33,7 +33,7 @@ bool CameraArrayRenderer::initialize()
 	auto scaleFactor = arrayWidthWorld / arrayWidthInput;
 
 	//m_CameraArrayQuadsModelMatrix = translate(vec3(m_CameraArray.minUV, 0.f)) * scale(vec3(scaleFactor));
-	m_CameraArrayQuadsModelMatrix = translate(vec3(0.f,0.f,-1.f)) * scale(vec3(scaleFactor)) * translate(vec3(-m_CameraArray.minUV, 0.f));
+	m_CameraArrayQuadsModelMatrix = translate(vec3(-1.f,0.f,-1.f)) * scale(vec3(scaleFactor)) * translate(vec3(-m_CameraArray.minUV, 0.f));
 
 	//////////////////////// TODO function create / upload vertex data ////////////////////////////////////////////////////////
 	std::vector<glm::vec3> vertices;
@@ -107,6 +107,7 @@ bool CameraArrayRenderer::initialize()
 
 void CameraArrayRenderer::render(glm::mat4x4 viewProjection, glm::vec3 worldspaceEyePosition)
 {
+	if(m_FocalPlane < 0.f) m_FocalPlane = 0.001f;
 	auto mvp = viewProjection * m_CameraArrayQuadsModelMatrix;
 	auto imvp = inverse(viewProjection);
 

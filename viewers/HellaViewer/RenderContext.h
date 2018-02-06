@@ -59,6 +59,7 @@ private: // OpenGL
 	GLuint m_DesktopProgram;
 
 	bool createFrameBuffer(int nWidth, int nHeight, FramebufferDesc &framebufferDesc);
+	void printGLInteger(const std::string & name, GLint constant);
 
 private: // SDL
 	SDL_Window * m_pCompanionWindow;

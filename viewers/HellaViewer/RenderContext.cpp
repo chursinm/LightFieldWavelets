@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "RenderContext.h"
 
+#define PRINT_GL_INTEGER( name ) { printGLInteger(#name, name); }
 
 RenderContext::RenderContext(): m_RenderRightEye(true), m_CameraArrayRenderer(), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_ShiftDown(false), m_pTrackballCamera(nullptr), m_VREnabled(false)
 {
@@ -55,11 +56,7 @@ bool RenderContext::initialize()
 bool RenderContext::initializeGL()
 {
 	std::cout << "GL Version: " << glGetString(GL_VERSION) << std::endl;
-	GLint max_texture_size;
-	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
-	std::cout << "GL_MAX_TEXTURE_SIZE: " << max_texture_size << std::endl;
 	
-
 	// Some default GL settings.
 	glClearColor(0, 0, 0, 255);
 	glClearDepth(1.0f);
@@ -86,8 +83,7 @@ bool RenderContext::initializeGL()
 	glGenBuffers(1, &m_BlitTriangleVB);
 	glBindBuffer(GL_ARRAY_BUFFER, m_BlitTriangleVB);
 	{
-		auto test = sizeof(fullscreenTriangle);
-		glBufferData(GL_ARRAY_BUFFER, test, &fullscreenTriangle[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(fullscreenTriangle), &fullscreenTriangle[0], GL_STATIC_DRAW);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -97,7 +93,6 @@ bool RenderContext::initializeGL()
 		glBindBuffer(GL_ARRAY_BUFFER, m_BlitTriangleVB);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 		glEnableVertexAttribArray(0);
-
 	}
 	glBindVertexArray(0);
 
@@ -276,29 +271,13 @@ bool RenderContext::handleSDL()
 					m_FrameCounter = 0;
 				}
 				break;
-			case SDLK_m:
-				GLint total_mem_kb = 0;
-				glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX,
-					&total_mem_kb);
-
-				GLint max_geom_output_vert = 0;
-				glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES,
-					&max_geom_output_vert);
-
-				GLint max_geom_output_components = 0;
-				glGetIntegerv(GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS,
-					&max_geom_output_components);
-
-				GLint cur_avail_mem_kb = 0;
-				glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX,
-					&cur_avail_mem_kb);
-
-				GLint max_texture_units = 0;
-				glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
-					&max_texture_units);
-				
-				std::cout << "Geom max vertices: " << max_geom_output_vert << " , Geom max components: " << max_geom_output_components << std::endl;
-				std::cout << "Total Mem: " << total_mem_kb << ", Avail Mem: " << cur_avail_mem_kb << ", Max Texture units: " << max_texture_units << std::endl;
+			case SDLK_i:
+				PRINT_GL_INTEGER(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX);
+				PRINT_GL_INTEGER(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX);
+				PRINT_GL_INTEGER(GL_MAX_TEXTURE_SIZE);
+				PRINT_GL_INTEGER(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+				PRINT_GL_INTEGER(GL_MAX_GEOMETRY_OUTPUT_VERTICES);
+				PRINT_GL_INTEGER(GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS);
 				break;
 			}
 		}
@@ -511,6 +490,13 @@ void RenderContext::renderCompanionWindow()
 	glUseProgram(0);
 }
 
+void RenderContext::printGLInteger(const std::string& name, GLint constant)
+{
+	GLint x;
+	glGetIntegerv(constant, &x);
+	std::cout << name << ": " << x << std::endl;
+}
+
 void RenderContext::printerr(const char* file, const int line)
 {
 	GLenum err = glGetError();
@@ -565,3 +551,5 @@ bool RenderContext::createFrameBuffer(int nWidth, int nHeight, FramebufferDesc &
 
 	return true;
 }
+
+#undef PRINT_GL_INTEGER

@@ -50,7 +50,8 @@ vec2 cameraUV(vec3 focalPlaneIntersection, vec4 clipspaceCameraplaneCamera)
 	vec4 worldSpaceCameraplaneCamera = (ivp  * clipspaceCameraplaneCamera);
 	vec3 worldSpaceCameraplaneCamera3 = worldSpaceCameraplaneCamera.xyz / worldSpaceCameraplaneCamera.w;
 	focalPlaneIntersection = focalPlaneIntersection - worldSpaceCameraplaneCamera3;
-	return vec2(focalPlaneDistance * focalPlaneIntersection.x / focalPlaneIntersection.z, focalPlaneDistance * focalPlaneIntersection.y / focalPlaneIntersection.z);
+	vec2 uv = vec2(focalPlaneDistance * focalPlaneIntersection.x / focalPlaneIntersection.z, focalPlaneDistance * focalPlaneIntersection.y / focalPlaneIntersection.z);
+	return .5f * uv + vec2(.5f,.5f);
 }
 
 void main(void)
@@ -67,10 +68,11 @@ void main(void)
 	if(intersectsplane) 
 	{
 		vec3 focalPlaneIntersection = worldspaceEyePosition + worldSpaceEyeDirection * dist;
-		//outColor = vec4(checkerboard(focalPlaneIntersection));
 		outColor = texture(cameraImage, cameraUV(focalPlaneIntersection, clipspaceCameraplaneCamera));
+		//outColor = vec4(checkerboard(focalPlaneIntersection));
 		//outColor = texture(cameraImage, uv);
 		//outColor = vec4(uv,0,0);
+		//outColor = vec4(cameraUV(focalPlaneIntersection, clipspaceCameraplaneCamera),0,0);
 	}
 	else // background color
 	{

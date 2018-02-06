@@ -84,5 +84,5 @@ void Texture::transferToGPU(SDL_Surface* surface)
 	}
 
 	m_IsFinished = true;
-	WARN("Texture loaded at glid " << m_GLID, 1);
+	//WARN("Texture loaded at glid " << m_GLID, 1);
 }

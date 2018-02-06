@@ -5,6 +5,7 @@ noperspective out vec2 uv;
 
 void main(void)
 {
-    uv = (clipspaceVertex + vec2(1.f,1.f)) * 0.5f;
+    //uv = (clipspaceVertex + vec2(1.f,1.f)) * 0.5f;
+    uv = .5f * clipspaceVertex + vec2(.5f);
     gl_Position = vec4(clipspaceVertex, 0.f, 1.f);
 }

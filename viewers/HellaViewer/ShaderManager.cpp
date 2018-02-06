@@ -55,6 +55,60 @@ GLuint ShaderManager::from(const std::string& vertexShaderFile, const std::strin
 	}
 }
 
+GLuint ShaderManager::from(const std::string & vertexShaderFile, const std::string & geometryShaderFile, const std::string & fragmentShaderFile)
+{
+	auto it = mProgramCache.find({ vertexShaderFile, fragmentShaderFile });
+	if(it != mProgramCache.end())
+	{
+		return it->second;
+	}
+
+	GLuint vertexShaderID = vertexShader(vertexShaderFile);
+	GLuint geometryShaderID = geometryShader(geometryShaderFile);
+	GLuint fragmentShaderID = fragmentShader(fragmentShaderFile);
+	if(vertexShaderID == 0 || fragmentShaderID == 0 || geometryShaderID == 0)
+	{
+		return 0;
+	}
+
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
+
+	// Folgende Zeilen stammen von http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
+	// Link the program
+	fprintf(stdout, "Linking program\n");
+	GLuint program = glCreateProgram();
+	glAttachShader(program, vertexShaderID);
+	glAttachShader(program, geometryShaderID);
+	glAttachShader(program, fragmentShaderID);
+	glLinkProgram(program);
+
+	// Check the program
+	glGetProgramiv(program, GL_LINK_STATUS, &Result);
+	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if(InfoLogLength > 0)
+	{
+		std::vector<char> ProgramErrorMessage(InfoLogLength);
+		glGetProgramInfoLog(program, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
+	}
+
+	// Diese werden in anderen Programmen wiederverwendet
+	//glDeleteShader(m_VertexShader);
+	//glDeleteShader(m_FragmentShader);
+
+	if(Result != GL_FALSE)
+	{
+		mProgramCache.emplace(std::pair<std::pair<std::string, std::string>, GLuint>({ vertexShaderFile, fragmentShaderFile }, program));
+		return program;
+	}
+	else
+	{
+		glDeleteProgram(program);
+		return 0;
+	}
+}
+
 GLuint ShaderManager::vertexShader(const std::string& filename)
 {
 	auto it = mVertexShaderCache.find(filename);
@@ -66,6 +120,20 @@ GLuint ShaderManager::vertexShader(const std::string& filename)
 	GLuint shader = loadShader(filename, GL_VERTEX_SHADER);
 
 	if(shader != 0) mVertexShaderCache.emplace(std::pair<std::string, GLuint>(filename, shader));
+	return shader;
+}
+
+GLuint ShaderManager::geometryShader(const std::string & filename)
+{
+	auto it = mGeometryShaderCache.find(filename);
+	if(it != mGeometryShaderCache.end())
+	{
+		return it->second;
+	}
+
+	GLuint shader = loadShader(filename, GL_GEOMETRY_SHADER);
+
+	if(shader != 0) mGeometryShaderCache.emplace(std::pair<std::string, GLuint>(filename, shader));
 	return shader;
 }
 
