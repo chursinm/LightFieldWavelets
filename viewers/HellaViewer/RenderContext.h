@@ -33,13 +33,14 @@ private: //functions
 	void renderQuad(vr::Hmd_Eye eye);
 	void renderStereoTargets();
 	void renderCompanionWindow();
-	void printerr();
+	void printerr(const char * file, const int line);
 
 
 private: // external rendering components
 	CameraArrayRenderer m_CameraArrayRenderer;
 
 private:
+	bool m_RenderRightEye;
 	bool m_bVblank=false;
 	// TODO common Camera Interface
 	VRCamera m_VRCamera;
@@ -53,6 +54,7 @@ private: // OpenGL
 	FramebufferDesc m_LeftEyeFramebuffer;
 	FramebufferDesc m_RightEyeFramebuffer;
 
+	GLuint m_BlitTriangleVB, m_BlitTriangleVAO;
 	GLuint m_StereoProgram;
 	GLuint m_DesktopProgram;
 
@@ -69,4 +71,3 @@ private: // OpenVR
 	vr::IVRSystem* m_pHMD;
 	uint32_t m_RenderWidth, m_RenderHeight;
 };
-

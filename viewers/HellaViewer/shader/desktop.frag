@@ -1,4 +1,4 @@
-#version 400 compatibility
+#version 400 core
 uniform sampler2D renderedImage;
 
 in vec2 uv;

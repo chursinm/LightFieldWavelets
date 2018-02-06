@@ -1,10 +1,15 @@
-#version 400 compatibility
-//uniform mat4 ivp;
-//noperspective out vec4 worldVertex;
-noperspective out vec4 vertex;
+#version 400 core
+
+uniform mat4 ivp;
+
+layout(location = 0) in vec2 clipspaceVertex;
+
+noperspective out vec3 worldVertex3;
 
 void main(void)
 {
-	vertex = gl_Vertex;
-	gl_Position = gl_Vertex;
+	vec4 clipspaceVertex4 = vec4(clipspaceVertex, 0.f, 1.f);
+	vec4 worldVertex4 = ivp * clipspaceVertex4;
+	worldVertex3 = worldVertex4.xyz / worldVertex4.w;
+	gl_Position = clipspaceVertex4;
 }

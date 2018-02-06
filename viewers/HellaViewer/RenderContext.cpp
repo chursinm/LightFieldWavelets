@@ -2,7 +2,7 @@
 #include "RenderContext.h"
 
 
-RenderContext::RenderContext(): m_CameraArrayRenderer(), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_ShiftDown(false), m_pTrackballCamera(nullptr), m_VREnabled(false)
+RenderContext::RenderContext(): m_RenderRightEye(true), m_CameraArrayRenderer(), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_ShiftDown(false), m_pTrackballCamera(nullptr), m_VREnabled(false)
 {
 }
 
@@ -76,6 +76,31 @@ bool RenderContext::initializeGL()
 		!createFrameBuffer(m_RenderWidth, m_RenderHeight, m_RightEyeFramebuffer))
 		return false;
 
+	// Create blitting VAO 
+	const GLfloat fullscreenTriangle[] = {
+		-1.0f, 1.0f,
+		-1.0f, -3.0f,
+		3.0f,  1.0f
+	};
+
+	glGenBuffers(1, &m_BlitTriangleVB);
+	glBindBuffer(GL_ARRAY_BUFFER, m_BlitTriangleVB);
+	{
+		auto test = sizeof(fullscreenTriangle);
+		glBufferData(GL_ARRAY_BUFFER, test, &fullscreenTriangle[0], GL_STATIC_DRAW);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenVertexArrays(1, &m_BlitTriangleVAO);
+	glBindVertexArray(m_BlitTriangleVAO);
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_BlitTriangleVB);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+		glEnableVertexAttribArray(0);
+
+	}
+	glBindVertexArray(0);
+
 	return true;
 }
 
@@ -89,12 +114,17 @@ bool RenderContext::initializeSDL()
 	}
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY );
-	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+	//SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY );
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+
+	SDL_LogSetAllPriority(SDL_LOG_PRIORITY_INFO);
+	SDL_LogSetOutputFunction([](void *userdata, int category, SDL_LogPriority priority, const char *message) {
+		std::cout << "SDL message: " << message << std::endl;
+	}, 0);
 
 
 	Uint32 unWindowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
@@ -117,12 +147,12 @@ bool RenderContext::initializeSDL()
 
 	glewExperimental = GL_TRUE; // otherwise glGenFramebuffer is not defined
 	GLenum err = glewInit();
-	if (GLEW_OK != err)
+	GLenum glerr = glGetError();
+	if (GLEW_OK != err && GL_INVALID_ENUM != glerr) // glewExperimental throws invalid enum, see https://www.khronos.org/opengl/wiki/OpenGL_Loading_Library
 	{
-		fprintf(stderr, "Error initializing glew: %s\n", glewGetErrorString(err));
+		fprintf(stderr, "Error initializing glew: %s\n gl: %s", glewGetErrorString(err), gluErrorString(glerr));
 		return false;
 	}
-	printerr();
 
 	if (SDL_GL_SetSwapInterval(m_bVblank ? 1 : 0) < 0)
 	{
@@ -231,13 +261,8 @@ bool RenderContext::handleSDL()
 				if(m_pTrackballCamera)
 				m_pTrackballCamera->move(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime); 
 				break;
-			case SDLK_q:
-				if(m_pTrackballCamera)
-				m_pTrackballCamera->pan(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime);
-				break;
 			case SDLK_e:
-				if(m_pTrackballCamera)
-				m_pTrackballCamera->pan(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
+				m_RenderRightEye = !m_RenderRightEye;
 				break;
 			case SDLK_r:
 				if(m_pTrackballCamera)
@@ -256,6 +281,14 @@ bool RenderContext::handleSDL()
 				glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX,
 					&total_mem_kb);
 
+				GLint max_geom_output_vert = 0;
+				glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES,
+					&max_geom_output_vert);
+
+				GLint max_geom_output_components = 0;
+				glGetIntegerv(GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS,
+					&max_geom_output_components);
+
 				GLint cur_avail_mem_kb = 0;
 				glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX,
 					&cur_avail_mem_kb);
@@ -264,6 +297,7 @@ bool RenderContext::handleSDL()
 				glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
 					&max_texture_units);
 				
+				std::cout << "Geom max vertices: " << max_geom_output_vert << " , Geom max components: " << max_geom_output_components << std::endl;
 				std::cout << "Total Mem: " << total_mem_kb << ", Avail Mem: " << cur_avail_mem_kb << ", Max Texture units: " << max_texture_units << std::endl;
 				break;
 			}
@@ -317,8 +351,11 @@ void RenderContext::render()
 {
 	// Render
 	{
+		printerr(__FILE__, __LINE__);
 		renderStereoTargets();
+		printerr(__FILE__, __LINE__);
 		renderCompanionWindow();
+		printerr(__FILE__, __LINE__);
 
 		if (m_VREnabled)
 		{
@@ -358,8 +395,7 @@ void RenderContext::render()
 		glFinish();
 	}
 
-
-	printerr();
+	printerr(__FILE__, __LINE__);
 	if(m_VREnabled)
 	{
 		m_VRCamera.update();
@@ -368,7 +404,6 @@ void RenderContext::render()
 
 void RenderContext::renderQuad(vr::Hmd_Eye eye)
 {
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	auto vp = m_VRCamera.getMVP(eye);
 	auto ivp = glm::inverse(vp);
@@ -386,13 +421,10 @@ void RenderContext::renderQuad(vr::Hmd_Eye eye)
 	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "vp"), 1, GL_FALSE, &vp[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "ivp"), 1, GL_FALSE, &ivp[0][0]);
 	glUniform3fv(glGetUniformLocation(m_StereoProgram, "eyepos"), 1, &eyepos[0]);
-
-	glBegin(GL_QUADS);
-	glVertex2f(-1.0f, -1.0f);
-	glVertex2f(1.0f, -1.0f);
-	glVertex2f(1.0f, 1.0f);
-	glVertex2f(-1.0f, 1.0f);
-	glEnd();
+		
+	glBindVertexArray(m_BlitTriangleVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glBindVertexArray(0);
 
 	glUseProgram(0);
 
@@ -448,52 +480,44 @@ void RenderContext::renderStereoTargets()
 void RenderContext::renderCompanionWindow()
 {
 	glDisable(GL_DEPTH_TEST);
-	glViewport(0, 0, m_nCompanionWindowWidth, m_nCompanionWindowHeight);
-
+	
 	glUseProgram(m_DesktopProgram);
+	glBindVertexArray(m_BlitTriangleVAO);
 
-	// render left eye
+	// left eye
+	glViewport(0, 0, m_nCompanionWindowWidth, m_nCompanionWindowHeight);
 	glBindTexture(GL_TEXTURE_2D, m_LeftEyeFramebuffer.m_nResolveTextureId);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex2f(-1.0f, -1.0f);
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex2f(0.0f, -1.0f);
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex2f(0.0f, 1.0f);
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex2f(-1.0f, 1.0f);
-	glEnd();
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 
-	// render right eye 
-	glBindTexture(GL_TEXTURE_2D, m_RightEyeFramebuffer.m_nResolveTextureId);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex2f(0.0f, -1.0f);
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex2f(1.0f, -1.0f);
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex2f(1.0f, 1.0f);
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex2f(0.0f, 1.0f);
-	glEnd();
 
+	if(m_RenderRightEye)
+	{
+		// clear right eye space
+		const unsigned int borderSize = 2u;
+		glEnable(GL_SCISSOR_TEST);
+		glScissor((m_nCompanionWindowWidth >> 2) + (m_nCompanionWindowWidth >> 1) - borderSize, 0, (m_nCompanionWindowWidth >> 2) + borderSize, borderSize + (m_nCompanionWindowHeight >> 2));
+		glClearColor(0.1f, 0.4f, 0.8f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(0, 0, 0, 1);
+		glDisable(GL_SCISSOR_TEST);
+
+		// right eye
+		glViewport((m_nCompanionWindowWidth >> 2) + (m_nCompanionWindowWidth >> 1), 0, m_nCompanionWindowWidth >> 2, m_nCompanionWindowHeight >> 2);
+		glBindTexture(GL_TEXTURE_2D, m_LeftEyeFramebuffer.m_nResolveTextureId);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+	}
+
+	glBindVertexArray(0);
 	glUseProgram(0);
 }
 
-void RenderContext::printerr()
+void RenderContext::printerr(const char* file, const int line)
 {
 	GLenum err = glGetError();
-	if (err != GL_NO_ERROR) 
-	printf("Error: %i - %s\n", err, gluErrorString(err));
+	if(err != GL_NO_ERROR)
+	{
+		printf("GLerror %s#%i: %i - %s\n", file, line, err, gluErrorString(err));
+	}
 }
 
 void RenderContext::resize(int width, int height)

@@ -1,5 +1,6 @@
 #pragma once
 #include "CameraArrayParser.h"
+
 class CameraArrayRenderer
 {
 private:
@@ -17,7 +18,7 @@ public:
 	float m_FocalPlane;
 private:
 	CameraArray m_CameraArray;
-	GLuint m_VertexBuffer, m_IndexBuffer;
+	GLuint m_VertexArrayObject, m_VertexBuffer, m_IndexBuffer;
 	std::vector<unsigned long long> m_IndexOffsets;
 	std::vector<GLsizei> m_IndexCounts;
 	glm::mat4x4 m_CameraArrayQuadsModelMatrix;

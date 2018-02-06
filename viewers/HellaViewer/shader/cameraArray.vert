@@ -1,4 +1,4 @@
-#version 460 compatibility
+#version 460 core
 
 uniform mat4 mvp;
 uniform uvec2 cameraGridDimension;
@@ -7,6 +7,8 @@ uniform mat4 ivp;
 uniform vec3 worldspaceFocalPlanePosition;
 uniform vec3 worldspaceFocalPlaneDirection;
 uniform vec3 worldspaceEyePosition;
+
+layout(location = 0) in vec3 worldspaceCameraplaneVertex;
 
 out vec2 uv;
 sample out vec4 clipspaceCameraplaneVertex;
@@ -30,7 +32,7 @@ void main(void)
     //uv = (gl_Vertex.xy + vec2(1,1)) * 0.5f;
 	//uv = gl_MultiTexCoord0.xy;
 
-	clipspaceCameraplaneVertex = mvp * gl_Vertex;
+	clipspaceCameraplaneVertex = mvp * vec4(worldspaceCameraplaneVertex, 1.f);
 	clipspaceCameraplaneCamera = clipspaceCameraplaneVertex;
     gl_Position = clipspaceCameraplaneVertex;
 }

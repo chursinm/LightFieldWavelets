@@ -1,4 +1,4 @@
-#version 460 compatibility
+#version 460 core
 
 uniform sampler2D cameraImage;
 
@@ -14,6 +14,8 @@ uniform float focalPlaneDistance;
 in vec2 uv;
 sample in vec4 clipspaceCameraplaneVertex;
 flat in vec4 clipspaceCameraplaneCamera;
+
+layout(location = 0) out vec4 outColor;
 
 
 bool intersectRayPlane(
@@ -65,16 +67,17 @@ void main(void)
 	if(intersectsplane) 
 	{
 		vec3 focalPlaneIntersection = worldspaceEyePosition + worldSpaceEyeDirection * dist;
-		//gl_FragColor = vec4(checkerboard(focalPlaneIntersection));
-		//gl_FragColor = vec4(uv,0,0);
-		gl_FragColor = texture(cameraImage, cameraUV(focalPlaneIntersection, clipspaceCameraplaneCamera));
+		//outColor = vec4(checkerboard(focalPlaneIntersection));
+		outColor = texture(cameraImage, cameraUV(focalPlaneIntersection, clipspaceCameraplaneCamera));
+		//outColor = texture(cameraImage, uv);
+		//outColor = vec4(uv,0,0);
 	}
 	else // background color
 	{
-		gl_FragColor = vec4(1,0,0,0); // error
+		outColor = vec4(1,0,0,0); // error
 	}
 
-    //gl_FragColor = vec4(uv,0.f,1.f);
-	//gl_FragColor = texture(cameraImage, uv);
-	//gl_FragColor = vec4(1,0,0,0);
+    //outColor = vec4(uv,0.f,1.f);
+	//outColor = texture(cameraImage, uv);
+	//outColor = vec4(1,0,0,0);
 }
