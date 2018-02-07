@@ -50,8 +50,9 @@ vec2 cameraUV(vec3 focalPlaneIntersection, vec4 clipspaceCameraplaneCamera)
 	vec4 worldSpaceCameraplaneCamera = (ivp  * clipspaceCameraplaneCamera);
 	vec3 worldSpaceCameraplaneCamera3 = worldSpaceCameraplaneCamera.xyz / worldSpaceCameraplaneCamera.w;
 	focalPlaneIntersection = focalPlaneIntersection - worldSpaceCameraplaneCamera3;
-	vec2 uv = vec2(focalPlaneDistance * focalPlaneIntersection.x / focalPlaneIntersection.z, focalPlaneDistance * focalPlaneIntersection.y / focalPlaneIntersection.z);
-	return .5f * uv + vec2(.5f,.5f);
+	//float focalPlaneDistance = -focalPlaneIntersection.z; // this is the same as the uniform
+	//vec2 uv = vec2(focalPlaneDistance * focalPlaneIntersection.x / focalPlaneIntersection.z, focalPlaneDistance * focalPlaneIntersection.y / focalPlaneIntersection.z);
+	return -.5f * uv + vec2(.5f,.5f);
 }
 
 void main(void)

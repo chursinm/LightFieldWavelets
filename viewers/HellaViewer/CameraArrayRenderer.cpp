@@ -32,7 +32,7 @@ bool CameraArrayRenderer::initialize()
 	auto arrayWidthWorld = AVERAGE_CAMERA_DISTANCE_X * static_cast<float>(m_CameraArray.cameraGridDimension.x);
 	auto scaleFactor = arrayWidthWorld / arrayWidthInput;
 
-	//m_CameraArrayQuadsModelMatrix = translate(vec3(m_CameraArray.minUV, 0.f)) * scale(vec3(scaleFactor));
+	//									World Transformation			Model Scaling				Set Model Origin to Zero (it can start with absurd transformations)
 	m_CameraArrayQuadsModelMatrix = translate(vec3(-1.f,0.f,-1.f)) * scale(vec3(scaleFactor)) * translate(vec3(-m_CameraArray.minUV, 0.f));
 
 	//////////////////////// TODO function create / upload vertex data ////////////////////////////////////////////////////////
