@@ -29,31 +29,32 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.1.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -72,21 +73,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>thirdparty\openvr\headers;thirdparty\glm_include;thirdparty\glew\glew-1.11.0\include;thirdparty\sdl2-2.0.3\include;$(IncludePath)</IncludePath>
-    <LibraryPath>thirdparty\openvr\lib\win32;thirdparty\glew\glew-1.11.0\lib\Release\Win32;thirdparty\sdl2-2.0.3\bin\win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>thirdparty\SDL2_image-2.0.2\include;thirdparty\openvr\headers;thirdparty\glm_include;thirdparty\glew\glew-1.11.0\include;thirdparty\sdl2-2.0.3\include;$(IncludePath)</IncludePath>
+    <LibraryPath>thirdparty\SDL2_image-2.0.2\lib\x64;thirdparty\openvr\lib\win32;thirdparty\glew\glew-1.11.0\lib\Release\Win32;thirdparty\sdl2-2.0.3\bin\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>include;$(IncludePath)</IncludePath>
+    <IncludePath>thirdparty\SDL2_image-2.0.2\include;thirdparty\sdl2-2.0.3\include;thirdparty\openvr\headers;thirdparty\glm_include;thirdparty\glew\glew-1.11.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>thirdparty\SDL2_image-2.0.2\lib\x64;thirdparty\sdl2-2.0.3\bin\win64;thirdparty\openvr\lib\win64;thirdparty\glew\glew-1.11.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>thirdparty\openvr\headers;thirdparty\glm_include;thirdparty\glew\glew-1.11.0\include;thirdparty\sdl2-2.0.3\include;$(IncludePath)</IncludePath>
-    <LibraryPath>thirdparty\openvr\lib\win32;thirdparty\glew\glew-1.11.0\lib\Release\Win32;thirdparty\sdl2-2.0.3\bin\win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>thirdparty\SDL2_image-2.0.2\include;thirdparty\openvr\headers;thirdparty\glm_include;thirdparty\glew\glew-1.11.0\include;thirdparty\sdl2-2.0.3\include;$(IncludePath)</IncludePath>
+    <LibraryPath>thirdparty\SDL2_image-2.0.2\lib\x64;thirdparty\openvr\lib\win32;thirdparty\glew\glew-1.11.0\lib\Release\Win32;thirdparty\sdl2-2.0.3\bin\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>include;$(IncludePath)</IncludePath>
+    <IncludePath>thirdparty\SDL2_image-2.0.2\include;thirdparty\sdl2-2.0.3\include;thirdparty\openvr\headers;thirdparty\glm_include;thirdparty\glew\glew-1.11.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>thirdparty\SDL2_image-2.0.2\lib\x64;thirdparty\sdl2-2.0.3\bin\win64;thirdparty\openvr\lib\win64;thirdparty\glew\glew-1.11.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -100,7 +103,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>openvr_api;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2_image.lib;cudart.lib;openvr_api.lib;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -111,11 +114,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2_image.lib;cudart.lib;openvr_api.lib;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -133,7 +141,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>openvr_api;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2_image.lib;cudart.lib;openvr_api.lib;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,21 +160,33 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2_image.lib;cudart.lib;openvr_api.lib;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <CudaCompile Include="CudaPropertyViewer.h" />
+    <ClInclude Include="CameraArrayParser.h" />
+    <ClInclude Include="CameraArrayRenderer.h" />
     <ClInclude Include="GLSLProgram.h" />
     <ClInclude Include="HellaViewer.h" />
     <ClInclude Include="RenderContext.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="thirdparty\tinyxml2\tinyxml2.h" />
+    <ClInclude Include="TrackballCamera.h" />
     <ClInclude Include="VRCamera.h" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="CudaPropertyViewer.cpp" />
+    <ClCompile Include="CameraArrayParser.cpp" />
+    <ClCompile Include="CameraArrayRenderer.cpp" />
     <ClCompile Include="GLSLShaderProgram.cpp" />
-    <ClCompile Include="HellaViewer.cpp" />
+    <CudaCompile Include="HellaViewer.cpp" />
     <ClCompile Include="RenderContext.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -174,9 +194,18 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="thirdparty\tinyxml2\tinyxml2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TrackballCamera.cpp" />
     <ClCompile Include="VRCamera.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.1.targets" />
   </ImportGroup>
 </Project>

@@ -18,6 +18,7 @@ public:
 		return _instance;
 	}
 	GLuint from(const std::string& vertexShaderFile, const std::string& fragmentShaderFile);
+	GLuint from(const std::string& vertexShaderFile, const std::string& geometryShaderFile, const std::string& fragmentShaderFile);
 	virtual ~ShaderManager();
 private:
 	ShaderManager();
@@ -25,11 +26,13 @@ private:
 	ShaderManager & operator = (const ShaderManager&);
 
 	std::map<std::string, GLuint> mVertexShaderCache;
+	std::map<std::string, GLuint> mGeometryShaderCache;
 	std::map<std::string, GLuint> mFragmentShaderCache;
 	std::map<std::pair<std::string, std::string>, GLuint> mProgramCache;
 
 
 	GLuint vertexShader(const std::string& filename);
+	GLuint geometryShader(const std::string& filename);
 	GLuint fragmentShader(const std::string& filename);
 	GLuint loadShader(const std::string& filename, int shaderType);
 

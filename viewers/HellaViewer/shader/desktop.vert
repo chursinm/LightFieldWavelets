@@ -1,8 +1,11 @@
-#version 400 compatibility
-out vec2 uv;
+#version 400 core
+layout(location = 0) in vec2 clipspaceVertex;
+
+noperspective out vec2 uv;
 
 void main(void)
 {
-    uv = (gl_Vertex.xy + vec2(1,1)) * 0.5f;
-    gl_Position = gl_Vertex;
+    //uv = (clipspaceVertex + vec2(1.f,1.f)) * 0.5f;
+    uv = .5f * clipspaceVertex + vec2(.5f);
+    gl_Position = vec4(clipspaceVertex, 0.f, 1.f);
 }
