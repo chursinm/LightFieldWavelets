@@ -2,9 +2,6 @@
 
 #include <vector>
 
-__global__ void split(void);
-__global__ void predict(void);
-__global__ void update(void);
 
 class CudaHaarLifting
 {
@@ -16,10 +13,11 @@ public:
 	void downloadData();
 	void calculateReference();
 	void calculateCuda(); // split, predict, update
+	bool checkResult();
 private:
-	std::vector<int> input, cpuOutput, gpuOutput, gpuEven, gpuOdd;
+	std::vector<int> input, cpuOutput, gpuOutput, gpuOutputEven, gpuOutputOdd, gpuEven, gpuOdd;
 	unsigned int size;
-	int *deviceMemory, *deviceEven, *deviceOdd;
+	int *deviceInput, *deviceOutputEven, *deviceOutputOdd, *deviceEven, *deviceOdd;
 };
 
 
