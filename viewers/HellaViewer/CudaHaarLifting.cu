@@ -3,27 +3,9 @@
 #include "CudaHaarLifting.h"
 #include "CudaUtility.h"
 
-__global__ void split(int *input, int *even, int *odd)
-{
-	int gid = blockIdx.x * blockDim.x + threadIdx.x;
-	even[gid] = input[gid * 2];
-	odd[gid] = input[gid * 2 + 1];
-}
-__global__ void predict(int * even, int * odd)
-{
-	int gid = blockIdx.x * blockDim.x + threadIdx.x;
-	// even[tid] is the haar predictor
-	odd[gid] -= even[gid];
-}
-__global__ void update(int * even, int * odd)
-{
-	auto gid = blockIdx.x * blockDim.x + threadIdx.x;
-	even[gid] += (odd[gid] >> 1);
-}
 __global__ void splitPredictUpdate(int2 * input, int * oddOut, int * evenOut)
 {
 	auto gid = blockIdx.x * blockDim.x + threadIdx.x;
-	//auto gsize = blockDim.x * gridDim.x;
 
 	// split
 	auto evenOdd = input[gid];
@@ -39,8 +21,6 @@ __global__ void splitPredictUpdate(int2 * input, int * oddOut, int * evenOut)
 	// store result
 	oddOut[gid] = oddI;
 	evenOut[gid] = evenI;
-	//output[gid] = evenI;
-	//output[gid + gsize] = oddI;
 }
 
 void CudaHaarLifting::generateData()
@@ -63,12 +43,6 @@ void CudaHaarLifting::uploadData()
 	error = cudaMalloc((void**)&deviceOutputOdd, size * sizeof(int));
 	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
 
-	error = cudaMalloc((void**)&deviceEven, size / 2 * sizeof(int));
-	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
-
-	error = cudaMalloc((void**)&deviceOdd, size / 2 * sizeof(int));
-	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
-
 	error = cudaMemcpy(deviceInput, &input[0], size * sizeof(int), cudaMemcpyHostToDevice);
 	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
 }
@@ -79,19 +53,11 @@ void CudaHaarLifting::downloadData()
 	gpuOutputEven = std::vector<int>(size);
 	gpuOutputOdd = std::vector<int>(size);
 	gpuOutput = std::vector<int>(size);
-	gpuEven = std::vector<int>(halfsize);
-	gpuOdd = std::vector<int>(halfsize);
 
 	auto error = cudaMemcpy(&gpuOutputEven[0], deviceOutputEven, size * sizeof(int), cudaMemcpyDeviceToHost);
 	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
 
 	error = cudaMemcpy(&gpuOutputOdd[0], deviceOutputOdd, size * sizeof(int), cudaMemcpyDeviceToHost);
-	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
-
-	error = cudaMemcpy(&gpuEven[0], deviceEven, halfsize * sizeof(int), cudaMemcpyDeviceToHost);
-	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
-
-	error = cudaMemcpy(&gpuOdd[0], deviceOdd, halfsize * sizeof(int), cudaMemcpyDeviceToHost);
 	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
 
 	gpuOutput = gpuOutputOdd;
