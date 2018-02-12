@@ -57,7 +57,7 @@
     <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CudaUtility.h">
+    <ClInclude Include="cuda\CudaUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,25 +95,25 @@
     <ClCompile Include="CameraArrayRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CudaUtility.cpp">
+    <ClCompile Include="HellaViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cuda\CudaUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="HellaViewer.cpp">
+    <CudaCompile Include="cuda\CudaHaarLifting.cu">
       <Filter>Source Files</Filter>
     </CudaCompile>
-    <CudaCompile Include="CudaPropertyViewer.h">
+    <CudaCompile Include="cuda\CudaHaarLifting.h">
       <Filter>Header Files</Filter>
     </CudaCompile>
-    <CudaCompile Include="CudaPropertyViewer.cpp">
+    <CudaCompile Include="cuda\CudaPropertyViewer.cpp">
       <Filter>Source Files</Filter>
     </CudaCompile>
-    <CudaCompile Include="CudaHaarLifting.h">
+    <CudaCompile Include="cuda\CudaPropertyViewer.h">
       <Filter>Header Files</Filter>
-    </CudaCompile>
-    <CudaCompile Include="CudaHaarLifting.cu">
-      <Filter>Source Files</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>

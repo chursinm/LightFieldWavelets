@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include <vector>
 #include "CudaHaarLifting.h"
 #include "CudaUtility.h"
@@ -49,7 +49,6 @@ void CudaHaarLifting::uploadData()
 
 void CudaHaarLifting::downloadData()
 {
-	auto halfsize = size >> 1;
 	gpuOutputEven = std::vector<int>(size);
 	gpuOutputOdd = std::vector<int>(size);
 	gpuOutput = std::vector<int>(size);

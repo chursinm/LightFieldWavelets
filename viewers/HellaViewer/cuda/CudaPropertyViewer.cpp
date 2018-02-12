@@ -13,10 +13,8 @@
 *
 */
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "CudaPropertyViewer.h"
-#include <cuda.h>
-#include <cuda_runtime_api.h>
 
 
 CudaPropertyViewer::CudaPropertyViewer()
