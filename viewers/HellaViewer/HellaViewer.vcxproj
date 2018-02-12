@@ -167,6 +167,7 @@
     <CudaCompile Include="CudaPropertyViewer.h" />
     <ClInclude Include="CameraArrayParser.h" />
     <ClInclude Include="CameraArrayRenderer.h" />
+    <CudaCompile Include="CudaHaarLifting.h" />
     <ClInclude Include="GLSLProgram.h" />
     <ClInclude Include="HellaViewer.h" />
     <ClInclude Include="RenderContext.h" />
@@ -183,6 +184,7 @@
     <CudaCompile Include="CudaPropertyViewer.cpp" />
     <ClCompile Include="CameraArrayParser.cpp" />
     <ClCompile Include="CameraArrayRenderer.cpp" />
+    <CudaCompile Include="CudaHaarLifting.cpp" />
     <ClCompile Include="GLSLShaderProgram.cpp" />
     <CudaCompile Include="HellaViewer.cpp" />
     <ClCompile Include="RenderContext.cpp" />

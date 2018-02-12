@@ -103,5 +103,11 @@
     <CudaCompile Include="CudaPropertyViewer.cpp">
       <Filter>Source Files</Filter>
     </CudaCompile>
+    <CudaCompile Include="CudaHaarLifting.h">
+      <Filter>Header Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="CudaHaarLifting.cpp">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
