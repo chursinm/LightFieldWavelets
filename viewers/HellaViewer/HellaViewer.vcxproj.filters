@@ -24,9 +24,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GLSLProgram.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RenderContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -60,12 +57,12 @@
     <ClInclude Include="cuda\CudaUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GLUtility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GLSLShaderProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RenderContext.cpp">
@@ -99,6 +96,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cuda\CudaUtility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GLUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

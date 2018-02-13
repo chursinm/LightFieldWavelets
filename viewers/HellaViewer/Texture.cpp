@@ -32,9 +32,10 @@ bool Texture::finished()
 	return m_IsFinished;
 }
 
-GLuint Texture::textureID()
+void Texture::bind(unsigned int unit)
 {
-	return m_GLID;
+	glActiveTexture(GL_TEXTURE0 + unit);
+	glBindTexture(GL_TEXTURE_2D, m_GLID);
 }
 
 void Texture::transferToGPU(SDL_Surface* surface)

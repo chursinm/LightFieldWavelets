@@ -2,6 +2,7 @@
 #include "CameraArrayRenderer.h"
 #include <glm/gtx/transform.hpp>
 #include "ShaderManager.h"
+#include "GLUtility.h"
 
 using namespace glm;
 
@@ -70,28 +71,16 @@ bool CameraArrayRenderer::initialize()
 		m_IndexCounts.push_back(6);
 	}
 
-
-	glGenBuffers(1, &m_VertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-	{
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-	}
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &m_IndexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
-	{
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
-	}
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	m_VertexBuffer = GLUtility::generateBuffer(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+	m_IndexBuffer = GLUtility::generateBuffer(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
 
 	glGenVertexArrays(1, &m_VertexArrayObject);
 	glBindVertexArray(m_VertexArrayObject);
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+			glEnableVertexAttribArray(0);
 	}
 	glBindVertexArray(0);
 	////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +129,7 @@ void CameraArrayRenderer::render(glm::mat4x4 viewProjection, glm::vec3 worldspac
 	{
 		auto offset = m_IndexOffsets[i];
 		auto cameraID = (1u + i) + (i / gridQuadWidth);
-		glBindTexture(GL_TEXTURE_2D, m_CameraArray.cameras[cameraID]->tex->textureID());
+		m_CameraArray.cameras[cameraID]->tex->bind(0u);
 		glUniform1ui(glGetUniformLocation(m_GlProgram, "quadID"), i);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void*)offset);

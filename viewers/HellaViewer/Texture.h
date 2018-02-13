@@ -63,7 +63,7 @@ public:
 		}
 	}
 	bool finished();
-	GLuint textureID();
+	void bind(unsigned int unit);
 
 private:
 	/*
