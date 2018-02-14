@@ -18,15 +18,27 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SphereStructure\SphereFormat.cpp">
+    <ClCompile Include="SphereStructure\VertexDictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereStructure\SubdivisionSphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Format\LightFieldWaveletFormat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SphereStructure\SphereFormat.h">
+    <ClInclude Include="SphereStructure\Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SphereStructure\Constants.h">
+    <ClInclude Include="SphereStructure\VertexDictionary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereStructure\SubdivisionSphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\LightFieldWaveletFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
