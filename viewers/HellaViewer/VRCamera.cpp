@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "VRCamera.h"
+#include <glm/gtx/string_cast.hpp>
 
+using namespace glm;
 
 VRCamera::VRCamera(float nearClip, float farClip): m_NearClip(nearClip), m_FarClip(farClip)
 {
@@ -14,6 +16,7 @@ void VRCamera::setup(vr::IVRSystem & vrInterface)
 {
 	m_LeftEyeProjection = getProjectionMatrix(vrInterface, vr::Eye_Left);
 	m_RightEyeProjection = getProjectionMatrix(vrInterface, vr::Eye_Right);
+	//WARN_ONCE(glm::to_string(m_RightEyeProjection))
 	m_LeftEyePosition = getEyePositionMatrix(vrInterface, vr::Eye_Left);
 	m_RightEyePosition = getEyePositionMatrix(vrInterface, vr::Eye_Right);
 }
@@ -25,12 +28,21 @@ void VRCamera::update()
 
 	if (trackedDevicePose[vr::k_unTrackedDeviceIndex_Hmd].bPoseIsValid)
 	{
-		m_HMDPosition = inverse(convertSteamMatrix(trackedDevicePose[vr::k_unTrackedDeviceIndex_Hmd].mDeviceToAbsoluteTracking));
+		auto steamMatrix = trackedDevicePose[vr::k_unTrackedDeviceIndex_Hmd].mDeviceToAbsoluteTracking;
+		m_HMDPosition = vec3(steamMatrix.m[0][3], steamMatrix.m[1][3], steamMatrix.m[2][3]);
+		m_HMDTransformation = inverse(convertSteamMatrix(steamMatrix));
 	}
 	else
 	{
-		std::cout << "No valid pose for the HMD" << std::endl;
+		WARN_TIMED("No valid pose for the HMD", 2)
 	}
+}
+
+vec3 VRCamera::getPosition(vr::Hmd_Eye eye)
+{
+	mat4x4& eyeMatrix = eye == vr::Eye_Left ? m_LeftEyePosition : m_RightEyePosition;
+	auto eyeVector = inverse(m_HMDTransformation) * inverse(eyeMatrix) * vec4(0,0,0,1);
+	return eyeVector.xyz * (1/eyeVector.w); 
 }
 
 mat4x4 VRCamera::getMVP(vr::Hmd_Eye eye)
@@ -38,9 +50,9 @@ mat4x4 VRCamera::getMVP(vr::Hmd_Eye eye)
 	switch (eye)
 	{
 	case vr::Eye_Left:
-		return m_LeftEyeProjection * m_LeftEyePosition * m_HMDPosition;
+		return m_LeftEyeProjection * m_LeftEyePosition * m_HMDTransformation;
 	case vr::Eye_Right:
-		return m_RightEyeProjection * m_RightEyePosition * m_HMDPosition;
+		return m_RightEyeProjection * m_RightEyePosition * m_HMDTransformation;
 	default:
 		throw "invalid eye on camera.getmvp";
 	}
@@ -57,7 +69,7 @@ mat4x4 VRCamera::getEyePositionMatrix(vr::IVRSystem & vrInterface, vr::Hmd_Eye e
 {
 	vr::HmdMatrix34_t matEye = vrInterface.GetEyeToHeadTransform(eye);
 
-	return inverse(convertSteamMatrix(matEye));
+	return inverse(convertSteamMatrix(matEye)); //TODO transpose
 }
 
 mat4x4 VRCamera::convertSteamMatrix(const vr::HmdMatrix34_t &mat)
