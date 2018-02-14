@@ -6,8 +6,8 @@
 
 using namespace glm;
 
-#define DEMO_FILE "E:/crohmann/old_input/stanford_chess_lightfield/rectified/chess.xml"
 //#define DEMO_FILE "../rectified/chess.xml"
+#define DEMO_FILE "E:/crohmann/old_input/stanford_chess_lightfield/rectified/chess.xml"
 // think in meters
 #define AVERAGE_CAMERA_DISTANCE_X 0.2f
 
@@ -79,8 +79,9 @@ bool CameraArrayRenderer::initialize()
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-			glEnableVertexAttribArray(0);
+			auto vertexBufferLocation = glGetAttribLocation(m_GlProgram, "worldspaceCameraplaneVertex");
+			glVertexAttribPointer(vertexBufferLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+			glEnableVertexAttribArray(vertexBufferLocation);
 	}
 	glBindVertexArray(0);
 	////////////////////////////////////////////////////////////////////////////////

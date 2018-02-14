@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include <vector>
 #include "CudaHaarLifting.h"
 #include "CudaUtility.h"

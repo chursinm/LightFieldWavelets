@@ -16,6 +16,12 @@
     <Filter Include="Shader Files">
       <UniqueIdentifier>{d9d5cf93-5bee-4a5e-b8f0-5aa288f016d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\cuda">
+      <UniqueIdentifier>{8fc58b29-1995-4cd3-8422-8ae8ccabe9a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cuda">
+      <UniqueIdentifier>{db7eabd0-c914-4fdd-9135-efe3e44a8b19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -54,11 +60,17 @@
     <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cuda\CudaUtility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GLUtility.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CudaHaarLifting.h">
+      <Filter>Header Files\cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="CudaPropertyViewer.h">
+      <Filter>Header Files\cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="CudaUtility.h">
+      <Filter>Header Files\cuda</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -95,25 +107,42 @@
     <ClCompile Include="HellaViewer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cuda\CudaUtility.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GLUtility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="cuda\CudaHaarLifting.cu">
-      <Filter>Source Files</Filter>
+    <CudaCompile Include="CudaHaarLifting.cu">
+      <Filter>Source Files\cuda</Filter>
     </CudaCompile>
-    <CudaCompile Include="cuda\CudaHaarLifting.h">
-      <Filter>Header Files</Filter>
+    <CudaCompile Include="CudaPropertyViewer.cpp">
+      <Filter>Source Files\cuda</Filter>
     </CudaCompile>
-    <CudaCompile Include="cuda\CudaPropertyViewer.cpp">
-      <Filter>Source Files</Filter>
+    <CudaCompile Include="CudaUtility.cpp">
+      <Filter>Source Files\cuda</Filter>
     </CudaCompile>
-    <CudaCompile Include="cuda\CudaPropertyViewer.h">
-      <Filter>Header Files</Filter>
-    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\cameraArray.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\cameraArray.geom">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\cameraArray.vert">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\desktop.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\desktop.vert">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\stereo.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\stereo.vert">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

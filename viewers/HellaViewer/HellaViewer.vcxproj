@@ -111,7 +111,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -155,7 +155,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -176,11 +176,12 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="cuda\CudaPropertyViewer.h" />
+    <CudaCompile Include="CudaHaarLifting.cu" />
     <ClInclude Include="CameraArrayParser.h" />
     <ClInclude Include="CameraArrayRenderer.h" />
-    <CudaCompile Include="cuda\CudaHaarLifting.h" />
-    <ClInclude Include="cuda\CudaUtility.h" />
+    <ClInclude Include="CudaHaarLifting.h" />
+    <ClInclude Include="CudaPropertyViewer.h" />
+    <ClInclude Include="CudaUtility.h" />
     <ClInclude Include="GLUtility.h" />
     <ClInclude Include="HellaViewer.h" />
     <ClInclude Include="RenderContext.h" />
@@ -194,11 +195,10 @@
     <ClInclude Include="VRCamera.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="cuda\CudaPropertyViewer.cpp" />
     <ClCompile Include="CameraArrayParser.cpp" />
     <ClCompile Include="CameraArrayRenderer.cpp" />
-    <CudaCompile Include="cuda\CudaHaarLifting.cu" />
-    <ClCompile Include="cuda\CudaUtility.cpp" />
+    <CudaCompile Include="CudaPropertyViewer.cpp" />
+    <CudaCompile Include="CudaUtility.cpp" />
     <ClCompile Include="GLUtility.cpp" />
     <ClCompile Include="HellaViewer.cpp" />
     <ClCompile Include="RenderContext.cpp" />
@@ -219,6 +219,15 @@
     </ClCompile>
     <ClCompile Include="TrackballCamera.cpp" />
     <ClCompile Include="VRCamera.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\cameraArray.frag" />
+    <None Include="shader\cameraArray.geom" />
+    <None Include="shader\cameraArray.vert" />
+    <None Include="shader\desktop.frag" />
+    <None Include="shader\desktop.vert" />
+    <None Include="shader\stereo.frag" />
+    <None Include="shader\stereo.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
