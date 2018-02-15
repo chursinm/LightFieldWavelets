@@ -19,6 +19,30 @@
 
 CudaPropertyViewer::CudaPropertyViewer()
 {
+	int count;
+	auto error = cudaGetDeviceCount(&count);
+	if(error != CUDA_SUCCESS)
+	{
+		std::cout << "Error using Cuda: " << cudaGetErrorString(error) << std::endl;
+		return;
+	}
+	for(int i = 0; i < count; i++)
+	{
+		error = cudaSetDevice(i);
+		if(error != CUDA_SUCCESS)
+		{
+			std::cout << "Error using Cuda: " << cudaGetErrorString(error) << std::endl;
+			continue;
+		}
+		cudaDeviceProp prop;
+		error = cudaGetDeviceProperties(&prop, i);
+		if(error != CUDA_SUCCESS)
+		{
+			std::cout << "Error using Cuda: " << cudaGetErrorString(error) << std::endl;
+			continue;
+		}
+		props.push_back(prop);
+	}
 }
 
 
@@ -28,29 +52,10 @@ CudaPropertyViewer::~CudaPropertyViewer()
 
 void CudaPropertyViewer::print()
 {
-	cudaDeviceProp  prop;
-	int count;
-	auto error = cudaGetDeviceCount(&count);
-	if (error != CUDA_SUCCESS)
+	unsigned int i = 0;
+	for(auto& prop : props)
 	{
-		std::cout << "Error using Cuda: " << cudaGetErrorString(error) << std::endl;
-		return;
-	}
-	for (int i = 0; i< count; i++) {
-		error = cudaSetDevice(i);
-		if (error != CUDA_SUCCESS)
-		{
-			std::cout << "Error using Cuda: " << cudaGetErrorString(error) << std::endl;
-			continue;
-		}
-		error = cudaGetDeviceProperties(&prop, i);
-		if (error != CUDA_SUCCESS)
-		{
-			std::cout << "Error using Cuda: " << cudaGetErrorString(error) << std::endl;
-			continue;
-		}
-
-		printf("   --- General Information for device %d ---\n", i);
+		printf("   --- General Information for device %d ---\n", i++);
 		printf("Name:  %s\n", prop.name);
 		printf("Compute capability:  %d.%d\n", prop.major, prop.minor);
 		printf("Clock rate:  %d\n", prop.clockRate);

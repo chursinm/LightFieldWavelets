@@ -111,12 +111,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Format\LightFieldWaveletFormat.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SphereStructure\SphereFormat.cpp" />
+    <ClCompile Include="SphereStructure\SubdivisionSphere.cpp" />
+    <ClCompile Include="SphereStructure\VertexDictionary.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Format\LightFieldWaveletFormat.h" />
     <ClInclude Include="SphereStructure\Constants.h" />
-    <ClInclude Include="SphereStructure\SphereFormat.h" />
+    <ClInclude Include="SphereStructure\VertexDictionary.h" />
+    <ClInclude Include="SphereStructure\SubdivisionSphere.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
