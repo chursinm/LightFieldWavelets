@@ -128,6 +128,8 @@ CudaHaarLifting::CudaHaarLifting(unsigned int poweroftwo): size(std::pow(2, powe
 CudaHaarLifting::~CudaHaarLifting()
 {
 	cudaFree(deviceInput);
+	cudaFree(deviceOutputEven);
+	cudaFree(deviceOutputOdd);
 }
 
 

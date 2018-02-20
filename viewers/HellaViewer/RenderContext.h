@@ -3,6 +3,7 @@
 #include "VRCamera.h"
 #include "TrackballCamera.h"
 #include "CameraArrayRenderer.h"
+#include "Signal.h"
 
 struct FramebufferDesc
 {
@@ -11,6 +12,13 @@ struct FramebufferDesc
 	GLuint m_nRenderFramebufferId;
 	GLuint m_nResolveTextureId;
 	GLuint m_nResolveFramebufferId;
+};
+
+struct EyeTextureParamaterization
+{
+	vr::Hmd_Eye eye;
+	glm::mat4x4 viewProjection;
+	glm::vec3 cameraPositionWorld;
 };
 
 class RenderContext
@@ -26,6 +34,11 @@ public:
 	bool handleSDL();
 	void render();
 
+	Signal<const EyeTextureParamaterization&> onRenderEyeTexture;
+	Signal<> postInitialize;
+
+	Signal<SDL_Keymod,SDL_Keycode> onKeyPress;
+
 private: //functions
 	bool initializeGL();
 	bool initializeSDL();
@@ -34,10 +47,6 @@ private: //functions
 	void renderStereoTargets();
 	void renderCompanionWindow();
 	void printerr(const char * file, const int line);
-
-
-private: // external rendering components
-	CameraArrayRenderer m_CameraArrayRenderer;
 
 private:
 	bool m_RenderRightEye;
@@ -48,7 +57,6 @@ private:
 	bool m_VREnabled;
 	Uint64 m_LastFrameTime, m_FrameCounter;
 	double m_AccumulatedFrameTime;
-	bool m_ShiftDown;
 
 private: // OpenGL
 	FramebufferDesc m_LeftEyeFramebuffer;

@@ -21,13 +21,13 @@ CameraArrayRenderer::~CameraArrayRenderer()
 {
 }
 
-bool CameraArrayRenderer::initialize()
+void CameraArrayRenderer::initialize()
 {
 	// Create GL programs
 	auto& psm = ShaderManager::instance();
 	m_GlProgram = psm.from("shader/cameraArray.vert", "shader/cameraArray.geom", "shader/cameraArray.frag");
 	if(m_GlProgram == 0)
-		return false;
+		throw "init failed";
 
 	auto arrayWidthInput = m_CameraArray.maxUV.x - m_CameraArray.minUV.x;
 	auto arrayWidthWorld = AVERAGE_CAMERA_DISTANCE_X * static_cast<float>(m_CameraArray.cameraGridDimension.x);
@@ -91,11 +91,9 @@ bool CameraArrayRenderer::initialize()
 		// For now just transfer them all blocking
 		cam->tex->asyncTransferToGPU(std::chrono::duration<int>::max());
 	}
-
-	return true;
 }
 
-void CameraArrayRenderer::render(glm::mat4x4 viewProjection, glm::vec3 worldspaceEyePosition)
+void CameraArrayRenderer::render(const glm::mat4x4& viewProjection, const glm::vec3& worldspaceEyePosition)
 {
 	if(m_FocalPlane < 0.f) m_FocalPlane = 0.001f;
 	auto mvp = viewProjection * m_CameraArrayQuadsModelMatrix;

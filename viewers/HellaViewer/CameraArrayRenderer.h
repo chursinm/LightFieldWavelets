@@ -12,9 +12,9 @@ private:
 public:
 	CameraArrayRenderer();
 	~CameraArrayRenderer();
-	bool initialize();
+	void initialize();
 	//void update();
-	void render(glm::mat4x4 viewProjection, glm::vec3 eyePosition);
+	void render(const glm::mat4x4& viewProjection, const glm::vec3& eyePosition);
 	float m_FocalPlane;
 private:
 	CameraArray m_CameraArray;
