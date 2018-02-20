@@ -25,7 +25,8 @@ __global__ void splitPredictUpdate(int2 * input, int * oddOut, int * evenOut)
 
 void CudaHaarLifting::generateData()
 {
-	auto whatever = [](unsigned int index) { return index * 2 + 3; };
+	
+	auto whatever = [](unsigned int index) { return std::rand() * index; }; // return index * 2 + 3;
 	for(auto i = 0u; i < size; ++i)
 	{
 		input[i] = whatever(i);
@@ -34,10 +35,12 @@ void CudaHaarLifting::generateData()
 
 void CudaHaarLifting::uploadData()
 {
+	auto halfsize = size >> 1;
+
 	auto error = cudaMalloc((void**)&deviceInput, size * sizeof(int));
 	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
 
-	error = cudaMalloc((void**)&deviceOutputEven, size * sizeof(int));
+	error = cudaMalloc((void**)&deviceOutputEven, halfsize * sizeof(int));
 	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
 
 	error = cudaMalloc((void**)&deviceOutputOdd, size * sizeof(int));
@@ -49,11 +52,13 @@ void CudaHaarLifting::uploadData()
 
 void CudaHaarLifting::downloadData()
 {
-	gpuOutputEven = std::vector<int>(size);
+	auto halfsize = size >> 1;
+
+	gpuOutputEven = std::vector<int>(halfsize);
 	gpuOutputOdd = std::vector<int>(size);
 	gpuOutput = std::vector<int>(size);
 
-	auto error = cudaMemcpy(&gpuOutputEven[0], deviceOutputEven, size * sizeof(int), cudaMemcpyDeviceToHost);
+	auto error = cudaMemcpy(&gpuOutputEven[0], deviceOutputEven, halfsize * sizeof(int), cudaMemcpyDeviceToHost);
 	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
 
 	error = cudaMemcpy(&gpuOutputOdd[0], deviceOutputOdd, size * sizeof(int), cudaMemcpyDeviceToHost);
