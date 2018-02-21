@@ -1,7 +1,8 @@
 #pragma once
+#include "Renderer.h"
 #include "CameraArrayParser.h"
 
-class CameraArrayRenderer
+class CameraArrayRenderer : public Renderer
 {
 private:
 	struct Vertex
@@ -12,11 +13,12 @@ private:
 public:
 	CameraArrayRenderer();
 	~CameraArrayRenderer();
-	void initialize();
-	//void update();
-	void render(const glm::mat4x4& viewProjection, const glm::vec3& eyePosition);
-	float m_FocalPlane;
+	void initialize() override;
+	void render(const glm::mat4x4& viewProjection, const glm::vec3& eyePosition) override;
+	void update(double timestep) override {};
+	void handleInput(SDL_Keymod mod, SDL_Keycode code);
 private:
+	float m_FocalPlane;
 	CameraArray m_CameraArray;
 	GLuint m_VertexArrayObject, m_VertexBuffer, m_IndexBuffer;
 	std::vector<unsigned long long> m_IndexOffsets;
@@ -24,4 +26,3 @@ private:
 	glm::mat4x4 m_CameraArrayQuadsModelMatrix;
 	GLuint m_GlProgram, m_GLTextureID;
 };
-

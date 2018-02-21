@@ -142,5 +142,22 @@ void CameraArrayRenderer::render(const glm::mat4x4& viewProjection, const glm::v
 	glUseProgram(0);
 }
 
+void CameraArrayRenderer::handleInput(SDL_Keymod keymod, SDL_Keycode keycode)
+{
+	auto cameraSpeedInSceneUnitPerMS = 0.01f;
+	if(keymod & (SDL_Keymod::KMOD_LSHIFT | SDL_Keymod::KMOD_RSHIFT)) cameraSpeedInSceneUnitPerMS *= 10.f;
+	switch(keycode)
+	{
+	case SDLK_o:
+		m_FocalPlane += cameraSpeedInSceneUnitPerMS;
+		std::cout << "Focal plane: " << m_FocalPlane << std::endl;
+		break;
+	case SDLK_l:
+		m_FocalPlane -= cameraSpeedInSceneUnitPerMS;
+		std::cout << "Focal plane: " << m_FocalPlane << std::endl;
+		break;
+	}
+}
+
 
 #undef DEMO_FILE

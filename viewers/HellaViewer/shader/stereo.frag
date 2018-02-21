@@ -1,6 +1,5 @@
 #version 400 core
 noperspective in vec3 worldVertex3;
-uniform uint eye;
 uniform mat4 ivp;
 uniform vec3 eyepos;
 

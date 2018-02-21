@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "RenderContext.h"
+#include "Blit.h"
 
 #define PRINT_GL_INTEGER( name ) { printGLInteger(#name, name); }
 
-RenderContext::RenderContext() : m_RenderRightEye(true), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_pTrackballCamera(nullptr), m_VREnabled(false)
+RenderContext::RenderContext() : m_Initialized(false), m_RenderRightEye(true), m_bVblank(true), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_pTrackballCamera(nullptr), m_VREnabled(false)
 {
 }
 
@@ -31,6 +32,20 @@ RenderContext::~RenderContext()
 	SDL_Quit();
 }
 
+void RenderContext::attachRenderer(Renderer & rend)
+{
+	onRenderEyeTexture([&rend](auto vp, auto eyePosWorld) { rend.render(vp, eyePosWorld); });
+	onFrameStart([&rend](auto timeStep) { rend.update(timeStep); });
+	if(m_Initialized)
+	{
+		rend.initialize();
+	}
+	else
+	{
+		postInitialize([&rend] { rend.initialize(); });
+	}
+}
+
 bool RenderContext::initialize()
 {
 	bool success = true;
@@ -49,6 +64,7 @@ bool RenderContext::initialize()
 	if(!initializeGL()) { success = false; }
 
 	postInitialize();
+	m_Initialized = success;
 
 	return success;
 }
@@ -63,38 +79,14 @@ bool RenderContext::initializeGL()
 
 	// Create GL programs
 	ShaderManager& psm = ShaderManager::instance();
-	m_StereoProgram = psm.from("shader/stereo.vert", "shader/stereo.frag");
 	m_DesktopProgram = psm.from("shader/desktop.vert", "shader/desktop.frag");
-	if(m_DesktopProgram == 0 || m_StereoProgram == 0)
+	if(m_DesktopProgram == 0)
 		return false;
 
 	// Create GL buffers
 	if(!createFrameBuffer(m_RenderWidth, m_RenderHeight, m_LeftEyeFramebuffer) ||
 		!createFrameBuffer(m_RenderWidth, m_RenderHeight, m_RightEyeFramebuffer))
 		return false;
-
-	// Create blitting VAO 
-	const GLfloat fullscreenTriangle[] = {
-		-1.0f, 1.0f,
-		-1.0f, -3.0f,
-		3.0f,  1.0f
-	};
-
-	glGenBuffers(1, &m_BlitTriangleVB);
-	glBindBuffer(GL_ARRAY_BUFFER, m_BlitTriangleVB);
-	{
-		glBufferData(GL_ARRAY_BUFFER, sizeof(fullscreenTriangle), &fullscreenTriangle[0], GL_STATIC_DRAW);
-	}
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenVertexArrays(1, &m_BlitTriangleVAO);
-	glBindVertexArray(m_BlitTriangleVAO);
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_BlitTriangleVB);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray(0);
-	}
-	glBindVertexArray(0);
 
 	return true;
 }
@@ -205,6 +197,7 @@ bool RenderContext::handleSDL()
 	m_LastFrameTime = currentFrameTime;
 	m_AccumulatedFrameTime += deltaTime;
 	m_FrameCounter++;
+	onFrameStart(deltaTime);
 
 	auto cameraSpeedInSceneUnitPerMS = 0.01f;
 	if(SDL_GetModState() & (SDL_Keymod::KMOD_LSHIFT | SDL_Keymod::KMOD_RSHIFT)) cameraSpeedInSceneUnitPerMS *= 10.f;
@@ -363,8 +356,6 @@ void RenderContext::render()
 
 void RenderContext::renderQuad(vr::Hmd_Eye eye)
 {
-
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	auto vp = m_VRCamera.getMVP(eye);
 	auto ivp = glm::inverse(vp);
@@ -376,23 +367,7 @@ void RenderContext::renderQuad(vr::Hmd_Eye eye)
 		eyepos = m_pTrackballCamera->getPosition();
 	}
 
-	glUseProgram(m_StereoProgram);
-
-	glUniform1ui(glGetUniformLocation(m_StereoProgram, "eye"), eye);
-	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "vp"), 1, GL_FALSE, &vp[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "ivp"), 1, GL_FALSE, &ivp[0][0]);
-	glUniform3fv(glGetUniformLocation(m_StereoProgram, "eyepos"), 1, &eyepos[0]);
-
-	glBindVertexArray(m_BlitTriangleVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-	glBindVertexArray(0);
-
-	glUseProgram(0);
-
-
-	glDisable(GL_DEPTH_TEST);
-	onRenderEyeTexture({ eye, vp, eyepos });
-	glEnable(GL_DEPTH_TEST);
+	onRenderEyeTexture(vp, eyepos);
 }
 
 void RenderContext::renderStereoTargets()
@@ -444,12 +419,11 @@ void RenderContext::renderCompanionWindow()
 	glDisable(GL_DEPTH_TEST);
 
 	glUseProgram(m_DesktopProgram);
-	glBindVertexArray(m_BlitTriangleVAO);
 
 	// left eye
 	glViewport(0, 0, m_nCompanionWindowWidth, m_nCompanionWindowHeight);
 	glBindTexture(GL_TEXTURE_2D, m_LeftEyeFramebuffer.m_nResolveTextureId);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	Blit::instance().render();
 
 
 	if(m_RenderRightEye)
@@ -466,10 +440,9 @@ void RenderContext::renderCompanionWindow()
 		// right eye
 		glViewport((m_nCompanionWindowWidth >> 2) + (m_nCompanionWindowWidth >> 1), 0, m_nCompanionWindowWidth >> 2, m_nCompanionWindowHeight >> 2);
 		glBindTexture(GL_TEXTURE_2D, m_LeftEyeFramebuffer.m_nResolveTextureId);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		Blit::instance().render();
 	}
 
-	glBindVertexArray(0);
 	glUseProgram(0);
 }
 

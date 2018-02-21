@@ -2,7 +2,7 @@
 #include "ShaderManager.h"
 #include "VRCamera.h"
 #include "TrackballCamera.h"
-#include "CameraArrayRenderer.h"
+#include "Renderer.h"
 #include "Signal.h"
 
 struct FramebufferDesc
@@ -14,19 +14,13 @@ struct FramebufferDesc
 	GLuint m_nResolveFramebufferId;
 };
 
-struct EyeTextureParamaterization
-{
-	vr::Hmd_Eye eye;
-	glm::mat4x4 viewProjection;
-	glm::vec3 cameraPositionWorld;
-};
-
 class RenderContext
 {
 	
 public:
 	RenderContext();
 	~RenderContext();
+	void attachRenderer(Renderer& rend);
 	bool initialize();
 	/**
 		returns true, if the loop should cancel
@@ -34,9 +28,9 @@ public:
 	bool handleSDL();
 	void render();
 
-	Signal<const EyeTextureParamaterization&> onRenderEyeTexture;
 	Signal<> postInitialize;
-
+	Signal<const glm::mat4x4&, const glm::vec3&> onRenderEyeTexture;
+	Signal<double> onFrameStart;
 	Signal<SDL_Keymod,SDL_Keycode> onKeyPress;
 
 private: //functions
@@ -49,8 +43,9 @@ private: //functions
 	void printerr(const char * file, const int line);
 
 private:
+	bool m_Initialized;
 	bool m_RenderRightEye;
-	bool m_bVblank=false;
+	bool m_bVblank;
 	// TODO common Camera Interface
 	VRCamera m_VRCamera;
 	TrackballCamera* m_pTrackballCamera;
@@ -62,8 +57,6 @@ private: // OpenGL
 	FramebufferDesc m_LeftEyeFramebuffer;
 	FramebufferDesc m_RightEyeFramebuffer;
 
-	GLuint m_BlitTriangleVB, m_BlitTriangleVAO;
-	GLuint m_StereoProgram;
 	GLuint m_DesktopProgram;
 
 	bool createFrameBuffer(int nWidth, int nHeight, FramebufferDesc &framebufferDesc);
