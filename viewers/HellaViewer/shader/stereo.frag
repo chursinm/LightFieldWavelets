@@ -1,7 +1,9 @@
 #version 400 core
-noperspective in vec3 worldVertex3;
+
 uniform mat4 ivp;
 uniform vec3 eyepos;
+
+noperspective in vec3 worldVertex3;
 
 layout(location = 0) out vec4 outColor;
 
