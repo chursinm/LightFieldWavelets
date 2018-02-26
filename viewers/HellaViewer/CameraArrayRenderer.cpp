@@ -2,11 +2,12 @@
 #include "CameraArrayRenderer.h"
 #include <glm/gtx/transform.hpp>
 #include "ShaderManager.h"
+#include "GLUtility.h"
 
 using namespace glm;
 
-#define DEMO_FILE "E:/crohmann/old_input/stanford_chess_lightfield/rectified/chess.xml"
 //#define DEMO_FILE "../rectified/chess.xml"
+#define DEMO_FILE "E:/crohmann/old_input/stanford_chess_lightfield/rectified/chess.xml"
 // think in meters
 #define AVERAGE_CAMERA_DISTANCE_X 0.2f
 
@@ -20,13 +21,13 @@ CameraArrayRenderer::~CameraArrayRenderer()
 {
 }
 
-bool CameraArrayRenderer::initialize()
+void CameraArrayRenderer::initialize()
 {
 	// Create GL programs
 	auto& psm = ShaderManager::instance();
 	m_GlProgram = psm.from("shader/cameraArray.vert", "shader/cameraArray.geom", "shader/cameraArray.frag");
 	if(m_GlProgram == 0)
-		return false;
+		throw "init failed";
 
 	auto arrayWidthInput = m_CameraArray.maxUV.x - m_CameraArray.minUV.x;
 	auto arrayWidthWorld = AVERAGE_CAMERA_DISTANCE_X * static_cast<float>(m_CameraArray.cameraGridDimension.x);
@@ -70,28 +71,17 @@ bool CameraArrayRenderer::initialize()
 		m_IndexCounts.push_back(6);
 	}
 
-
-	glGenBuffers(1, &m_VertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-	{
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-	}
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &m_IndexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
-	{
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned short), &indices[0], GL_STATIC_DRAW);
-	}
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	m_VertexBuffer = GLUtility::generateBuffer(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+	m_IndexBuffer = GLUtility::generateBuffer(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
 
 	glGenVertexArrays(1, &m_VertexArrayObject);
 	glBindVertexArray(m_VertexArrayObject);
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray(0);
+			auto vertexBufferLocation = glGetAttribLocation(m_GlProgram, "worldspaceCameraplaneVertex");
+			glVertexAttribPointer(vertexBufferLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+			glEnableVertexAttribArray(vertexBufferLocation);
 	}
 	glBindVertexArray(0);
 	////////////////////////////////////////////////////////////////////////////////
@@ -101,11 +91,9 @@ bool CameraArrayRenderer::initialize()
 		// For now just transfer them all blocking
 		cam->tex->asyncTransferToGPU(std::chrono::duration<int>::max());
 	}
-
-	return true;
 }
 
-void CameraArrayRenderer::render(glm::mat4x4 viewProjection, glm::vec3 worldspaceEyePosition)
+void CameraArrayRenderer::render(const glm::mat4x4& viewProjection, const glm::vec3& worldspaceEyePosition)
 {
 	if(m_FocalPlane < 0.f) m_FocalPlane = 0.001f;
 	auto mvp = viewProjection * m_CameraArrayQuadsModelMatrix;
@@ -140,7 +128,7 @@ void CameraArrayRenderer::render(glm::mat4x4 viewProjection, glm::vec3 worldspac
 	{
 		auto offset = m_IndexOffsets[i];
 		auto cameraID = (1u + i) + (i / gridQuadWidth);
-		glBindTexture(GL_TEXTURE_2D, m_CameraArray.cameras[cameraID]->tex->textureID());
+		m_CameraArray.cameras[cameraID]->tex->bind(0u);
 		glUniform1ui(glGetUniformLocation(m_GlProgram, "quadID"), i);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void*)offset);
@@ -152,6 +140,23 @@ void CameraArrayRenderer::render(glm::mat4x4 viewProjection, glm::vec3 worldspac
 
 	glEnable(GL_CULL_FACE);
 	glUseProgram(0);
+}
+
+void CameraArrayRenderer::handleInput(SDL_Keymod keymod, SDL_Keycode keycode)
+{
+	auto cameraSpeedInSceneUnitPerMS = 0.01f;
+	if(keymod & (SDL_Keymod::KMOD_LSHIFT | SDL_Keymod::KMOD_RSHIFT)) cameraSpeedInSceneUnitPerMS *= 10.f;
+	switch(keycode)
+	{
+	case SDLK_o:
+		m_FocalPlane += cameraSpeedInSceneUnitPerMS;
+		std::cout << "Focal plane: " << m_FocalPlane << std::endl;
+		break;
+	case SDLK_l:
+		m_FocalPlane -= cameraSpeedInSceneUnitPerMS;
+		std::cout << "Focal plane: " << m_FocalPlane << std::endl;
+		break;
+	}
 }
 
 

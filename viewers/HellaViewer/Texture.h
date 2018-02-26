@@ -31,6 +31,8 @@ public:
 	*/
 	Texture(const std::string& filename, GLuint glid);
 	~Texture();
+	// we do not want a copy ctor
+	Texture(const Texture& that) = delete;
 
 	/*
 	Transfers the fetched Image to the GPU.
@@ -63,7 +65,7 @@ public:
 		}
 	}
 	bool finished();
-	GLuint textureID();
+	void bind(unsigned int unit);
 
 private:
 	/*

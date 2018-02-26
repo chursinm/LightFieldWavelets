@@ -105,10 +105,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2_image.lib;cudart.lib;openvr_api.lib;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CudaCompile>
+      <TargetMachinePlatform>32</TargetMachinePlatform>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -124,6 +127,9 @@
     <Bscmake>
       <PreserveSbr>true</PreserveSbr>
     </Bscmake>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -143,10 +149,13 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2_image.lib;cudart.lib;openvr_api.lib;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CudaCompile>
+      <TargetMachinePlatform>32</TargetMachinePlatform>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -162,16 +171,25 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2_image.lib;cudart.lib;openvr_api.lib;opengl32.lib;glu32.lib;SDL2.lib;SDL2main.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="CudaPropertyViewer.h" />
+    <CudaCompile Include="CudaHaarLifting.cu" />
     <ClInclude Include="CameraArrayParser.h" />
     <ClInclude Include="CameraArrayRenderer.h" />
-    <ClInclude Include="GLSLProgram.h" />
+    <ClInclude Include="CheckerboardRenderer.h" />
+    <ClInclude Include="CudaHaarLifting.h" />
+    <ClInclude Include="CudaPropertyViewer.h" />
+    <ClInclude Include="CudaUtility.h" />
+    <ClInclude Include="Blit.h" />
+    <ClInclude Include="GLUtility.h" />
     <ClInclude Include="HellaViewer.h" />
     <ClInclude Include="RenderContext.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="Signal.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
@@ -180,14 +198,18 @@
     <ClInclude Include="VRCamera.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="CudaPropertyViewer.cpp" />
     <ClCompile Include="CameraArrayParser.cpp" />
     <ClCompile Include="CameraArrayRenderer.cpp" />
-    <ClCompile Include="GLSLShaderProgram.cpp" />
-    <CudaCompile Include="HellaViewer.cpp" />
+    <CudaCompile Include="CudaPropertyViewer.cpp" />
+    <CudaCompile Include="CudaUtility.cpp" />
+    <ClCompile Include="CheckerboardRenderer.cpp" />
+    <ClCompile Include="Blit.cpp" />
+    <ClCompile Include="GLUtility.cpp" />
+    <ClCompile Include="HellaViewer.cpp" />
     <ClCompile Include="RenderContext.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="Signal.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -203,6 +225,15 @@
     </ClCompile>
     <ClCompile Include="TrackballCamera.cpp" />
     <ClCompile Include="VRCamera.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader\cameraArray.frag" />
+    <None Include="shader\cameraArray.geom" />
+    <None Include="shader\cameraArray.vert" />
+    <None Include="shader\desktop.frag" />
+    <None Include="shader\desktop.vert" />
+    <None Include="shader\stereo.frag" />
+    <None Include="shader\stereo.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

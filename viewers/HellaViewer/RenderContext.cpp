@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "RenderContext.h"
+#include "Blit.h"
 
 #define PRINT_GL_INTEGER( name ) { printGLInteger(#name, name); }
 
-RenderContext::RenderContext(): m_RenderRightEye(true), m_CameraArrayRenderer(), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_ShiftDown(false), m_pTrackballCamera(nullptr), m_VREnabled(false)
+RenderContext::RenderContext() : m_Initialized(false), m_RenderRightEye(true), m_bVblank(true), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_pTrackballCamera(nullptr), m_VREnabled(false)
 {
 }
 
@@ -15,14 +16,14 @@ RenderContext::~RenderContext()
 
 	std::cout << "shutting down" << std::endl;
 
-	if (m_pHMD)
+	if(m_pHMD)
 	{
 		vr::VR_Shutdown();
 		m_pHMD = NULL;
 	}
 
 	SDL_StopTextInput();
-	if (m_pCompanionWindow)
+	if(m_pCompanionWindow)
 	{
 		SDL_DestroyWindow(m_pCompanionWindow);
 		m_pCompanionWindow = NULL;
@@ -31,11 +32,25 @@ RenderContext::~RenderContext()
 	SDL_Quit();
 }
 
+void RenderContext::attachRenderer(Renderer & rend)
+{
+	onRenderEyeTexture([&rend](auto vp, auto eyePosWorld) { rend.render(vp, eyePosWorld); });
+	onFrameStart([&rend](auto timeStep) { rend.update(timeStep); });
+	if(m_Initialized)
+	{
+		rend.initialize();
+	}
+	else
+	{
+		postInitialize([&rend] { rend.initialize(); });
+	}
+}
+
 bool RenderContext::initialize()
 {
 	bool success = true;
-	if (!initializeSDL()) { success = false; }
-	if (initializeOpenVR())
+	if(!initializeSDL()) { success = false; }
+	if(initializeOpenVR())
 	{
 		m_VREnabled = true;
 	}
@@ -46,9 +61,10 @@ bool RenderContext::initialize()
 		m_RenderHeight = 720u;
 		m_pTrackballCamera = new TrackballCamera(m_RenderWidth, m_RenderHeight);
 	}
-	if (!initializeGL()) { success = false; }
+	if(!initializeGL()) { success = false; }
 
-	if(!m_CameraArrayRenderer.initialize()) { success = false; }
+	postInitialize();
+	m_Initialized = success;
 
 	return success;
 }
@@ -56,45 +72,21 @@ bool RenderContext::initialize()
 bool RenderContext::initializeGL()
 {
 	std::cout << "GL Version: " << glGetString(GL_VERSION) << std::endl;
-	
+
 	// Some default GL settings.
 	glClearColor(0, 0, 0, 255);
 	glClearDepth(1.0f);
 
 	// Create GL programs
 	ShaderManager& psm = ShaderManager::instance();
-	m_StereoProgram = psm.from("shader/stereo.vert", "shader/stereo.frag");
 	m_DesktopProgram = psm.from("shader/desktop.vert", "shader/desktop.frag");
-	if (m_DesktopProgram == 0 || m_StereoProgram == 0)
+	if(m_DesktopProgram == 0)
 		return false;
 
 	// Create GL buffers
-	if (!createFrameBuffer(m_RenderWidth, m_RenderHeight, m_LeftEyeFramebuffer) ||
+	if(!createFrameBuffer(m_RenderWidth, m_RenderHeight, m_LeftEyeFramebuffer) ||
 		!createFrameBuffer(m_RenderWidth, m_RenderHeight, m_RightEyeFramebuffer))
 		return false;
-
-	// Create blitting VAO 
-	const GLfloat fullscreenTriangle[] = {
-		-1.0f, 1.0f,
-		-1.0f, -3.0f,
-		3.0f,  1.0f
-	};
-
-	glGenBuffers(1, &m_BlitTriangleVB);
-	glBindBuffer(GL_ARRAY_BUFFER, m_BlitTriangleVB);
-	{
-		glBufferData(GL_ARRAY_BUFFER, sizeof(fullscreenTriangle), &fullscreenTriangle[0], GL_STATIC_DRAW);
-	}
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenVertexArrays(1, &m_BlitTriangleVAO);
-	glBindVertexArray(m_BlitTriangleVAO);
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_BlitTriangleVB);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray(0);
-	}
-	glBindVertexArray(0);
 
 	return true;
 }
@@ -102,7 +94,7 @@ bool RenderContext::initializeGL()
 bool RenderContext::initializeSDL()
 {
 	// initialize the sdl system and create a window
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
 	{
 		printf("%s - SDL could not initialize! SDL Error: %s\n", __FUNCTION__, SDL_GetError());
 		return false;
@@ -117,7 +109,8 @@ bool RenderContext::initializeSDL()
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
 
 	SDL_LogSetAllPriority(SDL_LOG_PRIORITY_INFO);
-	SDL_LogSetOutputFunction([](void *userdata, int category, SDL_LogPriority priority, const char *message) {
+	SDL_LogSetOutputFunction([](void *userdata, int category, SDL_LogPriority priority, const char *message)
+	{
 		std::cout << "SDL message: " << message << std::endl;
 	}, 0);
 
@@ -126,14 +119,14 @@ bool RenderContext::initializeSDL()
 	int nWindowPosX = 700;
 	int nWindowPosY = 100;
 	m_pCompanionWindow = SDL_CreateWindow("Hella Viewer", nWindowPosX, nWindowPosY, m_nCompanionWindowWidth, m_nCompanionWindowHeight, unWindowFlags);
-	if (m_pCompanionWindow == NULL)
+	if(m_pCompanionWindow == NULL)
 	{
 		printf("%s - Window could not be created! SDL Error: %s\n", __FUNCTION__, SDL_GetError());
 		return false;
 	}
 
 	m_pContext = SDL_GL_CreateContext(m_pCompanionWindow);
-	if (m_pContext == NULL)
+	if(m_pContext == NULL)
 	{
 		printf("%s - OpenGL context could not be created! SDL Error: %s\n", __FUNCTION__, SDL_GetError());
 		return false;
@@ -143,13 +136,13 @@ bool RenderContext::initializeSDL()
 	glewExperimental = GL_TRUE; // otherwise glGenFramebuffer is not defined
 	GLenum err = glewInit();
 	GLenum glerr = glGetError();
-	if (GLEW_OK != err && GL_INVALID_ENUM != glerr) // glewExperimental throws invalid enum, see https://www.khronos.org/opengl/wiki/OpenGL_Loading_Library
+	if(GLEW_OK != err && GL_INVALID_ENUM != glerr) // glewExperimental throws invalid enum, see https://www.khronos.org/opengl/wiki/OpenGL_Loading_Library
 	{
 		fprintf(stderr, "Error initializing glew: %s\n gl: %s", glewGetErrorString(err), gluErrorString(glerr));
 		return false;
 	}
 
-	if (SDL_GL_SetSwapInterval(m_bVblank ? 1 : 0) < 0)
+	if(SDL_GL_SetSwapInterval(m_bVblank ? 1 : 0) < 0)
 	{
 		printf("%s - Warning: Unable to set VSync! SDL Error: %s\n", __FUNCTION__, SDL_GetError());
 		return false;
@@ -170,7 +163,7 @@ bool RenderContext::initializeOpenVR()
 	vr::EVRInitError eError = vr::VRInitError_None;
 	m_pHMD = vr::VR_Init(&eError, vr::VRApplication_Scene);
 
-	if (eError != vr::VRInitError_None || m_pHMD == nullptr)
+	if(eError != vr::VRInitError_None || m_pHMD == nullptr)
 	{
 		m_pHMD = NULL;
 		char buf[1024];
@@ -181,7 +174,7 @@ bool RenderContext::initializeOpenVR()
 
 	vr::EVRInitError peError = vr::VRInitError_None;
 
-	if (!vr::VRCompositor())
+	if(!vr::VRCompositor())
 	{
 		printf("Compositor initialization failed. See log file for details\n");
 		return false;
@@ -204,67 +197,51 @@ bool RenderContext::handleSDL()
 	m_LastFrameTime = currentFrameTime;
 	m_AccumulatedFrameTime += deltaTime;
 	m_FrameCounter++;
+	onFrameStart(deltaTime);
 
 	auto cameraSpeedInSceneUnitPerMS = 0.01f;
-	if (m_ShiftDown) cameraSpeedInSceneUnitPerMS *= 10.f;
-	
+	if(SDL_GetModState() & (SDL_Keymod::KMOD_LSHIFT | SDL_Keymod::KMOD_RSHIFT)) cameraSpeedInSceneUnitPerMS *= 10.f;
 
-	while (SDL_PollEvent(&sdlEvent) != 0)
+	while(SDL_PollEvent(&sdlEvent) != 0)
 	{
-		if (sdlEvent.type == SDL_QUIT)
+		if(sdlEvent.type == SDL_QUIT)
 		{
 			quitProgram = true;
 		}
-		else if (sdlEvent.type == SDL_KEYDOWN)
+		else if(sdlEvent.type == SDL_KEYDOWN)
 		{
-			switch (sdlEvent.key.keysym.sym)
+			onKeyPress(SDL_GetModState(), sdlEvent.key.keysym.sym);
+
+			switch(sdlEvent.key.keysym.sym)
 			{
 			case SDLK_ESCAPE:
 				quitProgram = true;
 				break;
-			case SDLK_SPACE:
-				auto leftpos = m_VRCamera.getPosition(vr::Eye_Left);
-				auto rightpos = m_VRCamera.getPosition(vr::Eye_Right);
-
-				std::cout << "Left eye position: " << leftpos.x << ", " << leftpos.y << ", " << leftpos.z << std::endl;
-				std::cout << "Right eye position: " << rightpos.x << ", " << rightpos.y << ", " << rightpos.z << std::endl << std::endl;
-				break;
-			case SDLK_LSHIFT:
-				m_ShiftDown = true;
-				break;
-			case SDLK_o:
-				m_CameraArrayRenderer.m_FocalPlane += cameraSpeedInSceneUnitPerMS * deltaTime;
-				std::cout << "Focal plane: " << m_CameraArrayRenderer.m_FocalPlane << std::endl;
-				break;
-			case SDLK_l:
-				m_CameraArrayRenderer.m_FocalPlane -= cameraSpeedInSceneUnitPerMS * deltaTime;
-				std::cout << "Focal plane: " << m_CameraArrayRenderer.m_FocalPlane << std::endl;
-				break;
 			case SDLK_w:
 				if(m_pTrackballCamera)
-				m_pTrackballCamera->move(-cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
+					m_pTrackballCamera->move(-cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
 				break;
 			case SDLK_s:
 				if(m_pTrackballCamera)
-				m_pTrackballCamera->move(cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
+					m_pTrackballCamera->move(cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
 				break;
 			case SDLK_a:
 				if(m_pTrackballCamera)
-				m_pTrackballCamera->move(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
+					m_pTrackballCamera->move(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
 				break;
 			case SDLK_d:
 				if(m_pTrackballCamera)
-				m_pTrackballCamera->move(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime); 
+					m_pTrackballCamera->move(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime);
 				break;
 			case SDLK_e:
 				m_RenderRightEye = !m_RenderRightEye;
 				break;
 			case SDLK_r:
 				if(m_pTrackballCamera)
-				m_pTrackballCamera->reset();
+					m_pTrackballCamera->reset();
 				break;
 			case SDLK_t:
-				if (m_FrameCounter)
+				if(m_FrameCounter)
 				{
 					std::cout << "Avg Frametime in ms over " << m_FrameCounter << " frames: " << m_AccumulatedFrameTime / m_FrameCounter << std::endl;
 					m_AccumulatedFrameTime = 0;
@@ -281,43 +258,39 @@ bool RenderContext::handleSDL()
 				break;
 			}
 		}
-		else if (sdlEvent.type == SDL_KEYUP && sdlEvent.key.keysym.sym == SDLK_LSHIFT)
+		else if(sdlEvent.type == SDL_MOUSEBUTTONDOWN)
 		{
-			m_ShiftDown = false;
-		}
-		else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
-		{
-			if (SDL_SetRelativeMouseMode(SDL_TRUE) != 0)
+			if(SDL_SetRelativeMouseMode(SDL_TRUE) != 0)
 			{
 				WARN("couldn't enable relative mouse mode" << SDL_GetError());
 			}
 		}
-		else if (sdlEvent.type == SDL_MOUSEBUTTONUP)
+		else if(sdlEvent.type == SDL_MOUSEBUTTONUP)
 		{
-			if (SDL_SetRelativeMouseMode(SDL_FALSE) != 0)
+			if(SDL_SetRelativeMouseMode(SDL_FALSE) != 0)
 			{
 				WARN("couldn't enable relative mouse mode" << SDL_GetError());
 			}
 		}
-		else if (sdlEvent.type == SDL_MOUSEMOTION)
+		else if(sdlEvent.type == SDL_MOUSEMOTION)
 		{
 			auto motionEvent = sdlEvent.motion;
 			auto buttonsHeld = motionEvent.state;
 			if(buttonsHeld & SDL_BUTTON_LMASK)
 			{
 				if(m_pTrackballCamera)
-				m_pTrackballCamera->rotate(glm::uvec2(m_RenderWidth / 2, m_RenderHeight / 2), glm::uvec2(m_RenderWidth / 2 + motionEvent.xrel, m_RenderHeight / 2 - motionEvent.yrel));
+					m_pTrackballCamera->rotate(glm::uvec2(m_RenderWidth / 2, m_RenderHeight / 2), glm::uvec2(m_RenderWidth / 2 + motionEvent.xrel, m_RenderHeight / 2 - motionEvent.yrel));
 			}
-			else if (buttonsHeld & SDL_BUTTON_RMASK)
+			else if(buttonsHeld & SDL_BUTTON_RMASK)
 			{
 				if(m_pTrackballCamera)
-				m_pTrackballCamera->pan(cameraSpeedInSceneUnitPerMS * motionEvent.xrel, cameraSpeedInSceneUnitPerMS * motionEvent.yrel);
+					m_pTrackballCamera->pan(cameraSpeedInSceneUnitPerMS * motionEvent.xrel, cameraSpeedInSceneUnitPerMS * motionEvent.yrel);
 			}
 		}
-		else if (sdlEvent.type == SDL_WINDOWEVENT &&
+		else if(sdlEvent.type == SDL_WINDOWEVENT &&
 			sdlEvent.window.event == SDL_WINDOWEVENT_RESIZED)
 		{
-			int width = sdlEvent.window.data1, 
+			int width = sdlEvent.window.data1,
 				height = sdlEvent.window.data2;
 			resize(width, height);
 		}
@@ -336,7 +309,7 @@ void RenderContext::render()
 		renderCompanionWindow();
 		printerr(__FILE__, __LINE__);
 
-		if (m_VREnabled)
+		if(m_VREnabled)
 		{
 			vr::Texture_t leftEyeTexture = { (void*)(uintptr_t)m_LeftEyeFramebuffer.m_nResolveTextureId, vr::TextureType_OpenGL, vr::ColorSpace_Gamma };
 			vr::VRCompositor()->Submit(vr::Eye_Left, &leftEyeTexture);
@@ -345,7 +318,7 @@ void RenderContext::render()
 		}
 	}
 
-	if (m_bVblank)
+	if(m_bVblank)
 	{
 		//$ HACKHACK. From gpuview profiling, it looks like there is a bug where two renders and a present
 		// happen right before and after the vsync causing all kinds of jittering issues. This glFinish()
@@ -368,7 +341,7 @@ void RenderContext::render()
 	}
 
 	// Flush and wait for swap.
-	if (m_bVblank)
+	if(m_bVblank)
 	{
 		glFlush();
 		glFinish();
@@ -394,22 +367,7 @@ void RenderContext::renderQuad(vr::Hmd_Eye eye)
 		eyepos = m_pTrackballCamera->getPosition();
 	}
 
-	glUseProgram(m_StereoProgram);
-	
-	glUniform1ui(glGetUniformLocation(m_StereoProgram, "eye"), eye);
-	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "vp"), 1, GL_FALSE, &vp[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(m_StereoProgram, "ivp"), 1, GL_FALSE, &ivp[0][0]);
-	glUniform3fv(glGetUniformLocation(m_StereoProgram, "eyepos"), 1, &eyepos[0]);
-		
-	glBindVertexArray(m_BlitTriangleVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-	glBindVertexArray(0);
-
-	glUseProgram(0);
-
-	glDisable(GL_DEPTH_TEST);
-	m_CameraArrayRenderer.render(vp, eyepos);
-	glEnable(GL_DEPTH_TEST);
+	onRenderEyeTexture(vp, eyepos);
 }
 
 void RenderContext::renderStereoTargets()
@@ -459,14 +417,13 @@ void RenderContext::renderStereoTargets()
 void RenderContext::renderCompanionWindow()
 {
 	glDisable(GL_DEPTH_TEST);
-	
+
 	glUseProgram(m_DesktopProgram);
-	glBindVertexArray(m_BlitTriangleVAO);
 
 	// left eye
 	glViewport(0, 0, m_nCompanionWindowWidth, m_nCompanionWindowHeight);
 	glBindTexture(GL_TEXTURE_2D, m_LeftEyeFramebuffer.m_nResolveTextureId);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	Blit::instance().render();
 
 
 	if(m_RenderRightEye)
@@ -483,10 +440,9 @@ void RenderContext::renderCompanionWindow()
 		// right eye
 		glViewport((m_nCompanionWindowWidth >> 2) + (m_nCompanionWindowWidth >> 1), 0, m_nCompanionWindowWidth >> 2, m_nCompanionWindowHeight >> 2);
 		glBindTexture(GL_TEXTURE_2D, m_LeftEyeFramebuffer.m_nResolveTextureId);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		Blit::instance().render();
 	}
 
-	glBindVertexArray(0);
 	glUseProgram(0);
 }
 
@@ -541,7 +497,7 @@ bool RenderContext::createFrameBuffer(int nWidth, int nHeight, FramebufferDesc &
 
 	// check FBO status
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (status != GL_FRAMEBUFFER_COMPLETE)
+	if(status != GL_FRAMEBUFFER_COMPLETE)
 	{
 		std::cout << "Framebuffer not complete" << std::endl;
 		return false;

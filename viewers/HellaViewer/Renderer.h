@@ -4,9 +4,20 @@
 class Renderer
 {
 public:
-	virtual ~Renderer() = 0;
-	virtual bool initialize() = 0;
-	//void update();
-	virtual void render(glm::mat4x4 viewProjection, glm::vec3 eyePosition) = 0;
+	/*
+		Cleanup used (opengl) resources
+	*/
+	virtual ~Renderer() {};
+	/*
+		Called once after opengl is set up
+	*/
+	virtual void initialize() = 0;
+	/*
+		Called once per frame
+	*/
+	virtual void update(double timestep) = 0;
+	/*
+		Called per viewport
+	*/
+	virtual void render(const glm::mat4x4& viewProjection, const glm::vec3& eyePosition) = 0;
 };
-

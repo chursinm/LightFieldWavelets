@@ -35,7 +35,5 @@ private:
 	GLuint geometryShader(const std::string& filename);
 	GLuint fragmentShader(const std::string& filename);
 	GLuint loadShader(const std::string& filename, int shaderType);
-
-	static ShaderManager* s_pSingletonInstance;
 };
 
