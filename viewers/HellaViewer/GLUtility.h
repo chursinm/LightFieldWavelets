@@ -10,6 +10,7 @@ public:
 		glBindBuffer(target, id);
 		glBufferData(target, elements * sizeof(T), data, usage);
 		glBindBuffer(target, 0);
+		if(id == 0) throw "failed to generate gl buffer";
 		return id;
 	}
 	template<class T>

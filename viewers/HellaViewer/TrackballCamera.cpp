@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "TrackballCamera.h"
-#include <glm/gtx/string_cast.hpp>
 
 using namespace glm;
 

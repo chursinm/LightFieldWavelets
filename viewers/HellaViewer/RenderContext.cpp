@@ -4,7 +4,7 @@
 
 #define PRINT_GL_INTEGER( name ) { printGLInteger(#name, name); }
 
-RenderContext::RenderContext() : m_Initialized(false), m_RenderRightEye(true), m_bVblank(true), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_pTrackballCamera(nullptr), m_VREnabled(false)
+RenderContext::RenderContext() : m_Initialized(false), m_RenderRightEye(true), m_bVblank(false), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_pTrackballCamera(nullptr), m_VREnabled(false)
 {
 }
 

@@ -1,11 +1,11 @@
-#include "stdafx.h"
-#include <vector>
-#include "CudaHaarLifting.h"
-#include "CudaUtility.h"
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
 
-__global__ void splitPredictUpdate(int2 * input, int * oddOut, int * evenOut)
+template <typename T, typename Vector2T>
+__global__ void splitPredictUpdate(Vector2T * input, T * oddOut, T * evenOut, T threadcount)
 {
 	auto gid = blockIdx.x * blockDim.x + threadIdx.x;
+	if(gid >= threadcount) return;
 
 	// split
 	auto evenOdd = input[gid];
@@ -16,120 +16,23 @@ __global__ void splitPredictUpdate(int2 * input, int * oddOut, int * evenOut)
 	oddI -= evenI;
 
 	// update
-	evenI += (oddI >> 1);
+	//evenI += (oddI >> 1);
+	evenI += (oddI / 2);
 
 	// store result
 	oddOut[gid] = oddI;
 	evenOut[gid] = evenI;
-}
+};
 
-void CudaHaarLifting::generateData()
+template <typename T, typename Vector2T>
+void callSplitPredictUpdate(dim3 grid, dim3 threads, cudaStream_t stream, Vector2T * input, T * oddOut, T * evenOut, T threadcount)
 {
-	
-	auto whatever = [](unsigned int index) { return std::rand() * index; }; // return index * 2 + 3;
-	for(auto i = 0u; i < size; ++i)
-	{
-		input[i] = whatever(i);
-	}
-}
+	splitPredictUpdate<<<grid,threads,0,stream>>>(input, oddOut, evenOut, threadcount);
+};
 
-void CudaHaarLifting::uploadData()
+void DEFINE_VALID_TEMPLATES()
 {
-	auto halfsize = size >> 1;
-
-	auto error = cudaMalloc((void**)&deviceInput, size * sizeof(int));
-	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
-
-	error = cudaMalloc((void**)&deviceOutputEven, halfsize * sizeof(int));
-	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
-
-	error = cudaMalloc((void**)&deviceOutputOdd, size * sizeof(int));
-	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
-
-	error = cudaMemcpy(deviceInput, &input[0], size * sizeof(int), cudaMemcpyHostToDevice);
-	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
+	callSplitPredictUpdate<float, float2>(0,0,0,0,0,0,0);
+	callSplitPredictUpdate<unsigned int, uint2>(0, 0, 0, 0, 0, 0, 0);
+	callSplitPredictUpdate<int, int2>(0, 0, 0, 0, 0, 0, 0);
 }
-
-void CudaHaarLifting::downloadData()
-{
-	auto halfsize = size >> 1;
-
-	gpuOutputEven = std::vector<int>(halfsize);
-	gpuOutputOdd = std::vector<int>(size);
-	gpuOutput = std::vector<int>(size);
-
-	auto error = cudaMemcpy(&gpuOutputEven[0], deviceOutputEven, halfsize * sizeof(int), cudaMemcpyDeviceToHost);
-	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
-
-	error = cudaMemcpy(&gpuOutputOdd[0], deviceOutputOdd, size * sizeof(int), cudaMemcpyDeviceToHost);
-	if(error != CUDA_SUCCESS) throw cudaGetErrorString(error);
-
-	gpuOutput = gpuOutputOdd;
-	gpuOutput[0] = gpuOutputEven[0];
-}
-
-void CudaHaarLifting::calculateReference()
-{
-	auto stepInput = input;
-	auto stepOutput = std::vector<int>(size);
-	auto stepsize = size;
-
-	while(stepsize > 1)
-	{
-		auto halfsize = stepsize >> 1;
-		for(auto i = 0u; i < stepsize; i += 2)
-		{
-			auto odd = stepInput[i + 1] - stepInput[i];
-			auto even = stepInput[i] + (odd >> 1);
-
-			stepOutput[i >> 1] = even;
-			stepOutput[halfsize + (i >> 1)] = odd;
-		}
-		stepsize = halfsize;
-		stepInput = stepOutput;
-	}
-	cpuOutput = stepOutput;
-}
-
-void CudaHaarLifting::calculateCuda()
-{
-	auto threadcount = size >> 1;
-	auto in = (int2*)deviceInput;
-	auto oddOut = deviceOutputOdd + threadcount;
-	auto evenOut = deviceOutputEven;
-
-	auto ms = CudaUtility::measurePerformance([&]()
-	{
-		while(threadcount >= 1)
-		{
-			splitPredictUpdate KERNEL_ARGS2(threadcount, 1) (in, oddOut, evenOut);
-			threadcount = threadcount >> 1;
-			in = (int2*)deviceOutputEven;
-			oddOut = deviceOutputOdd + threadcount;
-			evenOut = deviceOutputEven;
-		}
-	}, 1000);
-
-	// 6.8 is reference time; 5.35 with reinterpret cast
-	std::cout << "Executing b for 1000 iterations took " << ms/1000.f << " ms on average" << std::endl;
-}
-
-bool CudaHaarLifting::checkResult()
-{
-	return memcmp(&cpuOutput[0], &gpuOutput[0], sizeof(int) * size) == 0;
-}
-
-
-CudaHaarLifting::CudaHaarLifting(unsigned int poweroftwo): size(std::pow(2, poweroftwo)), input(std::pow(2,poweroftwo))
-{
-}
-
-
-CudaHaarLifting::~CudaHaarLifting()
-{
-	cudaFree(deviceInput);
-	cudaFree(deviceOutputEven);
-	cudaFree(deviceOutputOdd);
-}
-
-

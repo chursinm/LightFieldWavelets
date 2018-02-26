@@ -93,15 +93,15 @@
     <ClInclude Include="Blit.h">
       <Filter>Header Files\gl</Filter>
     </ClInclude>
+    <ClInclude Include="HaarLiftingRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="thirdparty\tinyxml2\tinyxml2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HellaViewer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Signal.cpp">
@@ -140,15 +140,24 @@
     <ClCompile Include="Blit.cpp">
       <Filter>Source Files\gl</Filter>
     </ClCompile>
+    <ClCompile Include="HellaViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaHaarLifting.cpp">
+      <Filter>Source Files\cuda</Filter>
+    </ClCompile>
+    <ClCompile Include="HaarLiftingRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaPropertyViewer.cpp">
+      <Filter>Source Files\cuda</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaUtility.cpp">
+      <Filter>Source Files\cuda</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="CudaHaarLifting.cu">
-      <Filter>Source Files\cuda</Filter>
-    </CudaCompile>
-    <CudaCompile Include="CudaPropertyViewer.cpp">
-      <Filter>Source Files\cuda</Filter>
-    </CudaCompile>
-    <CudaCompile Include="CudaUtility.cpp">
       <Filter>Source Files\cuda</Filter>
     </CudaCompile>
   </ItemGroup>

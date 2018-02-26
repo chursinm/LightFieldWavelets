@@ -13,6 +13,7 @@
 #endif
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
+#include <cuda_gl_interop.h>
 #ifndef CUDA_SUCCESS
 #define CUDA_SUCCESS 0
 #endif

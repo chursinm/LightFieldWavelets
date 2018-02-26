@@ -111,7 +111,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -129,7 +129,14 @@
     </Bscmake>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalCompilerOptions>
+      </AdditionalCompilerOptions>
+      <AdditionalOptions>--default-stream per-thread %(AdditionalOptions)</AdditionalOptions>
+      <Defines>CUDA_API_PER_THREAD_DEFAULT_STREAM </Defines>
     </CudaCompile>
+    <CudaLink>
+      <AdditionalOptions>--default-stream per-thread %(AdditionalOptions)</AdditionalOptions>
+    </CudaLink>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -155,7 +162,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -173,10 +180,19 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalCompilerOptions>
+      </AdditionalCompilerOptions>
+      <AdditionalOptions>--default-stream per-thread %(AdditionalOptions)</AdditionalOptions>
+      <Defines>CUDA_API_PER_THREAD_DEFAULT_STREAM </Defines>
     </CudaCompile>
+    <CudaLink>
+      <AdditionalOptions>--default-stream per-thread %(AdditionalOptions)</AdditionalOptions>
+    </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="CudaHaarLifting.cu" />
+    <ClCompile Include="CudaHaarLifting.cpp">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="CameraArrayParser.h" />
     <ClInclude Include="CameraArrayRenderer.h" />
     <ClInclude Include="CheckerboardRenderer.h" />
@@ -185,6 +201,7 @@
     <ClInclude Include="CudaUtility.h" />
     <ClInclude Include="Blit.h" />
     <ClInclude Include="GLUtility.h" />
+    <ClInclude Include="HaarLiftingRenderer.h" />
     <ClInclude Include="HellaViewer.h" />
     <ClInclude Include="RenderContext.h" />
     <ClInclude Include="Renderer.h" />
@@ -200,11 +217,12 @@
   <ItemGroup>
     <ClCompile Include="CameraArrayParser.cpp" />
     <ClCompile Include="CameraArrayRenderer.cpp" />
-    <CudaCompile Include="CudaPropertyViewer.cpp" />
-    <CudaCompile Include="CudaUtility.cpp" />
+    <ClCompile Include="CudaPropertyViewer.cpp" />
+    <ClCompile Include="CudaUtility.cpp" />
     <ClCompile Include="CheckerboardRenderer.cpp" />
     <ClCompile Include="Blit.cpp" />
     <ClCompile Include="GLUtility.cpp" />
+    <ClCompile Include="HaarLiftingRenderer.cpp" />
     <ClCompile Include="HellaViewer.cpp" />
     <ClCompile Include="RenderContext.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -227,6 +245,9 @@
     <ClCompile Include="VRCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="CudaHaarLifting.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
     <None Include="shader\cameraArray.frag" />
     <None Include="shader\cameraArray.geom" />
     <None Include="shader\cameraArray.vert" />
