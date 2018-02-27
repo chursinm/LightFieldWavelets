@@ -12,6 +12,6 @@ public:
 	void render(const glm::mat4x4 & viewProjection, const glm::vec3 & eyePosition) override;
 	
 private:
-	GLuint m_glprogram;
+	GLuint mGlProgram;
 };
 

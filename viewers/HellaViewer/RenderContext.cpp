@@ -4,7 +4,7 @@
 
 #define PRINT_GL_INTEGER( name ) { printGLInteger(#name, name); }
 
-RenderContext::RenderContext() : m_Initialized(false), m_RenderRightEye(true), m_bVblank(false), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_pTrackballCamera(nullptr), m_VREnabled(false)
+RenderContext::RenderContext(bool vsync) : m_Initialized(false), m_RenderRightEye(true), m_bVblank(vsync), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_pTrackballCamera(nullptr), m_VREnabled(false)
 {
 }
 
@@ -116,9 +116,8 @@ bool RenderContext::initializeSDL()
 
 
 	Uint32 unWindowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
-	int nWindowPosX = 700;
-	int nWindowPosY = 100;
-	m_pCompanionWindow = SDL_CreateWindow("Hella Viewer", nWindowPosX, nWindowPosY, m_nCompanionWindowWidth, m_nCompanionWindowHeight, unWindowFlags);
+	auto monitorIndex = SDL_GetNumVideoDisplays() - 1;
+	m_pCompanionWindow = SDL_CreateWindow("Hella Viewer", SDL_WINDOWPOS_UNDEFINED_DISPLAY(monitorIndex), SDL_WINDOWPOS_UNDEFINED_DISPLAY(monitorIndex), m_nCompanionWindowWidth, m_nCompanionWindowHeight, unWindowFlags);
 	if(m_pCompanionWindow == NULL)
 	{
 		printf("%s - Window could not be created! SDL Error: %s\n", __FUNCTION__, SDL_GetError());
@@ -166,9 +165,10 @@ bool RenderContext::initializeOpenVR()
 	if(eError != vr::VRInitError_None || m_pHMD == nullptr)
 	{
 		m_pHMD = NULL;
-		char buf[1024];
-		sprintf_s(buf, sizeof(buf), "Unable to init VR runtime: %s", vr::VR_GetVRInitErrorAsEnglishDescription(eError));
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "VR_Init Failed", buf, NULL);
+		//char buf[1024];
+		//sprintf_s(buf, sizeof(buf), "Unable to init VR runtime: %s", vr::VR_GetVRInitErrorAsEnglishDescription(eError));
+		//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "VR_Init Failed", buf, NULL);
+		std::cout << "Unable to init VR runtime: " << vr::VR_GetVRInitErrorAsEnglishDescription(eError) << std::endl;
 		return false;
 	}
 
@@ -192,8 +192,8 @@ bool RenderContext::handleSDL()
 	SDL_Event sdlEvent;
 	bool quitProgram = false;
 
-	auto currentFrameTime = SDL_GetPerformanceCounter();
-	auto deltaTime = ((currentFrameTime - m_LastFrameTime) * 1000 / (double)SDL_GetPerformanceFrequency());
+	const auto currentFrameTime = SDL_GetPerformanceCounter();
+	const auto deltaTime = ((currentFrameTime - m_LastFrameTime) * 1000 / static_cast<double>(SDL_GetPerformanceFrequency()));
 	m_LastFrameTime = currentFrameTime;
 	m_AccumulatedFrameTime += deltaTime;
 	m_FrameCounter++;
@@ -219,19 +219,19 @@ bool RenderContext::handleSDL()
 				break;
 			case SDLK_w:
 				if(m_pTrackballCamera)
-					m_pTrackballCamera->move(-cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
+					m_pTrackballCamera->move(-cameraSpeedInSceneUnitPerMS * static_cast<float>(deltaTime), 0.f);
 				break;
 			case SDLK_s:
 				if(m_pTrackballCamera)
-					m_pTrackballCamera->move(cameraSpeedInSceneUnitPerMS * deltaTime, 0.f);
+					m_pTrackballCamera->move(cameraSpeedInSceneUnitPerMS * static_cast<float>(deltaTime), 0.f);
 				break;
 			case SDLK_a:
 				if(m_pTrackballCamera)
-					m_pTrackballCamera->move(0.f, cameraSpeedInSceneUnitPerMS * deltaTime);
+					m_pTrackballCamera->move(0.f, cameraSpeedInSceneUnitPerMS * static_cast<float>(deltaTime));
 				break;
 			case SDLK_d:
 				if(m_pTrackballCamera)
-					m_pTrackballCamera->move(0.f, -cameraSpeedInSceneUnitPerMS * deltaTime);
+					m_pTrackballCamera->move(0.f, -cameraSpeedInSceneUnitPerMS * static_cast<float>(deltaTime));
 				break;
 			case SDLK_e:
 				m_RenderRightEye = !m_RenderRightEye;

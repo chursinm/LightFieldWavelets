@@ -32,7 +32,7 @@ void callSplitPredictUpdate(dim3 grid, dim3 threads, cudaStream_t stream, Vector
 
 void DEFINE_VALID_TEMPLATES()
 {
-	callSplitPredictUpdate<float, float2>(0,0,0,0,0,0,0);
-	callSplitPredictUpdate<unsigned int, uint2>(0, 0, 0, 0, 0, 0, 0);
-	callSplitPredictUpdate<int, int2>(0, 0, 0, 0, 0, 0, 0);
+	throw "do not call me";
+	callSplitPredictUpdate<float, float2>(0, 0, 0, 0, 0, 0, 0);
+	callSplitPredictUpdate<double, double2>(0, 0, 0, 0, 0, 0, 0);
 }

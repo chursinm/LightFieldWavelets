@@ -14,5 +14,9 @@ public:
 	void calculate();
 
 private:
-	CudaHaarLifting<int, int2> mLifter;
+	CudaHaarLifting<float, float2> mLifter;
+	GLuint mXAxis, mYAxis;
+	GLuint mGlProgram;
+	GLuint mVao;
+	std::future<void> mCudaThread;
 };

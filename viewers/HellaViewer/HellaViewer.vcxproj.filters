@@ -34,6 +34,15 @@
     <Filter Include="Source Files\Renderer">
       <UniqueIdentifier>{70f48855-8f00-4754-a255-293d6564dd16}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Renderer\CameraArray">
+      <UniqueIdentifier>{d5ee8b64-edc5-40d4-9869-0d044b2c8087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Renderer\CameraArray">
+      <UniqueIdentifier>{37d30cc4-c6a5-408c-b553-bb9c5254505e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\cameraArray">
+      <UniqueIdentifier>{b691bb68-aef4-48a9-9398-172fa9226ea3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -59,12 +68,6 @@
     </ClInclude>
     <ClInclude Include="Signal.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraArrayParser.h">
-      <Filter>Header Files\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraArrayRenderer.h">
-      <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="GLUtility.h">
       <Filter>Header Files\gl</Filter>
@@ -96,6 +99,15 @@
     <ClInclude Include="HaarLiftingRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CameraArrayRenderer.h">
+      <Filter>Header Files\Renderer\CameraArray</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraArrayParser.h">
+      <Filter>Header Files\Renderer\CameraArray</Filter>
+    </ClInclude>
+    <ClInclude Include="CudaGlArrayBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -106,12 +118,6 @@
     </ClCompile>
     <ClCompile Include="Signal.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraArrayRenderer.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraArrayParser.cpp">
-      <Filter>Source Files\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="GLUtility.cpp">
       <Filter>Source Files\gl</Filter>
@@ -155,6 +161,15 @@
     <ClCompile Include="CudaUtility.cpp">
       <Filter>Source Files\cuda</Filter>
     </ClCompile>
+    <ClCompile Include="CameraArrayRenderer.cpp">
+      <Filter>Source Files\Renderer\CameraArray</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraArrayParser.cpp">
+      <Filter>Source Files\Renderer\CameraArray</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaGlArrayBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="CudaHaarLifting.cu">
@@ -162,15 +177,6 @@
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader\cameraArray.frag">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shader\cameraArray.geom">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shader\cameraArray.vert">
-      <Filter>Shader Files</Filter>
-    </None>
     <None Include="shader\desktop.frag">
       <Filter>Shader Files</Filter>
     </None>
@@ -182,6 +188,15 @@
     </None>
     <None Include="shader\stereo.vert">
       <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\cameraArray.vert">
+      <Filter>Shader Files\cameraArray</Filter>
+    </None>
+    <None Include="shader\cameraArray.frag">
+      <Filter>Shader Files\cameraArray</Filter>
+    </None>
+    <None Include="shader\cameraArray.geom">
+      <Filter>Shader Files\cameraArray</Filter>
     </None>
   </ItemGroup>
 </Project>

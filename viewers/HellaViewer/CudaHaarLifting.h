@@ -4,7 +4,8 @@
 #include "CudaUtility.h"
 #include <sstream>
 
-// TODO refine this
+// As this is our playground to test the cuda api, every method is public.
+// TODO encapsulate, once we do not need the playground anymore
 class CudaHaarLiftingException : public std::exception
 {
 public:
@@ -28,25 +29,35 @@ template <typename T, typename Vector2T>
 class CudaHaarLifting
 {
 public:
+	struct GlBufferSpec
+	{
+		unsigned long long mByteSize;
+		void* mByteOffset;
+	};
+
 	CudaHaarLifting(unsigned int n);
 	~CudaHaarLifting();
-	void generateData();
+	void generateData(std::function<T (unsigned int index)> generator = [](auto index) { return static_cast<T>(index); });
 	void uploadData();
-	GLuint uploadDataGL();
+	GLuint uploadDataGl();
 	void downloadData();
 	void calculateReference();
-	void calculateCuda(); // split, predict, update
+	std::future<void> calculateCuda(); // split, predict, update
+	float measurePerformanceInMsPerIteration(unsigned int iterations);
 	bool checkResult();
-	unsigned int size();
+	unsigned int size() const;
+	
+	
+	GlBufferSpec requiredGlBufferSpec();
 	void mapGl();
 	void unmapGl();
 private:
+	void callKernels();
 	std::vector<T> input, cpuOutput, gpuOutput;
-	unsigned int m_size;
+	unsigned int mSize;
 	T *deviceInput, *deviceWorkBuffer;
 	cudaStream_t calcStream;
 	cudaGraphicsResource *openglWorkBuffer;
-	bool useGL;
 };
 
 

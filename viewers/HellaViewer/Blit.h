@@ -13,7 +13,7 @@ public:
 	/*
 		Renders the fullscreen triangle. Don't forget to bind your program beforehand!
 	*/
-	void render();
+	void render() const;
 private:
 	void generateTriangle();
 	GLuint m_vao, m_vb;

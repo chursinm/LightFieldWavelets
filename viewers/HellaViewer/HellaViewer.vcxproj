@@ -190,12 +190,14 @@
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CudaGlArrayBuffer.cpp" />
     <ClCompile Include="CudaHaarLifting.cpp">
       <FileType>Document</FileType>
     </ClCompile>
     <ClInclude Include="CameraArrayParser.h" />
     <ClInclude Include="CameraArrayRenderer.h" />
     <ClInclude Include="CheckerboardRenderer.h" />
+    <ClInclude Include="CudaGlArrayBuffer.h" />
     <ClInclude Include="CudaHaarLifting.h" />
     <ClInclude Include="CudaPropertyViewer.h" />
     <ClInclude Include="CudaUtility.h" />

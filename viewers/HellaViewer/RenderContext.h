@@ -18,7 +18,7 @@ class RenderContext
 {
 	
 public:
-	RenderContext();
+	explicit RenderContext(bool vsync);
 	~RenderContext();
 	void attachRenderer(Renderer& rend);
 	bool initialize();
