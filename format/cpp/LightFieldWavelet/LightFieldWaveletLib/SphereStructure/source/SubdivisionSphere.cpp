@@ -1,6 +1,7 @@
+#include "stdafx.h"
 #include "SubdivisionSphere.h"
 
-
+using namespace SubdivisionShpere;
 
 SubdivisionSphere::SubdivisionSphere()
 {
@@ -31,12 +32,13 @@ SubdivisionSphere::SubdivisionSphere(int numberOfLevels)
 void SubdivisionSphere::initLevel()
 {
 	Level& baseLevel = levels[0];
+	baseLevel.levelIndex = 0;
 	baseLevel.vertices = new Vertex[12];
 	baseLevel.numberOfVertices = 12;
 	baseLevel.faces = new Face[20];
 	baseLevel.numberOfFaces = 20;
-	float tau=  0.8506508084;
-	float one = 0.5257311121;
+	float tau=  0.8506508084f;
+	float one = 0.5257311121f;
 	//vertices 
 	baseLevel.vertices[ 0].x =  tau;	baseLevel.vertices[ 0].y =  one;    baseLevel.vertices[ 0].z =    0;
 	baseLevel.vertices[ 1].x = -tau;	baseLevel.vertices[ 1].y =  one;	baseLevel.vertices[ 1].z =    0;
@@ -79,7 +81,7 @@ bool SubdivisionSphere::performSubdivision(Level* prevLevel, Level* nextLevel)
 	std::vector<int> *i = new std::vector<int>();
 	std::vector<int> *j = new std::vector<int>();
 
-
+	nextLevel->levelIndex = prevLevel->levelIndex + 1;
 
 	std::vector<int> *I = new std::vector<int>();
 
@@ -150,7 +152,7 @@ bool SubdivisionSphere::performSubdivision(Level* prevLevel, Level* nextLevel)
 
 #pragma endregion
 
-	for (int iter = 0; iter < i->size(); iter++)
+	for (size_t iter = 0; iter < i->size(); iter++)
 	{
 		if ((*i)[iter] < (*j)[iter])
 		{
@@ -161,7 +163,7 @@ bool SubdivisionSphere::performSubdivision(Level* prevLevel, Level* nextLevel)
 	std::vector<int> *i_tmp = new std::vector<int>();
 	std::vector<int> *j_tmp = new std::vector<int>();
 
-	for (int iter = 0; iter < I->size(); iter++)
+	for (size_t iter = 0; iter < I->size(); iter++)
 	{
 		i_tmp->push_back((*i)[(*I)[iter]]);
 		j_tmp->push_back((*j)[(*I)[iter]]);
@@ -172,7 +174,7 @@ bool SubdivisionSphere::performSubdivision(Level* prevLevel, Level* nextLevel)
 	j = j_tmp;
 
 	std::vector<int> tmpC;
-	for (int iter = 0; iter < i->size(); iter++)
+	for (size_t iter = 0; iter < i->size(); iter++)
 	{
 		tmpC.push_back((*i)[iter] + 1234567 * (*j)[iter]);
 	}
@@ -188,18 +190,17 @@ bool SubdivisionSphere::performSubdivision(Level* prevLevel, Level* nextLevel)
 		[&](const int& a, const int& b)
 				{return (tmpC[a] < tmpC[b]);}
 		);
-
 	
 	I->clear();
 
-	std::vector<int> test;
+	/*std::vector<int> test;
 	for (int iter = 0; iter < index.size(); iter++)
 	{
 		test.push_back(tmpC[index[iter]]);
-	}
+	}*/
 
 	
-	for (int iter = 0; iter < index.size()/2; iter++)
+	for (size_t iter = 0; iter < index.size()/2; iter++)
 	{		
 		I->push_back(std::max(index[iter*2+1], index[iter * 2 ]));
 	}
@@ -207,7 +208,7 @@ bool SubdivisionSphere::performSubdivision(Level* prevLevel, Level* nextLevel)
 	i_tmp = new std::vector<int>();
 	j_tmp = new std::vector<int>();
 
-	for (int iter = 0; iter < I->size(); iter++)
+	for (size_t iter = 0; iter < I->size(); iter++)
 	{
 		i_tmp->push_back((*i)[(*I)[iter]]);
 		j_tmp->push_back((*j)[(*I)[iter]]);
@@ -218,27 +219,24 @@ bool SubdivisionSphere::performSubdivision(Level* prevLevel, Level* nextLevel)
 	j = j_tmp;
 	
 	std::vector<int> s;
-	for (int iter = 0; iter < i->size(); iter++)
+	for (size_t iter = 0; iter < i->size(); iter++)
 	{
 		s.push_back(prevLevel->numberOfVertices + 1 + iter);
 	}
 
 	std::map <std::pair<int, int>, int> A;
 
-	for (int iter = 0; iter < s.size(); iter++)
+	for (size_t iter = 0; iter < s.size(); iter++)
 	{
 		A[std::make_pair((*i)[iter], (*j)[iter])] = s[iter];
 		A[std::make_pair((*j)[iter], (*i)[iter])] = s[iter];
 	}
 
+
 	std::vector<int> v12, v23, v31;
 
 	for (int iter = 0; iter < prevLevel->numberOfFaces; iter++)
 	{	
-		if (iter == 13)
-		{
-			std::cout << "stop" << std::endl;
-		}
 		int k, l, num;
 		num = (*prevLevel).faces[iter].vertA + ((*prevLevel).faces[iter].vertB - 1)*prevLevel->numberOfVertices;		
 		k = (num-1)/prevLevel->numberOfVertices +1;
@@ -254,11 +252,70 @@ bool SubdivisionSphere::performSubdivision(Level* prevLevel, Level* nextLevel)
 		k = (num - 1) / prevLevel->numberOfVertices + 1;
 		l = (num - 1) % prevLevel->numberOfVertices + 1;
 		v31.push_back(A[std::make_pair(k, l)]);
+	}
+	
+	nextLevel->faces = new Face[prevLevel->numberOfFaces * 4 ];
+	nextLevel->numberOfFaces = prevLevel->numberOfFaces * 4 ;
+
+	for (int iter = 0; iter < prevLevel->numberOfFaces; iter++)
+	{
+		nextLevel->faces[iter].vertA = prevLevel->faces[iter].vertA;
+		nextLevel->faces[iter].vertB = v12[iter];
+		nextLevel->faces[iter].vertC = v31[iter];
+		prevLevel->faces[iter].childFaceA = iter;
+		nextLevel->faces[iter].parentFace = iter;
+
+		nextLevel->faces[iter+ prevLevel->numberOfFaces].vertA = prevLevel->faces[iter].vertB;
+		nextLevel->faces[iter+ prevLevel->numberOfFaces].vertB = v23[iter];
+		nextLevel->faces[iter+ prevLevel->numberOfFaces].vertC = v12[iter];
+		prevLevel->faces[iter].childFaceB = prevLevel->numberOfFaces + iter;
+		nextLevel->faces[iter + prevLevel->numberOfFaces].parentFace = iter;
+
+		nextLevel->faces[iter + 2 * prevLevel->numberOfFaces].vertA = prevLevel->faces[iter].vertC;
+		nextLevel->faces[iter + 2 * prevLevel->numberOfFaces].vertB = v31[iter];
+		nextLevel->faces[iter + 2 * prevLevel->numberOfFaces].vertC = v23[iter];
+		prevLevel->faces[iter].childFaceC = 2*prevLevel->numberOfFaces + iter;
+		nextLevel->faces[iter + 2*prevLevel->numberOfFaces].parentFace = iter;
+
+
+		nextLevel->faces[iter + 3 * prevLevel->numberOfFaces].vertA = v12[iter];
+		nextLevel->faces[iter + 3 * prevLevel->numberOfFaces].vertB = v23[iter];
+		nextLevel->faces[iter + 3 * prevLevel->numberOfFaces].vertC = v31[iter];
+		prevLevel->faces[iter].childFaceD = 3 * prevLevel->numberOfFaces + iter;
+		nextLevel->faces[iter + 3*prevLevel->numberOfFaces].parentFace = iter;
+
 
 	}
 
-	
+	nextLevel->vertices = new Vertex[prevLevel->numberOfVertices + i->size()];
+	nextLevel->numberOfVertices = prevLevel->numberOfVertices + i->size();
 
+	for (int iter = 0; iter < prevLevel->numberOfVertices; iter++)
+	{
+		nextLevel->vertices[iter] = prevLevel->vertices[iter];
+	}
+
+	for (size_t iter = 0; iter < i->size(); iter++)
+	{
+		nextLevel->vertices[iter + prevLevel->numberOfVertices].creationLevel = nextLevel->levelIndex;
+		nextLevel->vertices[iter + prevLevel->numberOfVertices].parentA = (*i)[iter];
+		nextLevel->vertices[iter + prevLevel->numberOfVertices].parentB = (*j)[iter];
+		
+		nextLevel->vertices[iter + prevLevel->numberOfVertices].x = (nextLevel->vertices[(*i)[iter]-1].x + nextLevel->vertices[(*j)[iter]-1].x)/2.0f;
+		nextLevel->vertices[iter + prevLevel->numberOfVertices].y = (nextLevel->vertices[(*i)[iter]-1].y + nextLevel->vertices[(*j)[iter]-1].y)/2.0f;
+		nextLevel->vertices[iter + prevLevel->numberOfVertices].z = (nextLevel->vertices[(*i)[iter]-1].z + nextLevel->vertices[(*j)[iter]-1].z)/2.0f;		
+
+		float d = sqrt(pow(nextLevel->vertices[iter + prevLevel->numberOfVertices].x, 2) +
+			pow(nextLevel->vertices[iter + prevLevel->numberOfVertices].y, 2) +
+			pow(nextLevel->vertices[iter + prevLevel->numberOfVertices].z, 2));
+
+		nextLevel->vertices[iter + prevLevel->numberOfVertices].x = nextLevel->vertices[iter + prevLevel->numberOfVertices].x /= d;
+		nextLevel->vertices[iter + prevLevel->numberOfVertices].y = nextLevel->vertices[iter + prevLevel->numberOfVertices].y /= d;
+		nextLevel->vertices[iter + prevLevel->numberOfVertices].z = nextLevel->vertices[iter + prevLevel->numberOfVertices].z /= d;
+	}
+
+	delete i;
+	delete j;
 	return true;
 }
 
