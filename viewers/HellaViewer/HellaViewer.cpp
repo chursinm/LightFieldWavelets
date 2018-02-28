@@ -37,8 +37,9 @@ int main(int argc, char** argv)
 	context.onKeyPress([&hlr](auto keymod, auto keycode) { if(keycode == SDLK_x) hlr.calculate(); });
 	*/
 
-	SphereRenderer sr(1u);
+	SphereRenderer sr(10u);
 	context.attachRenderer(sr);
+	context.onKeyPress([&sr](auto keymod, auto keycode) { if(keycode == SDLK_b) sr.increaseLevel(); else if(keycode == SDLK_v) sr.decreaseLevel(); });
 
 	if(!context.initialize()) { quit = true; }
 
