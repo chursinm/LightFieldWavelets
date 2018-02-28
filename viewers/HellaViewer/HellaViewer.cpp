@@ -8,9 +8,10 @@
 #include "HellaViewer.h"
 #include "CudaHaarLifting.cpp"
 #include "HaarLiftingRenderer.h"
+#include "SphereRenderer.h"
+#include "CameraArrayRenderer.h"
 
 void play_with_haar_lifting();
-void link_renderer(RenderContext& context);
 
 int main(int argc, char** argv)
 {
@@ -20,7 +21,24 @@ int main(int argc, char** argv)
 	bool quit = false;
 
 	RenderContext context(true);
-	link_renderer(context);
+	
+	CheckerboardRenderer cbr;
+	context.attachRenderer(cbr);
+
+	/*
+	CameraArrayRenderer car;
+	context.attachRenderer(car);
+	context.onKeyPress([&car](auto keymod, auto keycode) { car.handleInput(keymod, keycode); });
+	*/
+
+	/*
+	HaarLiftingRenderer hlr(4u);
+	context.attachRenderer(hlr);
+	context.onKeyPress([&hlr](auto keymod, auto keycode) { if(keycode == SDLK_x) hlr.calculate(); });
+	*/
+
+	SphereRenderer sr(1u);
+	context.attachRenderer(sr);
 
 	if(!context.initialize()) { quit = true; }
 
@@ -33,17 +51,6 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-void link_renderer(RenderContext& context)
-{
-	CheckerboardRenderer cbr;
-	context.attachRenderer(cbr);
-	//CameraArrayRenderer car;
-	//context.attachRenderer(car);
-	//context.onKeyPress([&car](auto keymod, auto keycode) { car.handleInput(keymod, keycode); });
-	HaarLiftingRenderer hlr(4u);
-	context.attachRenderer(hlr);
-	context.onKeyPress([&hlr](auto keymod, auto keycode) { if(keycode == SDLK_x) hlr.calculate(); });
-}
 
 void play_with_haar_lifting()
 {

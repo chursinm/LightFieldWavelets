@@ -54,13 +54,13 @@ void HaarLiftingRenderer::update(double timestep)
 {
 }
 
-void HaarLiftingRenderer::render(const glm::mat4x4 & viewProjection, const glm::vec3 & eyePosition)
+void HaarLiftingRenderer::render(const RenderData& renderData)
 {
 	glUseProgram(mGlProgram);
 
 	glBindVertexArray(mVao);
 
-	glUniformMatrix4fv(glGetUniformLocation(mGlProgram, "mvp"), 1, GL_FALSE, &viewProjection[0][0]);
+	GLUtility::setUniform(mGlProgram, "mvp", renderData.viewProjectionMatrix);
 
 	glEnable(GL_LINE_SMOOTH);
 	glLineWidth(1.f);

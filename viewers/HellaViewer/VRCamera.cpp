@@ -45,7 +45,7 @@ vec3 VRCamera::getPosition(vr::Hmd_Eye eye)
 	return eyeVector.xyz * (1/eyeVector.w); 
 }
 
-mat4x4 VRCamera::getMVP(vr::Hmd_Eye eye)
+mat4x4 VRCamera::getViewProjectionMatrix(vr::Hmd_Eye eye)
 {
 	switch (eye)
 	{
@@ -53,6 +53,32 @@ mat4x4 VRCamera::getMVP(vr::Hmd_Eye eye)
 		return m_LeftEyeProjection * m_LeftEyePosition * m_HMDTransformation;
 	case vr::Eye_Right:
 		return m_RightEyeProjection * m_RightEyePosition * m_HMDTransformation;
+	default:
+		throw "invalid eye on camera.getmvp";
+	}
+}
+
+glm::mat4x4 VRCamera::getViewMatrix(vr::Hmd_Eye eye)
+{
+	switch(eye)
+	{
+	case vr::Eye_Left:
+		return m_LeftEyePosition * m_HMDTransformation;
+	case vr::Eye_Right:
+		return m_RightEyePosition * m_HMDTransformation;
+	default:
+		throw "invalid eye on camera.getmvp";
+	}
+}
+
+glm::mat4x4 VRCamera::getProjectionMatrix(vr::Hmd_Eye eye)
+{
+	switch(eye)
+	{
+	case vr::Eye_Left:
+		return m_LeftEyeProjection;
+	case vr::Eye_Right:
+		return m_RightEyeProjection;
 	default:
 		throw "invalid eye on camera.getmvp";
 	}

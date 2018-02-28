@@ -93,11 +93,11 @@ void CameraArrayRenderer::initialize()
 	}
 }
 
-void CameraArrayRenderer::render(const glm::mat4x4& viewProjection, const glm::vec3& worldspaceEyePosition)
+void CameraArrayRenderer::render(const RenderData& renderData)
 {
 	if(m_FocalPlane < 0.f) m_FocalPlane = 0.001f;
-	auto mvp = viewProjection * m_CameraArrayQuadsModelMatrix;
-	auto imvp = inverse(viewProjection);
+	auto mvp = renderData.viewProjectionMatrix * m_CameraArrayQuadsModelMatrix;
+	auto imvp = inverse(renderData.viewProjectionMatrix);
 
 	/// CALCULATE FOCAL PLANE
 	auto a4 = m_CameraArrayQuadsModelMatrix * vec4(m_CameraArray.cameras[0]->uv, 0.f, 1.f);
@@ -112,7 +112,7 @@ void CameraArrayRenderer::render(const glm::mat4x4& viewProjection, const glm::v
 	glUseProgram(m_GlProgram);
 	glDisable(GL_CULL_FACE);
 
-	glUniform3fv(glGetUniformLocation(m_GlProgram, "worldspaceEyePosition"), 1, &worldspaceEyePosition[0]);
+	glUniform3fv(glGetUniformLocation(m_GlProgram, "worldspaceEyePosition"), 1, &renderData.eyePositionWorld[0]);
 	glUniformMatrix4fv(glGetUniformLocation(m_GlProgram, "mvp"), 1, GL_FALSE, &mvp[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(m_GlProgram, "ivp"), 1, GL_FALSE, &imvp[0][0]);
 	glUniform2uiv(glGetUniformLocation(m_GlProgram, "cameraGridDimension"), 1, &m_CameraArray.cameraGridDimension[0]);

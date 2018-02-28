@@ -2,6 +2,7 @@
 #include "CheckerboardRenderer.h"
 #include "ShaderManager.h"
 #include "Blit.h"
+#include "GLUtility.h"
 
 
 CheckerboardRenderer::CheckerboardRenderer()
@@ -26,15 +27,15 @@ void CheckerboardRenderer::update(double timestep)
 {
 }
 
-void CheckerboardRenderer::render(const glm::mat4x4 & viewProjection, const glm::vec3 & eyePosition)
+void CheckerboardRenderer::render(const RenderData& renderData)
 {
 	glUseProgram(mGlProgram);
 	glDepthMask(GL_FALSE);
 
-	auto invViewProjection = glm::inverse(viewProjection);
-	glUniformMatrix4fv(glGetUniformLocation(mGlProgram, "vp"), 1, GL_FALSE, &viewProjection[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(mGlProgram, "ivp"), 1, GL_FALSE, &invViewProjection[0][0]);
-	glUniform3fv(glGetUniformLocation(mGlProgram, "eyepos"), 1, &eyePosition[0]);
+	auto invViewProjection = glm::inverse(renderData.viewProjectionMatrix);
+	GLUtility::setUniform(mGlProgram, "vp", renderData.viewProjectionMatrix);
+	GLUtility::setUniform(mGlProgram, "ivp", invViewProjection);
+	GLUtility::setUniform(mGlProgram, "eyepos", renderData.eyePositionWorld);
 
 	Blit::instance().render();
 

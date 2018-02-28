@@ -1,9 +1,16 @@
 #pragma once
-//TODO	Use this as base class for our renderers.
-//		Need to decouple RenderContexts user input handling beforehand.. :(
 class Renderer
 {
 public:
+
+	struct RenderData
+	{
+		glm::mat4x4 viewProjectionMatrix;
+		glm::mat4x4 viewMatrix;
+		glm::mat4x4 projectionMatrix;
+		glm::vec3 eyePositionWorld;
+	};
+
 	/*
 		Cleanup used (opengl) resources
 	*/
@@ -19,5 +26,5 @@ public:
 	/*
 		Called per viewport
 	*/
-	virtual void render(const glm::mat4x4& viewProjection, const glm::vec3& eyePosition) = 0;
+	virtual void render(const RenderData& renderData) = 0;
 };

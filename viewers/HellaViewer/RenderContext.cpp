@@ -34,7 +34,7 @@ RenderContext::~RenderContext()
 
 void RenderContext::attachRenderer(Renderer & rend)
 {
-	onRenderEyeTexture([&rend](auto vp, auto eyePosWorld) { rend.render(vp, eyePosWorld); });
+	onRenderEyeTexture([&rend](auto renderData) { rend.render(renderData); });
 	onFrameStart([&rend](auto timeStep) { rend.update(timeStep); });
 	if(m_Initialized)
 	{
@@ -357,17 +357,19 @@ void RenderContext::render()
 void RenderContext::renderQuad(vr::Hmd_Eye eye)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	auto vp = m_VRCamera.getMVP(eye);
-	auto ivp = glm::inverse(vp);
+	auto v = m_VRCamera.getViewMatrix(eye);
+	auto p = m_VRCamera.getProjectionMatrix(eye);
+	auto vp = m_VRCamera.getViewProjectionMatrix(eye);
 	auto eyepos = m_VRCamera.getPosition(eye);
 	if(!m_VREnabled)
 	{
-		vp = m_pTrackballCamera->projectionMatrix() * m_pTrackballCamera->viewMatrix();
-		ivp = inverse(vp);
+		v = m_pTrackballCamera->viewMatrix();
+		p = m_pTrackballCamera->projectionMatrix();
+		vp = p * v;
 		eyepos = m_pTrackballCamera->getPosition();
 	}
 
-	onRenderEyeTexture(vp, eyepos);
+	onRenderEyeTexture({vp,v,p,eyepos});
 }
 
 void RenderContext::renderStereoTargets()

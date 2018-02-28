@@ -96,9 +96,6 @@
     <ClInclude Include="Blit.h">
       <Filter>Header Files\gl</Filter>
     </ClInclude>
-    <ClInclude Include="HaarLiftingRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CameraArrayRenderer.h">
       <Filter>Header Files\Renderer\CameraArray</Filter>
     </ClInclude>
@@ -107,6 +104,12 @@
     </ClInclude>
     <ClInclude Include="CudaGlArrayBuffer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereRenderer.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="HaarLiftingRenderer.h">
+      <Filter>Header Files\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -152,9 +155,6 @@
     <ClCompile Include="CudaHaarLifting.cpp">
       <Filter>Source Files\cuda</Filter>
     </ClCompile>
-    <ClCompile Include="HaarLiftingRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CudaPropertyViewer.cpp">
       <Filter>Source Files\cuda</Filter>
     </ClCompile>
@@ -167,8 +167,14 @@
     <ClCompile Include="CameraArrayParser.cpp">
       <Filter>Source Files\Renderer\CameraArray</Filter>
     </ClCompile>
+    <ClCompile Include="SphereRenderer.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="CudaGlArrayBuffer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HaarLiftingRenderer.cpp">
+      <Filter>Source Files\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

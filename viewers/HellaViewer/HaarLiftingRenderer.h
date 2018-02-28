@@ -10,7 +10,7 @@ public:
 
 	void initialize() override;
 	void update(double timestep) override;
-	void render(const glm::mat4x4 & viewProjection, const glm::vec3 & eyePosition) override;
+	void render(const RenderData& renderData) override;
 	void calculate();
 
 private:

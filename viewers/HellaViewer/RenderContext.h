@@ -29,7 +29,8 @@ public:
 	void render();
 
 	Signal<> postInitialize;
-	Signal<const glm::mat4x4&, const glm::vec3&> onRenderEyeTexture;
+	// TODO not every subscriber should include Renderer, fix it!
+	Signal<const Renderer::RenderData&> onRenderEyeTexture;
 	Signal<double> onFrameStart;
 	Signal<SDL_Keymod,SDL_Keycode> onKeyPress;
 

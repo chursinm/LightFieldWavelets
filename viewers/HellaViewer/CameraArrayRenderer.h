@@ -14,7 +14,7 @@ public:
 	CameraArrayRenderer();
 	~CameraArrayRenderer();
 	void initialize() override;
-	void render(const glm::mat4x4& viewProjection, const glm::vec3& eyePosition) override;
+	void render(const RenderData& renderData) override;
 	void update(double timestep) override {};
 	void handleInput(SDL_Keymod mod, SDL_Keycode code);
 private:
