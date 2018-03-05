@@ -7,7 +7,7 @@ in vec3 viewspaceVertex;
 
 layout(location = 0) out vec4 outColor;
 
-// constants as uniforms for performance reasons
+// constant as uniform for random performance reasons
 uniform vec3 COLORS[ 12 ] = {	vec3( 1.0, 0.0, 0.0 ),
                                 vec3( 0.0, 1.0, 0.0 ),
                                 vec3( 0.0, 0.0, 1.0 ),

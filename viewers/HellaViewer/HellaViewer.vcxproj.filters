@@ -43,6 +43,18 @@
     <Filter Include="Shader Files\cameraArray">
       <UniqueIdentifier>{b691bb68-aef4-48a9-9398-172fa9226ea3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader Files\sphereRenderer">
+      <UniqueIdentifier>{85418fa6-0e56-4f2e-858e-59c5dc6eb025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\haarLifting">
+      <UniqueIdentifier>{3bf1f263-712e-4e93-ac89-bf4920a9e5eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\companionWindowBlit">
+      <UniqueIdentifier>{7c8bb85d-701f-47d8-9fc3-17812a695a35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\checkerboard">
+      <UniqueIdentifier>{b65b369e-bf04-4603-b1ca-3b971bab5e74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -183,18 +195,6 @@
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader\desktop.frag">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shader\desktop.vert">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shader\stereo.frag">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shader\stereo.vert">
-      <Filter>Shader Files</Filter>
-    </None>
     <None Include="shader\cameraArray.vert">
       <Filter>Shader Files\cameraArray</Filter>
     </None>
@@ -204,20 +204,32 @@
     <None Include="shader\cameraArray.geom">
       <Filter>Shader Files\cameraArray</Filter>
     </None>
-    <None Include="shader\haarLifting.frag">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shader\haarLifting.vert">
-      <Filter>Shader Files</Filter>
-    </None>
     <None Include="shader\sphereRenderer.frag">
-      <Filter>Shader Files</Filter>
-    </None>
-    <None Include="shader\sphereRenderer.vert">
-      <Filter>Shader Files</Filter>
+      <Filter>Shader Files\sphereRenderer</Filter>
     </None>
     <None Include="shader\sphereRenderer.geom">
-      <Filter>Shader Files</Filter>
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\sphereRenderer.vert">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\haarLifting.vert">
+      <Filter>Shader Files\haarLifting</Filter>
+    </None>
+    <None Include="shader\haarLifting.frag">
+      <Filter>Shader Files\haarLifting</Filter>
+    </None>
+    <None Include="shader\desktop.vert">
+      <Filter>Shader Files\companionWindowBlit</Filter>
+    </None>
+    <None Include="shader\desktop.frag">
+      <Filter>Shader Files\companionWindowBlit</Filter>
+    </None>
+    <None Include="shader\stereo.vert">
+      <Filter>Shader Files\checkerboard</Filter>
+    </None>
+    <None Include="shader\stereo.frag">
+      <Filter>Shader Files\checkerboard</Filter>
     </None>
   </ItemGroup>
 </Project>
