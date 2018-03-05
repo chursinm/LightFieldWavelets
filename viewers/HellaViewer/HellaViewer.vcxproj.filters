@@ -204,5 +204,20 @@
     <None Include="shader\cameraArray.geom">
       <Filter>Shader Files\cameraArray</Filter>
     </None>
+    <None Include="shader\haarLifting.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\haarLifting.vert">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\sphereRenderer.frag">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\sphereRenderer.vert">
+      <Filter>Shader Files</Filter>
+    </None>
+    <None Include="shader\sphereRenderer.geom">
+      <Filter>Shader Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

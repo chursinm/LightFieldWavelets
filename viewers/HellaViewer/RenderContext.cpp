@@ -4,7 +4,9 @@
 
 #define PRINT_GL_INTEGER( name ) { printGLInteger(#name, name); }
 
-RenderContext::RenderContext(bool vsync) : m_Initialized(false), m_RenderRightEye(true), m_bVblank(vsync), m_LastFrameTime(0u), m_AccumulatedFrameTime(0.0), m_FrameCounter(0), m_pTrackballCamera(nullptr), m_VREnabled(false)
+RenderContext::RenderContext(const bool vsync, const bool vr) : m_Initialized(false), m_RenderRightEye(true), m_bVblank(vsync),
+                                                    m_pTrackballCamera(nullptr), m_VREnabled(vr),
+                                                    m_LastFrameTime(0u), m_FrameCounter(0), m_AccumulatedFrameTime(0.0)
 {
 }
 
@@ -50,7 +52,7 @@ bool RenderContext::initialize()
 {
 	bool success = true;
 	if(!initializeSDL()) { success = false; }
-	if(initializeOpenVR())
+	if(m_VREnabled && initializeOpenVR())
 	{
 		m_VREnabled = true;
 	}

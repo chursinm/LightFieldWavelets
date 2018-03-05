@@ -266,6 +266,11 @@
     <None Include="shader\cameraArray.vert" />
     <None Include="shader\desktop.frag" />
     <None Include="shader\desktop.vert" />
+    <None Include="shader\haarLifting.frag" />
+    <None Include="shader\haarLifting.vert" />
+    <None Include="shader\sphereRenderer.frag" />
+    <None Include="shader\sphereRenderer.geom" />
+    <None Include="shader\sphereRenderer.vert" />
     <None Include="shader\stereo.frag" />
     <None Include="shader\stereo.vert" />
   </ItemGroup>

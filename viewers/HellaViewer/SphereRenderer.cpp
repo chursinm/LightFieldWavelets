@@ -19,7 +19,7 @@ SphereRenderer::~SphereRenderer()
 
 void SphereRenderer::initialize()
 {
-	mGlProgram = ShaderManager::instance().from("shader/sphereRenderer.vert", "shader/sphereRenderer.frag");
+	mGlProgram = ShaderManager::instance().from("shader/sphereRenderer.vert", "shader/sphereRenderer.geom", "shader/sphereRenderer.frag");
 	setupGlBuffersForLevel(mCurrentLevel);
 }
 
@@ -30,11 +30,8 @@ void SphereRenderer::update(double timestep)
 void SphereRenderer::render(const RenderData& renderData)
 {
 
-#pragma region debug
-	glDisable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
-#pragma endregion
-
 
 	glUseProgram(mGlProgram);
 	GLUtility::setUniform(mGlProgram, "mvp", renderData.viewProjectionMatrix);
@@ -43,16 +40,9 @@ void SphereRenderer::render(const RenderData& renderData)
 	auto viewspaceLightPosition = viewspaceLightPosition4.xyz * (1.f / viewspaceLightPosition4.w);
 	viewspaceLightPosition = glm::vec3(0);
 	GLUtility::setUniform(mGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
+
 	glBindVertexArray(mVertexArrayObject);
-
 	glDrawElements(GL_TRIANGLES, mFacesCount*3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
-
-	// TODO after debugging, remove unbinding
-#pragma region debug
-	glBindVertexArray(0);
-	glUseProgram(0);
-	//glEnable(GL_CULL_FACE);
-#pragma endregion
 }
 
 void SphereRenderer::increaseLevel()

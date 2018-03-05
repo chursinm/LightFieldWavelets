@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 
 	bool quit = false;
 
-	RenderContext context(true);
+	RenderContext context(true, false);
 	
 	CheckerboardRenderer cbr;
 	context.attachRenderer(cbr);
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 	context.onKeyPress([&hlr](auto keymod, auto keycode) { if(keycode == SDLK_x) hlr.calculate(); });
 	*/
 
-	SphereRenderer sr(10u);
+	SphereRenderer sr(6u);
 	context.attachRenderer(sr);
 	context.onKeyPress([&sr](auto keymod, auto keycode) { if(keycode == SDLK_b) sr.increaseLevel(); else if(keycode == SDLK_v) sr.decreaseLevel(); });
 
