@@ -271,6 +271,7 @@
     <None Include="shader\sphereRenderer.frag" />
     <None Include="shader\sphereRenderer.geom" />
     <None Include="shader\sphereRenderer.vert" />
+    <None Include="shader\sphereRendererHighlightFaces.frag" />
     <None Include="shader\stereo.frag" />
     <None Include="shader\stereo.vert" />
   </ItemGroup>

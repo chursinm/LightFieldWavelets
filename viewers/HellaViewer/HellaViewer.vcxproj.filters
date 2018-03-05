@@ -231,5 +231,8 @@
     <None Include="shader\stereo.frag">
       <Filter>Shader Files\checkerboard</Filter>
     </None>
+    <None Include="shader\sphereRendererHighlightFaces.frag">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
   </ItemGroup>
 </Project>

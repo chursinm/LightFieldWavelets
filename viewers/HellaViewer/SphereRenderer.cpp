@@ -5,7 +5,7 @@
 #include <climits>
 using namespace std; // too many std calls :D
 
-SphereRenderer::SphereRenderer(unsigned int levelCount): 
+SphereRenderer::SphereRenderer(unsigned int levelCount) :
 	mSphereData(make_unique<SubdivisionShpere::SubdivisionSphere>(levelCount)), mFacesCount(0), mCurrentLevel(0)
 {
 }
@@ -20,6 +20,9 @@ SphereRenderer::~SphereRenderer()
 void SphereRenderer::initialize()
 {
 	mGlProgram = ShaderManager::instance().from("shader/sphereRenderer.vert", "shader/sphereRenderer.geom", "shader/sphereRenderer.frag");
+	mHighlightFacesGlProgram = ShaderManager::instance().from("shader/sphereRenderer.vert", "shader/sphereRenderer.geom", "shader/sphereRendererHighlightFaces.frag");
+	mDebugTexture = make_unique<Texture>("E:\\crohmann\\tmp\\world_texture2.jpg");
+	mDebugTexture->asyncTransferToGPU(std::chrono::duration<int>::max());
 	setupGlBuffersForLevel(mCurrentLevel);
 }
 
@@ -29,20 +32,37 @@ void SphereRenderer::update(double timestep)
 
 void SphereRenderer::render(const RenderData& renderData)
 {
+	const auto viewspaceLightPosition = glm::vec3(0); // lul
 
-	glEnable(GL_CULL_FACE);
+	// -------- drawing base sphere --------
+	glDisable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 	glUseProgram(mGlProgram);
+	mDebugTexture->bind(0u);
 	GLUtility::setUniform(mGlProgram, "mvp", renderData.viewProjectionMatrix);
 	GLUtility::setUniform(mGlProgram, "viewMatrix", renderData.viewMatrix);
-	const auto viewspaceLightPosition4 = renderData.viewMatrix * glm::vec4(10, 10, 10, 1);
-	auto viewspaceLightPosition = viewspaceLightPosition4.xyz * (1.f / viewspaceLightPosition4.w);
-	viewspaceLightPosition = glm::vec3(0);
 	GLUtility::setUniform(mGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
 
 	glBindVertexArray(mVertexArrayObject);
-	glDrawElements(GL_TRIANGLES, mFacesCount*3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
+	glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
+
+	// ------- drawing debug faces -------
+	glDepthFunc(GL_LEQUAL);
+	glUseProgram(mHighlightFacesGlProgram);
+	mDebugTexture->bind(0u);
+	GLUtility::setUniform(mHighlightFacesGlProgram, "mvp", renderData.viewProjectionMatrix);
+	GLUtility::setUniform(mHighlightFacesGlProgram, "viewMatrix", renderData.viewMatrix);
+	GLUtility::setUniform(mHighlightFacesGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
+	for(auto i : mHighlightFaces)
+	{
+		const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
+		if(i < sphereLevel.numberOfFaces)
+		{
+			glDrawElements(GL_TRIANGLES, 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(sizeof(unsigned int) * 3u * i));
+		}
+	}
 }
 
 void SphereRenderer::increaseLevel()
@@ -59,6 +79,11 @@ void SphereRenderer::decreaseLevel()
 	cleanupGlBuffers();
 	if(mCurrentLevel >= mSphereData->getNumberOfLevels()) mCurrentLevel = 0;
 	setupGlBuffersForLevel(mCurrentLevel);
+}
+
+void SphereRenderer::highlightFaces(const std::vector<unsigned>& faceIds)
+{
+	mHighlightFaces = faceIds;
 }
 
 void SphereRenderer::cleanupGlBuffers()
