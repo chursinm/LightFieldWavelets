@@ -15,7 +15,6 @@ public:
 	*/
 	void render() const;
 private:
-	void generateTriangle();
 	GLuint m_vao, m_vb;
 	Blit();
 	Blit(const Blit&);

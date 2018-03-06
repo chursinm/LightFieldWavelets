@@ -63,6 +63,9 @@ void SphereRenderer::render(const RenderData& renderData)
 			glDrawElements(GL_TRIANGLES, 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(sizeof(unsigned int) * 3u * i));
 		}
 	}
+
+	// ------- drawing debug vertices --------
+
 }
 
 void SphereRenderer::increaseLevel()
@@ -84,6 +87,11 @@ void SphereRenderer::decreaseLevel()
 void SphereRenderer::highlightFaces(const std::vector<unsigned>& faceIds)
 {
 	mHighlightFaces = faceIds;
+}
+
+void SphereRenderer::highlightVertices(const std::vector<unsigned>& vertexIds)
+{
+	mHighlightVertices = vertexIds;
 }
 
 void SphereRenderer::cleanupGlBuffers()

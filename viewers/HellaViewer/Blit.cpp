@@ -8,7 +8,7 @@ void Blit::render() const
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-void Blit::generateTriangle()
+Blit::Blit()
 {
 	// Create blitting VAO 
 	const GLfloat fullscreenTriangle[] = {
@@ -30,15 +30,10 @@ void Blit::generateTriangle()
 		glBindBuffer(GL_ARRAY_BUFFER, m_vb);
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, 0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, (void*)(sizeof(GLfloat)*2));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4, (void*)(sizeof(GLfloat) * 2));
 		glEnableVertexAttribArray(1);
 	}
 	glBindVertexArray(0);
-}
-
-Blit::Blit()
-{
-	generateTriangle();
 }
 
 

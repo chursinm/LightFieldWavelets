@@ -13,7 +13,7 @@ public:
 	*/
 	void operator() (std::function<void(Parameters...)> callback)
 	{
-		m_slots.push_back(callback);
+		mSlots.push_back(callback);
 	}
 
 	/*
@@ -21,10 +21,10 @@ public:
 	*/
 	void operator() (Parameters... params)
 	{
-		for(auto& c : m_slots) c(params...);
+		for(auto& c : mSlots) c(params...);
 	}
 
 private:
-	std::vector<std::function<void(Parameters...)>> m_slots;
+	std::vector<std::function<void(Parameters...)>> mSlots;
 };
 

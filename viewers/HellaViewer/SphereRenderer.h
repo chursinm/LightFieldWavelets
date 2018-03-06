@@ -15,6 +15,7 @@ public:
 	void increaseLevel();
 	void decreaseLevel();
 	void highlightFaces(const std::vector<unsigned int>& faceIds);
+	void highlightVertices(const std::vector<unsigned>& vertexIds);
 private:
 	void cleanupGlBuffers();
 	void setupGlBuffersForLevel(unsigned short level);
