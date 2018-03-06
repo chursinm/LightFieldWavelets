@@ -70,7 +70,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)\LightFieldWaveletLib\SphereStructure\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Projects\LightField\Code\thirdparty\glm_include;$(SolutionDir)\LightFieldVaveletLib;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>D:\Projects\LightField\Code\thirdparty\glm_include;$(SolutionDir)\LightFieldVaveletLib;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)\..\..\..\thirdparty\glm_include;$(SolutionDir)\LightFieldVaveletLib;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -120,8 +126,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LightFieldWaveletLib\LightFieldWaveletLib.vcxproj">
-      <Project>{a100cfae-ddd0-46f9-b4db-1b5fc698a2e4}</Project>
+    <ProjectReference Include="..\LightFieldVaveletLib\LightFieldVaveletLib.vcxproj">
+      <Project>{cd45ae67-a7e3-443f-9762-fc84bce39da3}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

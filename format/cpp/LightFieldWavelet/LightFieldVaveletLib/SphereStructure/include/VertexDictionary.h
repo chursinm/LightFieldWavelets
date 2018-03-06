@@ -18,7 +18,8 @@ struct KeyHasher
 {
 	long operator()(const Key& k) const
 	{
-		return k.firstIndex+k.secondIndex;
+		//return k.firstIndex+k.secondIndex;
+		return k.firstIndex;
 	}
 };
 

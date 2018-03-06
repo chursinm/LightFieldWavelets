@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{A100CFAE-DDD0-46F9-B4DB-1B5FC698A2E4}</ProjectGuid>
+    <ProjectGuid>{CD45AE67-A7E3-443F-9762-FC84BCE39DA3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>LightFieldWaveletLib</RootNamespace>
+    <RootNamespace>LightFieldVaveletLib</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -72,16 +72,18 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)\SphereStructure\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>D:\Projects\LightField\Code\thirdparty\glm_include;$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\Projects\LightField\Code\thirdparty\glm_include;$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\..\..\..\thirdparty\glm_include;$(SolutionDir)\LightFieldVaveletLib;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -152,6 +154,7 @@
     <ClInclude Include="SphereStructure\include\SubdivisionSphere.h" />
     <ClInclude Include="SphereStructure\include\VertexDictionary.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SphereStructure\source\SubdivisionSphere.cpp" />

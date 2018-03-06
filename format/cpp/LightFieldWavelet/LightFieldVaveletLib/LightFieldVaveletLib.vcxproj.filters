@@ -13,19 +13,28 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="SphereStructure">
+      <UniqueIdentifier>{60789bf8-a2d8-47e3-b2f7-d78c34fbab2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dictionary">
+      <UniqueIdentifier>{16ed9229-158e-4f7f-9e31-baa51f3fe676}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SphereStructure\include\Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SphereStructure\include\SubdivisionSphere.h">
-      <Filter>Header Files</Filter>
+      <Filter>SphereStructure</Filter>
     </ClInclude>
     <ClInclude Include="SphereStructure\include\VertexDictionary.h">
-      <Filter>Header Files</Filter>
+      <Filter>Dictionary</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -33,10 +42,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SphereStructure\source\SubdivisionSphere.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>SphereStructure</Filter>
     </ClCompile>
     <ClCompile Include="SphereStructure\source\VertexDictionary.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Dictionary</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
