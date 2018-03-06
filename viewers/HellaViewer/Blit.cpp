@@ -2,7 +2,7 @@
 #include "Blit.h"
 
 
-void Blit::render()
+void Blit::render() const
 {
 	glBindVertexArray(m_vao);
 	glDrawArrays(GL_TRIANGLES, 0, 3);

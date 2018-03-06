@@ -34,6 +34,27 @@
     <Filter Include="Source Files\Renderer">
       <UniqueIdentifier>{70f48855-8f00-4754-a255-293d6564dd16}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Renderer\CameraArray">
+      <UniqueIdentifier>{d5ee8b64-edc5-40d4-9869-0d044b2c8087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Renderer\CameraArray">
+      <UniqueIdentifier>{37d30cc4-c6a5-408c-b553-bb9c5254505e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\cameraArray">
+      <UniqueIdentifier>{b691bb68-aef4-48a9-9398-172fa9226ea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\sphereRenderer">
+      <UniqueIdentifier>{85418fa6-0e56-4f2e-858e-59c5dc6eb025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\haarLifting">
+      <UniqueIdentifier>{3bf1f263-712e-4e93-ac89-bf4920a9e5eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\companionWindowBlit">
+      <UniqueIdentifier>{7c8bb85d-701f-47d8-9fc3-17812a695a35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader Files\checkerboard">
+      <UniqueIdentifier>{b65b369e-bf04-4603-b1ca-3b971bab5e74}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -59,12 +80,6 @@
     </ClInclude>
     <ClInclude Include="Signal.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraArrayParser.h">
-      <Filter>Header Files\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraArrayRenderer.h">
-      <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="GLUtility.h">
       <Filter>Header Files\gl</Filter>
@@ -93,6 +108,21 @@
     <ClInclude Include="Blit.h">
       <Filter>Header Files\gl</Filter>
     </ClInclude>
+    <ClInclude Include="CameraArrayRenderer.h">
+      <Filter>Header Files\Renderer\CameraArray</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraArrayParser.h">
+      <Filter>Header Files\Renderer\CameraArray</Filter>
+    </ClInclude>
+    <ClInclude Include="CudaGlArrayBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereRenderer.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="HaarLiftingRenderer.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -101,17 +131,8 @@
     <ClCompile Include="thirdparty\tinyxml2\tinyxml2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HellaViewer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Signal.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraArrayRenderer.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraArrayParser.cpp">
-      <Filter>Source Files\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="GLUtility.cpp">
       <Filter>Source Files\gl</Filter>
@@ -140,39 +161,78 @@
     <ClCompile Include="Blit.cpp">
       <Filter>Source Files\gl</Filter>
     </ClCompile>
+    <ClCompile Include="HellaViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaHaarLifting.cpp">
+      <Filter>Source Files\cuda</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaPropertyViewer.cpp">
+      <Filter>Source Files\cuda</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaUtility.cpp">
+      <Filter>Source Files\cuda</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraArrayRenderer.cpp">
+      <Filter>Source Files\Renderer\CameraArray</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraArrayParser.cpp">
+      <Filter>Source Files\Renderer\CameraArray</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereRenderer.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="CudaGlArrayBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HaarLiftingRenderer.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="CudaHaarLifting.cu">
       <Filter>Source Files\cuda</Filter>
     </CudaCompile>
-    <CudaCompile Include="CudaPropertyViewer.cpp">
-      <Filter>Source Files\cuda</Filter>
-    </CudaCompile>
-    <CudaCompile Include="CudaUtility.cpp">
-      <Filter>Source Files\cuda</Filter>
-    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="shader\cameraArray.vert">
+      <Filter>Shader Files\cameraArray</Filter>
+    </None>
     <None Include="shader\cameraArray.frag">
-      <Filter>Shader Files</Filter>
+      <Filter>Shader Files\cameraArray</Filter>
     </None>
     <None Include="shader\cameraArray.geom">
-      <Filter>Shader Files</Filter>
+      <Filter>Shader Files\cameraArray</Filter>
     </None>
-    <None Include="shader\cameraArray.vert">
-      <Filter>Shader Files</Filter>
+    <None Include="shader\sphereRenderer.frag">
+      <Filter>Shader Files\sphereRenderer</Filter>
     </None>
-    <None Include="shader\desktop.frag">
-      <Filter>Shader Files</Filter>
+    <None Include="shader\sphereRenderer.geom">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\sphereRenderer.vert">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\haarLifting.vert">
+      <Filter>Shader Files\haarLifting</Filter>
+    </None>
+    <None Include="shader\haarLifting.frag">
+      <Filter>Shader Files\haarLifting</Filter>
     </None>
     <None Include="shader\desktop.vert">
-      <Filter>Shader Files</Filter>
+      <Filter>Shader Files\companionWindowBlit</Filter>
     </None>
-    <None Include="shader\stereo.frag">
-      <Filter>Shader Files</Filter>
+    <None Include="shader\desktop.frag">
+      <Filter>Shader Files\companionWindowBlit</Filter>
     </None>
     <None Include="shader\stereo.vert">
-      <Filter>Shader Files</Filter>
+      <Filter>Shader Files\checkerboard</Filter>
+    </None>
+    <None Include="shader\stereo.frag">
+      <Filter>Shader Files\checkerboard</Filter>
+    </None>
+    <None Include="shader\sphereRendererHighlightFaces.frag">
+      <Filter>Shader Files\sphereRenderer</Filter>
     </None>
   </ItemGroup>
 </Project>

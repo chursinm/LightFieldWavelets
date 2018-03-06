@@ -99,6 +99,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,13 +112,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <BrowseInformation>true</BrowseInformation>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,7 +131,14 @@
     </Bscmake>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalCompilerOptions>
+      </AdditionalCompilerOptions>
+      <AdditionalOptions>--default-stream per-thread %(AdditionalOptions)</AdditionalOptions>
+      <Defines>CUDA_API_PER_THREAD_DEFAULT_STREAM </Defines>
     </CudaCompile>
+    <CudaLink>
+      <AdditionalOptions>--default-stream per-thread %(AdditionalOptions)</AdditionalOptions>
+    </CudaLink>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -141,6 +150,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,7 +165,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -163,6 +173,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -173,23 +184,41 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalCompilerOptions>
+      </AdditionalCompilerOptions>
+      <AdditionalOptions>--default-stream per-thread %(AdditionalOptions)</AdditionalOptions>
+      <Defines>CUDA_API_PER_THREAD_DEFAULT_STREAM </Defines>
     </CudaCompile>
+    <CudaLink>
+      <AdditionalOptions>--default-stream per-thread %(AdditionalOptions)</AdditionalOptions>
+    </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="CudaHaarLifting.cu" />
+    <ClCompile Include="CudaGlArrayBuffer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="CudaHaarLifting.cpp">
+      <FileType>Document</FileType>
+    </ClCompile>
     <ClInclude Include="CameraArrayParser.h" />
     <ClInclude Include="CameraArrayRenderer.h" />
     <ClInclude Include="CheckerboardRenderer.h" />
+    <ClInclude Include="CudaGlArrayBuffer.h" />
     <ClInclude Include="CudaHaarLifting.h" />
     <ClInclude Include="CudaPropertyViewer.h" />
     <ClInclude Include="CudaUtility.h" />
     <ClInclude Include="Blit.h" />
     <ClInclude Include="GLUtility.h" />
+    <ClInclude Include="HaarLiftingRenderer.h" />
     <ClInclude Include="HellaViewer.h" />
     <ClInclude Include="RenderContext.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Signal.h" />
+    <ClInclude Include="SphereRenderer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
@@ -200,16 +229,18 @@
   <ItemGroup>
     <ClCompile Include="CameraArrayParser.cpp" />
     <ClCompile Include="CameraArrayRenderer.cpp" />
-    <CudaCompile Include="CudaPropertyViewer.cpp" />
-    <CudaCompile Include="CudaUtility.cpp" />
+    <ClCompile Include="CudaPropertyViewer.cpp" />
+    <ClCompile Include="CudaUtility.cpp" />
     <ClCompile Include="CheckerboardRenderer.cpp" />
     <ClCompile Include="Blit.cpp" />
     <ClCompile Include="GLUtility.cpp" />
+    <ClCompile Include="HaarLiftingRenderer.cpp" />
     <ClCompile Include="HellaViewer.cpp" />
     <ClCompile Include="RenderContext.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Signal.cpp" />
+    <ClCompile Include="SphereRenderer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -227,13 +258,27 @@
     <ClCompile Include="VRCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="CudaHaarLifting.cu">
+      <FileType>Document</FileType>
+    </CudaCompile>
     <None Include="shader\cameraArray.frag" />
     <None Include="shader\cameraArray.geom" />
     <None Include="shader\cameraArray.vert" />
     <None Include="shader\desktop.frag" />
     <None Include="shader\desktop.vert" />
+    <None Include="shader\haarLifting.frag" />
+    <None Include="shader\haarLifting.vert" />
+    <None Include="shader\sphereRenderer.frag" />
+    <None Include="shader\sphereRenderer.geom" />
+    <None Include="shader\sphereRenderer.vert" />
+    <None Include="shader\sphereRendererHighlightFaces.frag" />
     <None Include="shader\stereo.frag" />
     <None Include="shader\stereo.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\LightFieldWaveletLib.vcxproj">
+      <Project>{a100cfae-ddd0-46f9-b4db-1b5fc698a2e4}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

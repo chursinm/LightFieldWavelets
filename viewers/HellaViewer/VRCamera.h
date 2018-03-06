@@ -10,7 +10,9 @@ public:
 	void setup(vr::IVRSystem& vrInterface);
 	void update();
 	glm::vec3 getPosition(vr::Hmd_Eye eye);
-	glm::mat4x4 getMVP(vr::Hmd_Eye eye);
+	glm::mat4x4 getViewProjectionMatrix(vr::Hmd_Eye eye);
+	glm::mat4x4 getViewMatrix(vr::Hmd_Eye eye);
+	glm::mat4x4 getProjectionMatrix(vr::Hmd_Eye eye);
 private:
 	float	m_NearClip, m_FarClip;
 	glm::mat4x4	m_LeftEyeProjection, m_RightEyeProjection,

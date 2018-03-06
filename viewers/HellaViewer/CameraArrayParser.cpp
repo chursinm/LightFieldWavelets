@@ -36,8 +36,8 @@ CameraArray CameraArrayParser::parse(const std::string & filename)
 	while(cameraElement)
 	{
 		auto texturePath = cameraElement->Attribute(texturePathAttributeKey);
-		auto u = cameraElement->DoubleAttribute(uAttributeKey);
-		auto v = cameraElement->DoubleAttribute(vAttributeKey);
+		auto u = static_cast<float>(cameraElement->DoubleAttribute(uAttributeKey));
+		auto v = static_cast<float>(cameraElement->DoubleAttribute(vAttributeKey));
 		auto camera = std::make_unique<ArrayCamera>();
 		camera->tex = std::make_unique<Texture>(path.parent_path().append(texturePath).string());
 		camera->uv = glm::vec2(u, v);
