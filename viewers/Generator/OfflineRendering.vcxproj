@@ -90,17 +90,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ColoredPlaneSampler.h" />
+    <ClInclude Include="Generator.h" />
     <ClInclude Include="PlaneSampler.h" />
     <ClInclude Include="Sampler.h" />
+    <ClInclude Include="SetSampler.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TexturedPlaneSampler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ColoredPlaneSampler.cpp" />
-    <ClCompile Include="OfflineRendering.cpp" />
+    <ClCompile Include="Generator.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="PlaneSampler.cpp" />
     <ClCompile Include="Sampler.cpp" />
+    <ClCompile Include="SetSampler.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
