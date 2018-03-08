@@ -74,7 +74,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>thirdparty\SDL2_image-2.0.2\include;thirdparty\openvr\headers;thirdparty\glm_include;thirdparty\glew\glew-1.11.0\include;thirdparty\sdl2-2.0.3\include;$(IncludePath)</IncludePath>
-    <LibraryPath>thirdparty\SDL2_image-2.0.2\lib\x64;thirdparty\openvr\lib\win32;thirdparty\glew\glew-1.11.0\lib\Release\Win32;thirdparty\sdl2-2.0.3\bin\win32;$(LibraryPath)</LibraryPath>
+    <LibraryPath>thirdparty\SDL2_image-2.0.2\lib\x86;thirdparty\openvr\lib\win32;thirdparty\glew\glew-1.11.0\lib\Release\Win32;thirdparty\sdl2-2.0.3\bin\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -84,7 +84,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>thirdparty\SDL2_image-2.0.2\include;thirdparty\openvr\headers;thirdparty\glm_include;thirdparty\glew\glew-1.11.0\include;thirdparty\sdl2-2.0.3\include;$(IncludePath)</IncludePath>
-    <LibraryPath>thirdparty\SDL2_image-2.0.2\lib\x64;thirdparty\openvr\lib\win32;thirdparty\glew\glew-1.11.0\lib\Release\Win32;thirdparty\sdl2-2.0.3\bin\win32;$(LibraryPath)</LibraryPath>
+    <LibraryPath>thirdparty\SDL2_image-2.0.2\lib\x86;thirdparty\openvr\lib\win32;thirdparty\glew\glew-1.11.0\lib\Release\Win32;thirdparty\sdl2-2.0.3\bin\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -99,7 +99,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,7 +119,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <BrowseInformation>true</BrowseInformation>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,7 +150,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -173,7 +173,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -272,12 +272,14 @@
     <None Include="shader\sphereRenderer.geom" />
     <None Include="shader\sphereRenderer.vert" />
     <None Include="shader\sphereRendererHighlightFaces.frag" />
+    <None Include="shader\sphereRendererHighlightVertices.frag" />
+    <None Include="shader\sphereRendererHighlightVertices.vert" />
     <None Include="shader\stereo.frag" />
     <None Include="shader\stereo.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\LightFieldWaveletLib.vcxproj">
-      <Project>{a100cfae-ddd0-46f9-b4db-1b5fc698a2e4}</Project>
+    <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\LightFieldVaveletLib.vcxproj">
+      <Project>{cd45ae67-a7e3-443f-9762-fc84bce39da3}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -107,8 +107,8 @@ mat4x4 TrackballCamera::viewMatrix() const
 mat4x4 TrackballCamera::projectionMatrix() const
 {
 	// taken from http://nehe.gamedev.net/article/replacement_for_gluperspective/21002/
-	double zFar = 100.;
-	double zNear = 0.045;
+	double zFar = 25.;
+	double zNear = 0.0045;
 	double fovy = 106.;
 	const double pi = 3.1415926535897932384626433832795;
 	double fW, fH;

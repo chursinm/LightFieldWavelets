@@ -21,7 +21,8 @@ void SphereRenderer::initialize()
 {
 	mGlProgram = ShaderManager::instance().from("shader/sphereRenderer.vert", "shader/sphereRenderer.geom", "shader/sphereRenderer.frag");
 	mHighlightFacesGlProgram = ShaderManager::instance().from("shader/sphereRenderer.vert", "shader/sphereRenderer.geom", "shader/sphereRendererHighlightFaces.frag");
-	mDebugTexture = make_unique<Texture>("E:\\crohmann\\tmp\\world_texture2.jpg");
+	mHighlightVerticesGlProgram = ShaderManager::instance().from("shader/sphereRendererHighlightVertices.vert", "shader/sphereRendererHighlightVertices.frag");
+	mDebugTexture = make_unique<Texture>("E:\\crohmann\\tmp\\world_texture.jpg");
 	mDebugTexture->asyncTransferToGPU(std::chrono::duration<int>::max());
 	setupGlBuffersForLevel(mCurrentLevel);
 }
@@ -34,22 +35,56 @@ void SphereRenderer::render(const RenderData& renderData)
 {
 	const auto viewspaceLightPosition = glm::vec3(0); // lul
 
-	// -------- drawing base sphere --------
-	glDisable(GL_CULL_FACE);
+	// -------- drawing base sphere frontface --------
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+
+	glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_ONE, GL_SRC_ALPHA);
 
 	glUseProgram(mGlProgram);
 	mDebugTexture->bind(0u);
 	GLUtility::setUniform(mGlProgram, "mvp", renderData.viewProjectionMatrix);
 	GLUtility::setUniform(mGlProgram, "viewMatrix", renderData.viewMatrix);
 	GLUtility::setUniform(mGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
+	GLUtility::setUniform(mGlProgram, "alphaMult", 0.95f);
+	GLUtility::setUniform(mGlProgram, "alphaOut", 0.05f);
 
 	glBindVertexArray(mVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
 
+
+	// ------- drawing debug vertices --------
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+
+	glEnable(GL_PROGRAM_POINT_SIZE);
+	glUseProgram(mHighlightVerticesGlProgram);
+	GLUtility::setUniform(mHighlightVerticesGlProgram, "mvp", renderData.viewProjectionMatrix);
+	GLUtility::setUniform(mHighlightVerticesGlProgram, "viewMatrix", renderData.viewMatrix);
+	GLUtility::setUniform(mHighlightVerticesGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
+	GLUtility::setUniform(mHighlightVerticesGlProgram, "pointSize", 80.0f / (mCurrentLevel + 1.0f));
+	for(auto i : mHighlightVertices)
+	{
+		const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
+		if(i < sphereLevel.numberOfVertices)
+		{
+			glDrawArrays(GL_POINTS, i, 1u);
+		}
+	}
+
 	// ------- drawing debug faces -------
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+
+	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
+
 	glUseProgram(mHighlightFacesGlProgram);
 	mDebugTexture->bind(0u);
 	GLUtility::setUniform(mHighlightFacesGlProgram, "mvp", renderData.viewProjectionMatrix);
@@ -64,8 +99,23 @@ void SphereRenderer::render(const RenderData& renderData)
 		}
 	}
 
-	// ------- drawing debug vertices --------
+	// -------- drawing base sphere backface ---------
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_DST_ALPHA);
+
+	glUseProgram(mGlProgram);
+	GLUtility::setUniform(mGlProgram, "alphaMult", 1.0f);
+	GLUtility::setUniform(mGlProgram, "alphaOut", 1.0f);
+
+	glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
+	glDisable(GL_BLEND);
 }
 
 void SphereRenderer::increaseLevel()
@@ -111,9 +161,9 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 		indices->reserve(sphereLevel.numberOfFaces * 3);
 		for(auto faceIterator = sphereLevel.faces; faceIterator != (sphereLevel.faces + sphereLevel.numberOfFaces); ++faceIterator)
 		{
-			indices->push_back(faceIterator->vertA - 1);
-			indices->push_back(faceIterator->vertB - 1);
-			indices->push_back(faceIterator->vertC - 1);
+			indices->push_back(faceIterator->vertA);
+			indices->push_back(faceIterator->vertB);
+			indices->push_back(faceIterator->vertC);
 		}
 		mIndexBuffer = GLUtility::generateBuffer(GL_ELEMENT_ARRAY_BUFFER, *indices, GL_STATIC_DRAW);
 		// TODO direct transfer using bufferSubData
@@ -124,7 +174,7 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 		vertices->reserve(sphereLevel.numberOfVertices);
 		for(auto vertexIterator = sphereLevel.vertices; vertexIterator != (sphereLevel.vertices + sphereLevel.numberOfVertices); ++vertexIterator)
 		{
-			vertices->push_back(glm::vec3(vertexIterator->x, vertexIterator->y, vertexIterator->z));
+			vertices->push_back(vertexIterator->position);
 		}
 		mVertexBuffer = GLUtility::generateBuffer(GL_ARRAY_BUFFER, *vertices, GL_STATIC_DRAW);
 		// TODO direct transfer using bufferSubData

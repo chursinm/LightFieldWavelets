@@ -257,6 +257,9 @@ bool RenderContext::handleSDL()
 				PRINT_GL_INTEGER(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS);
 				PRINT_GL_INTEGER(GL_MAX_GEOMETRY_OUTPUT_VERTICES);
 				PRINT_GL_INTEGER(GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS);
+				GLfloat sizeRange[2] = { 0.0f };
+				glGetFloatv(GL_POINT_SIZE_RANGE, sizeRange);
+				std::cout << "GL_POINT_SIZE_RANGE: " << sizeRange[0] << "-" << sizeRange[1] << std::endl;
 				break;
 			}
 		}

@@ -20,7 +20,7 @@ private:
 	void cleanupGlBuffers();
 	void setupGlBuffersForLevel(unsigned short level);
 	std::unique_ptr<SubdivisionShpere::SubdivisionSphere> mSphereData;
-	GLuint mVertexBuffer, mIndexBuffer, mVertexArrayObject, mGlProgram, mHighlightFacesGlProgram;
+	GLuint mVertexBuffer, mIndexBuffer, mVertexArrayObject, mGlProgram, mHighlightFacesGlProgram, mHighlightVerticesGlProgram;
 	unsigned int mFacesCount, mCurrentLevel;
 	std::vector<unsigned int> mHighlightFaces, mHighlightVertices;
 	std::unique_ptr<Texture> mDebugTexture;

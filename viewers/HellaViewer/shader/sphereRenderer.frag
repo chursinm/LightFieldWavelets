@@ -2,6 +2,8 @@
 
 uniform vec3 viewspaceLightPosition;
 uniform sampler2D debugTexture;
+uniform float alphaOut;
+uniform float alphaMult;
 
 in vec3 edgeDistance;
 in vec3 viewspaceVertex;
@@ -44,21 +46,8 @@ bool checkerboard(vec2 a, int level)
 	return mod(a.x*level*2, 2) >= 1 != mod(a.y*level*2, 2) >= 1;
 }
 
-void main(void)
+vec3 highlightEdge(vec3 baseColor, vec3 edgeColor)
 {
-	int primitiveMod = gl_PrimitiveID % 12;
-	vec3 color = COLORS[primitiveMod] * 0.7;
-
-	vec3 viewDir = normalize(-viewspaceVertex);
-	vec3 lightDir = normalize(viewspaceLightPosition - viewspaceVertex);
-	vec3 normal = normalize(cross(dFdx(viewspaceVertex), dFdy(viewspaceVertex)));
-	outColor = vec4(phong(viewDir, lightDir, normal, vec3(0), color, color, 0.5f), 1.0f);
-	//outColor = texture(debugTexture, uv);
-	//outColor = vec4(checkerboard(uv, 1));
-	//outColor = vec4(uv, 0, 1);
-	
-	// -------------------------- render edges --------------------------------
-	const vec3 edgeColor = vec3(0.1);
 	float minEdgeDistance = min(edgeDistance.x, min(edgeDistance.y, edgeDistance.z));
 
 	// calculate a scale: smaller triangles have a bigger edge relative to their size (naive approach in screen space)
@@ -69,5 +58,39 @@ void main(void)
 
 	// blending
 	float edgeLerpFactor = smoothstep(edgeBound, 0.00, minEdgeDistance);
-	outColor.xyz = mix(outColor.xyz, edgeColor, edgeLerpFactor);
+	return mix(baseColor, edgeColor, edgeLerpFactor);
+}
+
+vec3 highlightEdge2(vec3 baseColor, vec3 edgeColor)
+{
+	float minEdgeDistance = min(abs(edgeDistance.x - 0.5f), min(abs(edgeDistance.y - 0.5f), abs(edgeDistance.z - 0.5f)));
+	//float minEdgeDistance = min(abs(edgeDistance.x - 0.5f), min(edgeDistance.y, edgeDistance.z));
+
+	// calculate a scale: smaller triangles have a bigger edge relative to their size (naive approach in screen space)
+	vec3 dx_edgeDistance = dFdx(edgeDistance);
+    vec3 dy_edgeDistance = dFdy(edgeDistance);
+	float edgeScale = max(dot(dy_edgeDistance, dy_edgeDistance), dot(dx_edgeDistance, dx_edgeDistance));
+	float edgeBound = 0.01 * pow(edgeScale, 0.1);
+
+	// blending
+	float edgeLerpFactor = smoothstep(edgeBound, 0.00, minEdgeDistance);
+	return mix(baseColor, edgeColor, edgeLerpFactor);
+}
+
+void main(void)
+{
+	int primitiveMod = gl_PrimitiveID % 12;
+	vec3 color = COLORS[primitiveMod] * 0.7;
+
+	vec3 viewDir = normalize(-viewspaceVertex);
+	vec3 lightDir = normalize(viewspaceLightPosition - viewspaceVertex);
+	vec3 normal = normalize(cross(dFdx(viewspaceVertex), dFdy(viewspaceVertex)));
+	outColor = vec4(phong(viewDir, lightDir, normal, vec3(0), color, color, 0.5f), alphaOut);
+	//outColor = texture(debugTexture, uv);
+	//outColor = vec4(checkerboard(uv, 1));
+	//outColor = vec4(uv, 0, 1);
+
+	outColor.xyz = highlightEdge(outColor.xyz, vec3(0.1));
+	outColor.xyz = highlightEdge2(outColor.xyz, vec3(0,0.4,0.4));
+	outColor.xyz *= alphaMult;
 }

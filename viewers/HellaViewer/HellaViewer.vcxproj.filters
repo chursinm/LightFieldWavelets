@@ -234,5 +234,11 @@
     <None Include="shader\sphereRendererHighlightFaces.frag">
       <Filter>Shader Files\sphereRenderer</Filter>
     </None>
+    <None Include="shader\sphereRendererHighlightVertices.frag">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\sphereRendererHighlightVertices.vert">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
   </ItemGroup>
 </Project>

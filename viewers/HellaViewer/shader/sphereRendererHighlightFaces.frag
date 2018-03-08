@@ -31,7 +31,7 @@ void main(void)
 	vec3 viewDir = normalize(-viewspaceVertex);
 	vec3 lightDir = normalize(viewspaceLightPosition - viewspaceVertex);
 	vec3 normal = normalize(cross(dFdx(viewspaceVertex), dFdy(viewspaceVertex)));
-	outColor = vec4(phong(viewDir, lightDir, normal, vec3(0), color, color, 0.5f), 1.0f);
+	outColor = vec4(phong(viewDir, lightDir, normal, vec3(0), color, color, 0.5f), 0.4f);
 	
 	// -------------------------- render edges --------------------------------
 	const vec3 edgeColor = vec3(1,1,0);
