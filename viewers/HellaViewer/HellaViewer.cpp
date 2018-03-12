@@ -20,12 +20,11 @@ int main(int argc, char** argv)
 
 	bool quit = false;
 
-	RenderContext context(true, true);
+	RenderContext context(true, false);
 	
 	
 	CheckerboardRenderer cbr;
 	context.attachRenderer(cbr);
-	
 
 	/*
 	CameraArrayRenderer car;
@@ -39,10 +38,9 @@ int main(int argc, char** argv)
 	context.onKeyPress([&hlr](auto keymod, auto keycode) { if(keycode == SDLK_x) hlr.calculate(); });
 	*/
 
-	SphereRenderer sr(9u);
-
-	sr.highlightFaces({1u,3u,5u,10u});
-	sr.highlightVertices({ 1u,3u,5u,10u });
+	SphereRenderer sr(8u);
+	//sr.highlightFaces({ 1u,3u,5u,10u });
+	//sr.highlightVertices({ 1u,3u,5u,10u });
 
 	context.attachRenderer(sr);
 	context.onKeyPress([&sr](auto keymod, auto keycode) { if(keycode == SDLK_b) sr.increaseLevel(); else if(keycode == SDLK_v) sr.decreaseLevel(); });

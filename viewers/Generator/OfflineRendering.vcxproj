@@ -20,13 +20,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -89,8 +89,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CheckerboardSampler.h" />
     <ClInclude Include="ColoredPlaneSampler.h" />
     <ClInclude Include="Generator.h" />
+    <ClInclude Include="LightfieldLevel.h" />
     <ClInclude Include="PlaneSampler.h" />
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="SetSampler.h" />
@@ -99,8 +101,10 @@
     <ClInclude Include="TexturedPlaneSampler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CheckerboardSampler.cpp" />
     <ClCompile Include="ColoredPlaneSampler.cpp" />
     <ClCompile Include="Generator.cpp" />
+    <ClCompile Include="LightfieldLevel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlaneSampler.cpp" />
     <ClCompile Include="Sampler.cpp" />

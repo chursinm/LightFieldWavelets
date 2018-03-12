@@ -6,7 +6,7 @@ namespace Generator
 {
 	struct LightfieldData
 	{
-		// Global Metadata
+		// Per Level
 		float minTriangleEdgeLength;
 		float avgTriangleEdgeLength;
 		float maxTriangleEdgeLength;
@@ -14,9 +14,10 @@ namespace Generator
 		unsigned int positionSampleCount;
 		unsigned int rotationSampleCount; // == positionSampleCount, as subdivisionLevel (SL) = positionSL = rotationSL
 		unsigned int totalSampleCount;
-		glm::vec3 sphereCenter; // basically always 0,0,0
 
-		// Per Sphere Data
+		// Per Sphere
+		glm::vec3 sphereCenter; // basically always 0,0,0
+		float sphereRadius; // should be 1, closer to 0.98 in reality
 		SubdivisionShpere::Face *faces;
 		SubdivisionShpere::Vertex *vertices;
 		std::vector<glm::vec3> normal; // eg normal[i] = normalize( (vertices+i)->position - sphereCenter )

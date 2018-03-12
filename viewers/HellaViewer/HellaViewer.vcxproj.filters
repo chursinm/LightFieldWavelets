@@ -204,15 +204,6 @@
     <None Include="shader\cameraArray.geom">
       <Filter>Shader Files\cameraArray</Filter>
     </None>
-    <None Include="shader\sphereRenderer.frag">
-      <Filter>Shader Files\sphereRenderer</Filter>
-    </None>
-    <None Include="shader\sphereRenderer.geom">
-      <Filter>Shader Files\sphereRenderer</Filter>
-    </None>
-    <None Include="shader\sphereRenderer.vert">
-      <Filter>Shader Files\sphereRenderer</Filter>
-    </None>
     <None Include="shader\haarLifting.vert">
       <Filter>Shader Files\haarLifting</Filter>
     </None>
@@ -231,13 +222,28 @@
     <None Include="shader\stereo.frag">
       <Filter>Shader Files\checkerboard</Filter>
     </None>
-    <None Include="shader\sphereRendererHighlightFaces.frag">
+    <None Include="shader\sphereRenderer\sphereRenderer.vert">
       <Filter>Shader Files\sphereRenderer</Filter>
     </None>
-    <None Include="shader\sphereRendererHighlightVertices.frag">
+    <None Include="shader\sphereRenderer\sphereRendererHighlightFaces.frag">
       <Filter>Shader Files\sphereRenderer</Filter>
     </None>
-    <None Include="shader\sphereRendererHighlightVertices.vert">
+    <None Include="shader\sphereRenderer\sphereRendererHighlightVertices.frag">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\sphereRenderer\sphereRendererHighlightVertices.vert">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\sphereRenderer\sphereRenderer.frag">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\sphereRenderer\sphereRenderer.geom">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\sphereRenderer\lightfieldRenderer.vert">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\sphereRenderer\lightfieldRenderer.frag">
       <Filter>Shader Files\sphereRenderer</Filter>
     </None>
   </ItemGroup>

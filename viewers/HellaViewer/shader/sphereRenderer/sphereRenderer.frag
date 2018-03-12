@@ -85,12 +85,12 @@ void main(void)
 	vec3 viewDir = normalize(-viewspaceVertex);
 	vec3 lightDir = normalize(viewspaceLightPosition - viewspaceVertex);
 	vec3 normal = normalize(cross(dFdx(viewspaceVertex), dFdy(viewspaceVertex)));
-	outColor = vec4(phong(viewDir, lightDir, normal, vec3(0), color, color, 0.5f), alphaOut);
+	outColor = vec4(phong(viewDir, lightDir, normal, color*0.2, color, color, 0.5f), alphaOut);
 	//outColor = texture(debugTexture, uv);
 	//outColor = vec4(checkerboard(uv, 1));
 	//outColor = vec4(uv, 0, 1);
 
 	outColor.xyz = highlightEdge(outColor.xyz, vec3(0.1));
-	outColor.xyz = highlightEdge2(outColor.xyz, vec3(0,0.4,0.4));
+	//outColor.xyz = highlightEdge2(outColor.xyz, vec3(0,0.4,0.4));
 	outColor.xyz *= alphaMult;
 }

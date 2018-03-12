@@ -45,6 +45,12 @@
     <ClInclude Include="Generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LightfieldLevel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckerboardSampler.h">
+      <Filter>Header Files\Sampler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -70,6 +76,12 @@
     </ClCompile>
     <ClCompile Include="Generator.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightfieldLevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckerboardSampler.cpp">
+      <Filter>Source Files\Sampler</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

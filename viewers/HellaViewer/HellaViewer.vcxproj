@@ -119,7 +119,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <BrowseInformation>true</BrowseInformation>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\Generator;%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -173,7 +173,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\Generator;%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\SphereStructure\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -268,18 +268,23 @@
     <None Include="shader\desktop.vert" />
     <None Include="shader\haarLifting.frag" />
     <None Include="shader\haarLifting.vert" />
-    <None Include="shader\sphereRenderer.frag" />
-    <None Include="shader\sphereRenderer.geom" />
-    <None Include="shader\sphereRenderer.vert" />
-    <None Include="shader\sphereRendererHighlightFaces.frag" />
-    <None Include="shader\sphereRendererHighlightVertices.frag" />
-    <None Include="shader\sphereRendererHighlightVertices.vert" />
+    <None Include="shader\sphereRenderer\lightfieldRenderer.frag" />
+    <None Include="shader\sphereRenderer\lightfieldRenderer.vert" />
+    <None Include="shader\sphereRenderer\sphereRenderer.frag" />
+    <None Include="shader\sphereRenderer\sphereRenderer.geom" />
+    <None Include="shader\sphereRenderer\sphereRenderer.vert" />
+    <None Include="shader\sphereRenderer\sphereRendererHighlightFaces.frag" />
+    <None Include="shader\sphereRenderer\sphereRendererHighlightVertices.frag" />
+    <None Include="shader\sphereRenderer\sphereRendererHighlightVertices.vert" />
     <None Include="shader\stereo.frag" />
     <None Include="shader\stereo.vert" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\LightFieldVaveletLib.vcxproj">
       <Project>{cd45ae67-a7e3-443f-9762-fc84bce39da3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Generator\OfflineRendering.vcxproj">
+      <Project>{06181689-f02a-43b7-8d01-ba5a188eef76}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

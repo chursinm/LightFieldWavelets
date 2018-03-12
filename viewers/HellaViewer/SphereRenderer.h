@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "SubdivisionSphere.h"
 #include "Texture.h"
+#include "LightfieldLevel.h"
 
 class SphereRenderer :
 	public Renderer
@@ -19,8 +20,11 @@ public:
 private:
 	void cleanupGlBuffers();
 	void setupGlBuffersForLevel(unsigned short level);
-	std::unique_ptr<SubdivisionShpere::SubdivisionSphere> mSphereData;
-	GLuint mVertexBuffer, mIndexBuffer, mVertexArrayObject, mGlProgram, mHighlightFacesGlProgram, mHighlightVerticesGlProgram;
+	void generateLightfieldForLevel(unsigned short level);
+	std::shared_ptr<SubdivisionShpere::SubdivisionSphere> mSphereData;
+	std::unique_ptr<Generator::LightfieldLevel> mLightfieldLevel;
+	GLuint mVertexBuffer, mIndexBuffer, mLightfieldBuffer, mVertexArrayObject;
+	GLuint mGlProgram, mLightfieldGlProgram, mHighlightFacesGlProgram, mHighlightVerticesGlProgram;
 	unsigned int mFacesCount, mCurrentLevel;
 	std::vector<unsigned int> mHighlightFaces, mHighlightVertices;
 	std::unique_ptr<Texture> mDebugTexture;
