@@ -4,6 +4,7 @@ uniform vec3 viewspaceLightPosition;
 uniform sampler2D debugTexture;
 uniform float alphaOut;
 uniform float alphaMult;
+uniform bool renderEdges;
 
 in vec3 edgeDistance;
 in vec3 viewspaceVertex;
@@ -90,7 +91,10 @@ void main(void)
 	//outColor = vec4(checkerboard(uv, 1));
 	//outColor = vec4(uv, 0, 1);
 
-	outColor.xyz = highlightEdge(outColor.xyz, vec3(0.1));
-	//outColor.xyz = highlightEdge2(outColor.xyz, vec3(0,0.4,0.4));
+	if(renderEdges)
+	{
+		outColor.xyz = highlightEdge(outColor.xyz, vec3(0.1));
+		//outColor.xyz = highlightEdge2(outColor.xyz, vec3(0,0.4,0.4));
+	}
 	outColor.xyz *= alphaMult;
 }

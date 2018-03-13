@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	context.onKeyPress([&hlr](auto keymod, auto keycode) { if(keycode == SDLK_x) hlr.calculate(); });
 	*/
 
-	SphereRenderer sr(8u);
+	SphereRenderer sr(6u);
 	//sr.highlightFaces({ 1u,3u,5u,10u });
 	//sr.highlightVertices({ 1u,3u,5u,10u });
 
