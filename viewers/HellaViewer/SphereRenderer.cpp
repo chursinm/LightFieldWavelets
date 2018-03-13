@@ -110,6 +110,7 @@ void SphereRenderer::render(const RenderData& renderData)
 	GLUtility::setUniform(mGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
 	GLUtility::setUniform(mGlProgram, "alphaMult", 0.95f);
 	GLUtility::setUniform(mGlProgram, "alphaOut", 0.05f);
+	GLUtility::setUniform(mGlProgram, "renderEdges", !DEBUG_ROTATION_SPHERES);
 
 	glBindVertexArray(mVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
@@ -288,7 +289,7 @@ void SphereRenderer::generateLightfieldForLevel(unsigned short level)
 	//Plane plane(vec3(0, 0, -10), vec3(0, 0, 1), vec3(0, 1, 0), vec3(1, 0, 0)); // mind the backface culling!
 	//const auto planeSampler = make_shared<CheckerboardSampler>(0.f, vec3(1.0f, 0.f, 0.f), plane);
 	Plane plane(vec3(0, -1, 0), vec3(0, 1, 0), vec3(0, 0, 1), vec3(1, 0, 0)); // mind the backface culling!
-	const auto planeSampler = make_shared<CheckerboardSampler>(0.f, vec3(0.1f), plane);
+	const auto planeSampler = make_shared<CheckerboardSampler>(5.0f, vec3(0.1f), plane);
 
 #if RENDER_LIGHTFIELD
 	mLightfieldLevel = make_unique<Generator::LightfieldLevel>(mSphereData, level, *planeSampler);

@@ -7,6 +7,7 @@
 #include "ColoredPlaneSampler.h"
 #include "SetSampler.h"
 #include "LightfieldLevel.h"
+#include "CheckerboardSampler.h"
 
 using namespace glm;
 using namespace std;
@@ -88,9 +89,9 @@ int main(int argc, char **argv)
 	
 	// create Sampler
 	Plane plane(vec3(0, 0, 10), vec3(0, 0, -1), vec3(0, 1, 0), vec3(1, 0, 0)); // mind the backface culling!
-	const auto planeSampler = make_shared<ColoredPlaneSampler>(glm::vec3(0.f, 1.f, 0.0f), glm::vec3(1.0f, 0.f, 0.f), plane);
+	const auto planeSampler = make_shared<CheckerboardSampler>(0.f, glm::vec3(1.0f, 0.f, 0.f), plane);
 	Plane plane2(vec3(0, 10, 0), vec3(0, -1, 0), vec3(0, 0, 1), vec3(1, 0, 0)); // mind the backface culling!
-	const auto plane2Sampler = make_shared<ColoredPlaneSampler>(glm::vec3(0.f, 0.5f, 0.0f), glm::vec3(0.5f, 0.f, 0.f), plane2);
+	const auto plane2Sampler = make_shared<CheckerboardSampler>(0.f, glm::vec3(0.5f, 0.f, 0.f), plane2);
 	const auto setSampler = make_unique<SetSampler>(vector<shared_ptr<Sampler>> { planeSampler, plane2Sampler }, glm::vec3(0.2f,0.f,0.f));
 
 	auto sphereData = std::make_shared<SubdivisionShpere::SubdivisionSphere>(sphereLevelCount);

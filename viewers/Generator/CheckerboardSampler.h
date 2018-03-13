@@ -9,12 +9,12 @@ namespace Generator
 		{
 			using SurfacePtr = std::unique_ptr<SDL_Surface>;
 		public:
-			CheckerboardSampler(float uvScale, const glm::vec3& missColor, const Plane& plane);
+			CheckerboardSampler(float checkerSquareLength, const glm::vec3& missColor, const Plane& plane);
 			~CheckerboardSampler() = default;
 
 			glm::vec4 sample(const Ray& ray) const override;
 		private:
-			float mUvScale;
+			float mCheckerSquareLength;
 			glm::vec3 mMissColor;
 		};
 	}

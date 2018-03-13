@@ -3,8 +3,8 @@
 
 using namespace Generator::Sampler;
 
-CheckerboardSampler::CheckerboardSampler(float uvScale,
-	const glm::vec3& missColor, const Plane& plane) : PlaneSampler(plane), mUvScale(uvScale), mMissColor(missColor)
+CheckerboardSampler::CheckerboardSampler(float checkerSquareLength,
+	const glm::vec3& missColor, const Plane& plane) : PlaneSampler(plane), mCheckerSquareLength(checkerSquareLength), mMissColor(missColor)
 {
 }
 
@@ -15,18 +15,16 @@ glm::vec4 CheckerboardSampler::sample(const Ray& ray) const
 	auto color = glm::vec4(mMissColor, -1.f);
 	if(intersect(ray, distance))
 	{
-		glm::mat3x3 tangentMatrix(mPlane.mTangent, mPlane.mBiTangent, mPlane.mNormal);
-		auto iTangentMatrix = glm::inverse(tangentMatrix);
-
-		auto worldIntersection = ray.atDistance(distance);
+		const auto worldIntersection = ray.atDistance(distance);
+		const auto tangentIntersection = mPlane.mTangentMatrix * worldIntersection;
 		//auto c = distance / 20.f;
 		//color = glm::vec4(c, c, c, distance);
 
-		float x = worldIntersection.x;
-		float y = worldIntersection.z;
 
-		vec3 checkercolor(mod(x, 10.f) >= 5 != mod(y, 10.f) >= 5);
-		return vec4(checkercolor, distance);
+		const auto doubleSquareLength = 2.0f * mCheckerSquareLength;
+		const vec3 checkercolor(mod(tangentIntersection.x, doubleSquareLength) >= mCheckerSquareLength != mod(tangentIntersection.y, doubleSquareLength) >= mCheckerSquareLength);
+
+		return vec4(checkercolor*0.8f, distance);
 	}
 	return color;
 }

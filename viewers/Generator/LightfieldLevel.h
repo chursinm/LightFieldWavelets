@@ -11,7 +11,7 @@ namespace Generator
 		~LightfieldLevel() = default;
 		std::shared_ptr<std::vector<glm::vec3>> rawData();
 		// returns the camera direction for every position
-		std::vector<glm::vec3> snapshot(glm::vec3 cameraPositionInPositionSphereSpace);
+		std::vector<glm::vec3> snapshot(const glm::vec3& cameraPositionInPositionSphereSpace) const;
 	private:
 		std::shared_ptr<SubdivisionShpere::SubdivisionSphere> mSphere;
 		unsigned int mLevel;
