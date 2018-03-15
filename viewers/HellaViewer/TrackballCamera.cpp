@@ -4,11 +4,7 @@
 using namespace glm;
 
 
-TrackballCamera::TrackballCamera(glm::uvec2 viewportSize) : m_Position(0.0f, 1.0f, 0.0f), m_Rotation(1.f, 0.f, 0.f, 0.f), m_ViewportSize(viewportSize)
-{
-}
-
-TrackballCamera::TrackballCamera(unsigned int viewportWidth, unsigned int viewportHeight) : m_Position(0.0f, 1.0f, 0.0f), m_Rotation(), m_ViewportSize(uvec2(viewportWidth, viewportHeight))
+TrackballCamera::TrackballCamera(unsigned int viewportWidth, unsigned int viewportHeight, double fovy) : m_Position(0.0f, 1.0f, 0.0f), m_Rotation(), m_ViewportSize(uvec2(viewportWidth, viewportHeight)), m_fovy(fovy)
 {
 }
 
@@ -109,10 +105,9 @@ mat4x4 TrackballCamera::projectionMatrix() const
 	// taken from http://nehe.gamedev.net/article/replacement_for_gluperspective/21002/
 	double zFar = 25.;
 	double zNear = 0.0045;
-	double fovy = 106.;
 	const double pi = 3.1415926535897932384626433832795;
 	double fW, fH;
-	fH = tan(fovy / 360. * pi) * zNear;
+	fH = tan(m_fovy / 360. * pi) * zNear;
 	fW = fH * ((double)m_ViewportSize.x / (double)m_ViewportSize.y);
 
 	// taken from http://www.manpagez.com/man/3/glFrustum/
@@ -135,6 +130,11 @@ mat4x4 TrackballCamera::projectionMatrix() const
 	vec4 c4(0., 0., D, 0.);
 
 	return mat4x4(c1,c2,c3,c4);
+}
+
+float TrackballCamera::fovy() const
+{
+	return m_fovy;
 }
 
 void TrackballCamera::reset()

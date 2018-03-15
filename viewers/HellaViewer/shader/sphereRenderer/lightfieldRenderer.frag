@@ -24,5 +24,5 @@ vec3 phong(vec3 viewDir, vec3 lightDir, vec3 normal, vec3 ambient, vec3 diffuse,
 
 void main(void)
 {
-	outColor = vec4(lightfield, 1.f);
+	outColor = vec4(lightfield, 0.5f);
 }

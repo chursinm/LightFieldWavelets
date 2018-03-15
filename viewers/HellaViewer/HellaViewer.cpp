@@ -20,9 +20,9 @@ int main(int argc, char** argv)
 
 	bool quit = false;
 
-	RenderContext context(true, false);
-	
-	
+	RenderContext context(false, false);
+
+
 	CheckerboardRenderer cbr;
 	context.attachRenderer(cbr);
 
@@ -38,11 +38,16 @@ int main(int argc, char** argv)
 	context.onKeyPress([&hlr](auto keymod, auto keycode) { if(keycode == SDLK_x) hlr.calculate(); });
 	*/
 
-	SphereRenderer sr(6u);
+	SphereRenderer sr(7u);
 	//sr.highlightFaces({ 1u,3u,5u,10u });
 	//sr.highlightVertices({ 1u,3u,5u,10u });
-
 	context.attachRenderer(sr);
+	context.onKeyPress([&sr](auto keymod, auto keycode)
+	{
+		if(keycode == SDLK_y) sr.selectRenderMode(SphereRenderer::RenderMode::POSITION);
+		if(keycode == SDLK_x) sr.selectRenderMode(SphereRenderer::RenderMode::ROTATION);
+		if(keycode == SDLK_c) sr.selectRenderMode(SphereRenderer::RenderMode::LIGHTFIELD);
+	});
 	context.onKeyPress([&sr](auto keymod, auto keycode) { if(keycode == SDLK_b) sr.increaseLevel(); else if(keycode == SDLK_v) sr.decreaseLevel(); });
 
 	if(!context.initialize()) { quit = true; }

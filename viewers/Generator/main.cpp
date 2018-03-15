@@ -85,7 +85,6 @@ int main(int argc, char **argv)
 
 	// some aliases for readability
 	using Plane = TexturedPlaneSampler::Plane;
-	using Ray = Sampler::Ray;
 	
 	// create Sampler
 	Plane plane(vec3(0, 0, 10), vec3(0, 0, -1), vec3(0, 1, 0), vec3(1, 0, 0)); // mind the backface culling!

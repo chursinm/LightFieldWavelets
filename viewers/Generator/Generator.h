@@ -24,7 +24,7 @@ namespace Generator
 
 		// Per Ray Data (Sphere x Sphere)
 		std::vector<glm::vec3> color;
-		std::vector<Sampler::Sampler::Ray> ray;
+		std::vector<Ray> ray;
 		std::vector<bool> hitMiss;
 		std::vector<float> hitDepth;
 		std::vector<glm::vec3> hitPosition;

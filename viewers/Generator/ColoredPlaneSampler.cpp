@@ -8,7 +8,7 @@ ColoredPlaneSampler::ColoredPlaneSampler(const glm::vec3& hitColor, const glm::v
 {
 }
 
-glm::vec4 ColoredPlaneSampler::sample(const Ray& ray) const
+glm::vec4 ColoredPlaneSampler::sample(const Generator::Ray& ray) const
 {
 	float distance = 0.f;
 	if(this->intersect(ray, distance))

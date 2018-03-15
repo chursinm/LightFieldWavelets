@@ -7,16 +7,21 @@ namespace Generator
 	LightfieldLevel::LightfieldLevel(std::shared_ptr<SubdivisionShpere::SubdivisionSphere> sphere, unsigned level,
 		const Sampler::Sampler& sampler) : mSphere(sphere), mLevel(level), mRawData(make_shared<vector<vec3>>())
 	{
-		auto i = 0u;
-		const auto levelData = mSphere->getLevel(mLevel);
-		mRawData->reserve(levelData.numberOfVertices * levelData.numberOfVertices);
-		for(auto positionVertexIterator = levelData.vertices; positionVertexIterator != (levelData.vertices + levelData.numberOfVertices); ++positionVertexIterator)
+		if(mLevel == 0u) mLevel = 1u;
+		auto i = 0ull;
+		const auto positionLevelData = mSphere->getLevel(mLevel);
+		const auto rotationLevelData = mSphere->getLevel(mLevel-1u);
+		const auto allocationSize = static_cast<vector<vec3>::size_type>(positionLevelData.numberOfVertices) * static_cast<vector<vec3>::size_type>(rotationLevelData.numberOfVertices);
+		std::cout << "trying to allocate " << allocationSize << " elements (" << allocationSize * sizeof(vec3) / 1073741824ull << " GByte)\n";
+		mRawData->reserve(allocationSize);
+		for(auto positionVertexIterator = positionLevelData.vertices; positionVertexIterator != (positionLevelData.vertices + positionLevelData.numberOfVertices); ++positionVertexIterator)
 		{
 			const auto& position = positionVertexIterator->position;
-			for(auto rotationVertexIterator = levelData.vertices; rotationVertexIterator != (levelData.vertices + levelData.numberOfVertices); ++rotationVertexIterator)
+			for(auto rotationVertexIterator = rotationLevelData.vertices; rotationVertexIterator != (rotationLevelData.vertices + rotationLevelData.numberOfVertices); ++rotationVertexIterator)
 			{
 				const auto& rotation = rotationVertexIterator->position;
-				mRawData->data()[i++] = sampler.sample(Sampler::Sampler::Ray(position, -rotation));
+				const Ray ray(position, -rotation, nullptr);
+				mRawData->data()[i++] = sampler.sample(ray);
 				//mRawData->push_back(sampler.sample(Sampler::Sampler::Ray(position, -rotation)));
 			}
 		}
@@ -47,21 +52,24 @@ namespace Generator
 
 	vector<vec3> LightfieldLevel::snapshot(const vec3& cameraPositionInPositionSphereSpace) const
 	{
-		const auto levelData = mSphere->getLevel(mLevel);
+		const auto rotationLevel = mLevel-1u;
+		const auto positionLevel = mLevel;
+		const auto positionLevelData = mSphere->getLevel(positionLevel);
+		const auto rotationLevelData = mSphere->getLevel(rotationLevel);
 
 		vector<vec3> result;
-		result.reserve(levelData.numberOfVertices);
-		for(auto i = 0u; i < levelData.numberOfVertices; ++i)
+		result.reserve(positionLevelData.numberOfVertices);
+		for(auto i = 0ull; i < positionLevelData.numberOfVertices; ++i)
 		{
 			// Calculate faces for each position
-			const auto localRotation = normalize(cameraPositionInPositionSphereSpace - levelData.vertices[i].position);
-			const auto faceIndex = mSphere->vectorToFaceIndex(localRotation, mLevel);
-			const auto facePtr = levelData.faces + faceIndex;
+			const auto localRotation = normalize(cameraPositionInPositionSphereSpace - positionLevelData.vertices[i].position);
+			const auto faceIndex = mSphere->vectorToFaceIndex(localRotation, rotationLevel);
+			const auto facePtr = rotationLevelData.faces + faceIndex;
 
 			// Interpolate the color using the face & barycentric coordinates
-			const auto rawDataIndexA = i * levelData.numberOfVertices + facePtr->vertA;
-			const auto rawDataIndexB = i * levelData.numberOfVertices + facePtr->vertB;
-			const auto rawDataIndexC = i * levelData.numberOfVertices + facePtr->vertC;
+			const auto rawDataIndexA = i * rotationLevelData.numberOfVertices + facePtr->vertA;
+			const auto rawDataIndexB = i * rotationLevelData.numberOfVertices + facePtr->vertB;
+			const auto rawDataIndexC = i * rotationLevelData.numberOfVertices + facePtr->vertC;
 			const auto rawDataA = mRawData->data()[rawDataIndexA];
 			const auto rawDataB = mRawData->data()[rawDataIndexB];
 			const auto rawDataC = mRawData->data()[rawDataIndexC];
@@ -69,6 +77,7 @@ namespace Generator
 			vec3 uvw(0.f);
 			Barycentric(localRotation, facePtr->vertARef->position, facePtr->vertBRef->position, facePtr->vertCRef->position, uvw);
 
+			//result.push_back(rawDataA);
 			//result.push_back(uvw);
 			result.push_back(uvw.x * rawDataA + uvw.y * rawDataB + uvw.z * rawDataC);
 		}

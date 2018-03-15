@@ -3,7 +3,7 @@
 
 using namespace Generator::Sampler;
 
-bool PlaneSampler::intersect(const Ray& ray, float& intersectionPoint) const
+bool PlaneSampler::intersect(const Generator::Ray& ray, float& intersectionPoint) const
 {
 	return glm::intersectRayPlane(ray.mOrigin, ray.mDirection, mPlane.mOrigin, mPlane.mNormal, intersectionPoint) && intersectionPoint >= 0.f;
 }

@@ -16,7 +16,7 @@ namespace Generator
 
 			glm::vec4 sample(const Ray& ray) const override;
 		private:
-			SurfacePtr mTexture;
+			SDL_Surface* mTexture;
 			float mUvScale;
 			glm::vec3 mMissColor;
 		};

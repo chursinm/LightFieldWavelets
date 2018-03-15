@@ -4,7 +4,7 @@
 
 using namespace glm;
 
-VRCamera::VRCamera(float nearClip, float farClip): m_NearClip(nearClip), m_FarClip(farClip)
+VRCamera::VRCamera(float nearClip, float farClip): m_NearClip(nearClip), m_FarClip(farClip), m_HMDPosition(0.f), m_HMDTransformation(1.f)
 {
 }
 

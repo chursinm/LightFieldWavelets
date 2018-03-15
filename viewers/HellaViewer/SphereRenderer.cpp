@@ -8,14 +8,15 @@
 #include "ColoredPlaneSampler.h"
 #include "SetSampler.h"
 #include "CheckerboardSampler.h"
+#include "TexturedPlaneSampler.h"
 using namespace std; // too many std calls :D
 #define DEBUG_ROTATION_SPHERES 0
 #define RENDER_LIGHTFIELD 1
 
 SphereRenderer::SphereRenderer(unsigned int levelCount) :
-	mSphereData(make_shared<SubdivisionShpere::SubdivisionSphere>(levelCount)), mFacesCount(0), mCurrentLevel(0)
+	mSphereData(make_shared<SubdivisionShpere::SubdivisionSphere>(levelCount)), mFacesCount(0), mCurrentLevel(1), mRenderMode(RenderMode::POSITION)
 {
-	generateLightfieldForLevel(mCurrentLevel);
+	generateLightfield(levelCount);
 }
 
 
@@ -43,38 +44,23 @@ void SphereRenderer::update(double timestep)
 {
 }
 
-void SphereRenderer::render(const RenderData& renderData)
+void SphereRenderer::renderLightfield(const RenderData& renderData) const
 {
-
-
-#if DEBUG_ROTATION_SPHERES
-	const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
-	for(auto vertexIterator = sphereLevel.vertices; vertexIterator != (sphereLevel.vertices + sphereLevel.numberOfVertices); ++vertexIterator)
-	{
-	auto face = sphereLevel.faces[0];
-	auto posA = face.vertARef->position;
-	auto posB = face.vertBRef->position;
-	auto scaleFac = glm::distance(posA, posB) * 0.66666f;
-#endif
 	auto modelMat = glm::mat4x4(1.f);
-#if DEBUG_ROTATION_SPHERES
-	modelMat = glm::translate(modelMat, vertexIterator->position);
-	modelMat = glm::scale(modelMat, glm::vec3(1.05f*scaleFac));
-#endif
-
 	const auto viewProjection = renderData.viewProjectionMatrix * modelMat;
 	const auto viewMatrix = renderData.viewMatrix * modelMat;
 	const auto viewspaceLightPosition = viewMatrix * glm::vec4(0.f, 10.f, 0.f, 1.f);
-
-
-#if RENDER_LIGHTFIELD
+	
 	const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
-	const auto lfData = mLightfieldLevel->snapshot(renderData.eyePositionWorld);
+	const auto lfData = mLightfield->level(mCurrentLevel).snapshot(renderData.eyePositionWorld);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mLightfieldBuffer);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, lfData.size() * sizeof(glm::vec3), &lfData[0]);
 
-	glDisable(GL_CULL_FACE);
+	// -------- drawing base sphere frontface --------
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	//glDisable(GL_CULL_FACE);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -88,19 +74,78 @@ void SphereRenderer::render(const RenderData& renderData)
 
 	glBindVertexArray(mVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
-	return;
-#endif
-
-	// -------- drawing base sphere frontface --------
+	
+	// -------- drawing base sphere backface ---------
 	glEnable(GL_CULL_FACE);
-#if !DEBUG_ROTATION_SPHERES
-	glCullFace(GL_FRONT);
-#endif
+	glCullFace(GL_BACK);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	//glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glUseProgram(mLightfieldGlProgram);
+
+	glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
+	glDisable(GL_BLEND);
+}
+
+void SphereRenderer::renderRotationSpheres(const RenderData& renderData)
+{
+	const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
+	for(auto vertexIterator = sphereLevel.vertices; vertexIterator != (sphereLevel.vertices + sphereLevel.numberOfVertices); ++vertexIterator)
+	{
+		auto face = sphereLevel.faces[0];
+		auto posA = face.vertARef->position;
+		auto posB = face.vertBRef->position;
+		auto scaleFac = glm::distance(posA, posB) * 0.66666f;
+
+		auto modelMat = glm::mat4x4(1.f);
+		modelMat = glm::translate(modelMat, vertexIterator->position);
+		modelMat = glm::scale(modelMat, glm::vec3(1.05f*scaleFac));
+
+		const auto viewProjection = renderData.viewProjectionMatrix * modelMat;
+		const auto viewMatrix = renderData.viewMatrix * modelMat;
+		const auto viewspaceLightPosition = viewMatrix * glm::vec4(0.f, 10.f, 0.f, 1.f);
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+
+		glDisable(GL_BLEND);
+
+		glUseProgram(mGlProgram);
+		mDebugTexture->bind(0u);
+		GLUtility::setUniform(mGlProgram, "mvp", viewProjection);
+		GLUtility::setUniform(mGlProgram, "viewMatrix", viewMatrix);
+		GLUtility::setUniform(mGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
+		GLUtility::setUniform(mGlProgram, "alphaMult", 0.95f);
+		GLUtility::setUniform(mGlProgram, "alphaOut", 0.05f);
+		GLUtility::setUniform(mGlProgram, "renderEdges", false);
+
+		glBindVertexArray(mVertexArrayObject);
+		glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
+	}
+}
+
+void SphereRenderer::renderPositionSphere(const RenderData& renderData)
+{
+	auto modelMat = glm::mat4x4(1.f);
+	const auto viewProjection = renderData.viewProjectionMatrix * modelMat;
+	const auto viewMatrix = renderData.viewMatrix * modelMat;
+	const auto viewspaceLightPosition = viewMatrix * glm::vec4(0.f, 10.f, 0.f, 1.f);
+
+	// -------- drawing base sphere frontface --------
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_SRC_ALPHA);
 
 	glUseProgram(mGlProgram);
@@ -110,14 +155,10 @@ void SphereRenderer::render(const RenderData& renderData)
 	GLUtility::setUniform(mGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
 	GLUtility::setUniform(mGlProgram, "alphaMult", 0.95f);
 	GLUtility::setUniform(mGlProgram, "alphaOut", 0.05f);
-	GLUtility::setUniform(mGlProgram, "renderEdges", !DEBUG_ROTATION_SPHERES);
+	GLUtility::setUniform(mGlProgram, "renderEdges", false);
 
 	glBindVertexArray(mVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
-#if DEBUG_ROTATION_SPHERES
-	continue;
-#endif
-
 	// ------- drawing debug vertices --------
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_BLEND);
@@ -176,28 +217,41 @@ void SphereRenderer::render(const RenderData& renderData)
 
 	glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
 	glDisable(GL_BLEND);
-#if DEBUG_ROTATION_SPHERES
-	}
-#endif
+}
+
+void SphereRenderer::render(const RenderData& renderData)
+{
+	if(mRenderMode == RenderMode::POSITION) renderPositionSphere(renderData);
+	if(mRenderMode == RenderMode::ROTATION) renderRotationSpheres(renderData);
+	if(mRenderMode == RenderMode::LIGHTFIELD) renderLightfield(renderData);
+}
+
+void SphereRenderer::selectRenderMode(RenderMode mode)
+{
+	mRenderMode = mode;
 }
 
 void SphereRenderer::increaseLevel()
 {
-	++mCurrentLevel;
+	if(mCurrentLevel >= mSphereData->getNumberOfLevels() - 1u)
+	{
+		return;
+	}
 	cleanupGlBuffers();
-	if(mCurrentLevel >= mSphereData->getNumberOfLevels()) mCurrentLevel = mSphereData->getNumberOfLevels() - 1u;
+	++mCurrentLevel;
 	setupGlBuffersForLevel(mCurrentLevel);
-	generateLightfieldForLevel(mCurrentLevel);
 	std::cout << "Level: " << mCurrentLevel << " ";
 }
 
 void SphereRenderer::decreaseLevel()
 {
-	--mCurrentLevel;
+	if(mCurrentLevel <= 1u)
+	{
+		return;
+	}
 	cleanupGlBuffers();
-	if(mCurrentLevel >= mSphereData->getNumberOfLevels()) mCurrentLevel = 0;
+	--mCurrentLevel;
 	setupGlBuffersForLevel(mCurrentLevel);
-	generateLightfieldForLevel(mCurrentLevel);
 	std::cout << "Level: " << mCurrentLevel << " ";
 }
 
@@ -253,9 +307,7 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 
 	// Allocate lightfield space
 	{
-	#if RENDER_LIGHTFIELD
 		mLightfieldBuffer = GLUtility::generateBuffer<glm::vec3>(GL_ARRAY_BUFFER, sphereLevel.numberOfVertices, nullptr, GL_DYNAMIC_DRAW);
-	#endif
 	}
 
 
@@ -268,30 +320,26 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 	glVertexAttribPointer(vertexBufferLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(vertexBufferLocation);
 	glBindBuffer(GL_ARRAY_BUFFER, mLightfieldBuffer);
-#if RENDER_LIGHTFIELD
 	const auto lightfieldBufferLocation = 1; // glGetAttribLocation(mGlProgram, "lightfield");
 	glVertexAttribPointer(lightfieldBufferLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(lightfieldBufferLocation);
-#endif
 
 	glBindVertexArray(0);
 }
 
-void SphereRenderer::generateLightfieldForLevel(unsigned short level)
+void SphereRenderer::generateLightfield(unsigned short levels)
 {
 	// some aliases for readability
 	using namespace Generator::Sampler;
 	using namespace glm;
 	using Plane = PlaneSampler::Plane;
-	using Ray = Sampler::Ray;
 
 	// create Sampler
 	//Plane plane(vec3(0, 0, -10), vec3(0, 0, 1), vec3(0, 1, 0), vec3(1, 0, 0)); // mind the backface culling!
 	//const auto planeSampler = make_shared<CheckerboardSampler>(0.f, vec3(1.0f, 0.f, 0.f), plane);
 	Plane plane(vec3(0, -1, 0), vec3(0, 1, 0), vec3(0, 0, 1), vec3(1, 0, 0)); // mind the backface culling!
 	const auto planeSampler = make_shared<CheckerboardSampler>(5.0f, vec3(0.1f), plane);
+	//const auto planeSampler = make_shared<TexturedPlaneSampler>("E:\\crohmann\\tmp\\world_texture.jpg", 2.5f, vec3(0.1f), plane);
 
-#if RENDER_LIGHTFIELD
-	mLightfieldLevel = make_unique<Generator::LightfieldLevel>(mSphereData, level, *planeSampler);
-#endif
+	mLightfield = make_unique<Generator::Lightfield>(mSphereData, levels, planeSampler);
 }

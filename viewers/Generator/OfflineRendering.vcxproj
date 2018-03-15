@@ -163,8 +163,10 @@
     <ClInclude Include="CheckerboardSampler.h" />
     <ClInclude Include="ColoredPlaneSampler.h" />
     <ClInclude Include="Generator.h" />
+    <ClInclude Include="Lightfield.h" />
     <ClInclude Include="LightfieldLevel.h" />
     <ClInclude Include="PlaneSampler.h" />
+    <ClInclude Include="Ray.h" />
     <ClInclude Include="Sampler.h" />
     <ClInclude Include="SetSampler.h" />
     <ClInclude Include="stdafx.h" />
@@ -175,9 +177,11 @@
     <ClCompile Include="CheckerboardSampler.cpp" />
     <ClCompile Include="ColoredPlaneSampler.cpp" />
     <ClCompile Include="Generator.cpp" />
+    <ClCompile Include="Lightfield.cpp" />
     <ClCompile Include="LightfieldLevel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlaneSampler.cpp" />
+    <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="SetSampler.cpp" />
     <ClCompile Include="stdafx.cpp">

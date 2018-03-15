@@ -7,7 +7,7 @@ SetSampler::SetSampler(const std::vector<std::shared_ptr<Sampler>>& samplerSet, 
 {
 }
 
-glm::vec4 SetSampler::sample(const Ray& ray) const
+glm::vec4 SetSampler::sample(const Generator::Ray& ray) const
 {
 	glm::vec4 result(mMissColor, 1000.f);
 	for(const auto& sampler : mSamplers)

@@ -34,6 +34,22 @@ bool checkerboard(vec3 worldIntersection)
 	return mod(x, 10) >= 5 != mod(y, 10) >= 5;
 }
 
+float checkersTextureGradBox( in vec2 p, in vec2 ddx, in vec2 ddy )
+{ // credits: http://iquilezles.org/www/articles/checkerfiltering/checkerfiltering.htm
+    // filter kernel
+    vec2 w = max(abs(ddx), abs(ddy)) + 0.01;  
+    // analytical integral (box filter)
+    vec2 i = 2.0*(abs(fract((p-0.5*w)/2.0)-0.5)-abs(fract((p+0.5*w)/2.0)-0.5))/w;
+    // xor pattern
+    return 0.5 - 0.5*i.x*i.y;                  
+}
+
+float checkersTexture( in vec2 p )
+{ // credits: http://iquilezles.org/www/articles/checkerfiltering/checkerfiltering.htm
+    vec2 q = floor(p);
+    return mod( q.x+q.y, 2.0 );            // xor pattern
+}
+
 vec4 fragmentColor()
 {
 	vec3 planepos = vec3(0.f,-1.f,0.f);
@@ -47,7 +63,11 @@ vec4 fragmentColor()
 	
 	if(intersectsplane) // checkerboard
 	{
-		return vec4(checkerboard(eyepos + eyedir * dist));
+		vec2 checkersUv = (eyepos + eyedir * dist).xz;	
+		vec2 ddxCheckersUv = dFdx( checkersUv ); 
+        vec2 ddyCheckersUv = dFdy( checkersUv ); 
+		return vec4(checkersTextureGradBox(checkersUv, ddxCheckersUv, ddyCheckersUv));
+		//return vec4(checkersTexture(checkersUv));
 	}
 	else // background color
 	{
