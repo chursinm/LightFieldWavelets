@@ -35,7 +35,7 @@ void SphereRenderer::initialize()
 	mLightfieldGlProgram = ShaderManager::instance().from("shader/sphereRenderer/lightfieldRenderer.vert", "shader/sphereRenderer/lightfieldRenderer.frag");
 	mHighlightFacesGlProgram = ShaderManager::instance().from("shader/sphereRenderer/sphereRenderer.vert", "shader/sphereRenderer/sphereRenderer.geom", "shader/sphereRenderer/sphereRendererHighlightFaces.frag");
 	mHighlightVerticesGlProgram = ShaderManager::instance().from("shader/sphereRenderer/sphereRendererHighlightVertices.vert", "shader/sphereRenderer/sphereRendererHighlightVertices.frag");
-	mDebugTexture = make_unique<Texture>("E:\\crohmann\\tmp\\world_texture.jpg");
+	mDebugTexture = make_unique<Texture>("E:\\crohmann\\Unordered\\tmp\\textures");
 	mDebugTexture->asyncTransferToGPU(std::chrono::duration<int>::max());
 	setupGlBuffersForLevel(mCurrentLevel);
 }

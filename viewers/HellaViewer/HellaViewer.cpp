@@ -20,8 +20,7 @@ int main(int argc, char** argv)
 
 	bool quit = false;
 
-	RenderContext context(false, false);
-
+	RenderContext context(true, true);
 
 	CheckerboardRenderer cbr;
 	context.attachRenderer(cbr);

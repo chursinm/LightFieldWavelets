@@ -1,0 +1,33 @@
+Rendering the Lightfield - Sprint 1
+
+# Overview
+
+The lightfield is stored in a matrix (Position x Rotation on a sphere).
+For each frame we calculate a color on each position with a ray casted to the camera.
+This is done on the cpu.
+Afterwards the resulting colors are transmitted to the gpu for rendering via opengl.
+
+# Algorithm
+
+We cast rays from the camera to each position on the sphere.
+These rays are then transformed onto the rotation spheres of the correpsonding positions (see Detail 1).
+The transformed rays can be used to access to correpsonding face on the direction sphere (#vectorToFaceIndex).
+We then interpolate the resulting color from the colors stored on the vertices on the face (uv bilinear).
+This data is transfered along the positions (vertices) to the gpu and rendered.
+
+# Input
+
+- one level from the sphere
+-- vertices
+-- indices
+- lightfield matrix (see Detail 2)
+-- contains each evaluated position x direction
+- camera position
+
+
+# Detail 1: ray transformation to the sphere
+- transform camera position to sphere space
+- calculate || cameraPosition - vertexPosition || -> position on rotation sphere
+
+# Detail 2: matrix layout
+
