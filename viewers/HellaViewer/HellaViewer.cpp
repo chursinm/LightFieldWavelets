@@ -19,25 +19,13 @@ int main(int argc, char** argv)
 	cpv.print();
 
 	bool quit = false;
-
-	RenderContext context(true, true);
+	
+	RenderContext context(false, false);
 
 	CheckerboardRenderer cbr;
 	context.attachRenderer(cbr);
 
-	/*
-	CameraArrayRenderer car;
-	context.attachRenderer(car);
-	context.onKeyPress([&car](auto keymod, auto keycode) { car.handleInput(keymod, keycode); });
-	*/
-
-	/*
-	HaarLiftingRenderer hlr(4u);
-	context.attachRenderer(hlr);
-	context.onKeyPress([&hlr](auto keymod, auto keycode) { if(keycode == SDLK_x) hlr.calculate(); });
-	*/
-
-	SphereRenderer sr(7u);
+	SphereRenderer sr(5u);
 	//sr.highlightFaces({ 1u,3u,5u,10u });
 	//sr.highlightVertices({ 1u,3u,5u,10u });
 	context.attachRenderer(sr);

@@ -43,7 +43,8 @@ void Texture::transferToGPU(SDL_Surface* surface)
 	if(!surface)
 	{
 		WARN("Couldnt load surface " << m_Filename.c_str());
-		throw TextureException();
+		return;
+		//throw TextureException();
 	}
 
 	if(m_GLID == 0)

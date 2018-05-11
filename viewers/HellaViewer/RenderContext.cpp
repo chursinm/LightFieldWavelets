@@ -362,6 +362,7 @@ void RenderContext::render()
 void RenderContext::renderQuad(vr::Hmd_Eye eye)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	auto v = m_VRCamera.getViewMatrix(eye);
 	auto p = m_VRCamera.getProjectionMatrix(eye);
 	auto vp = m_VRCamera.getViewProjectionMatrix(eye);

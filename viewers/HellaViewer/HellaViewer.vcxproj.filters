@@ -252,5 +252,11 @@
     <None Include="shader\sphereRenderer\lightfieldRenderer.frag">
       <Filter>Shader Files\sphereRenderer</Filter>
     </None>
+    <None Include="shader\sphereRenderer\rotationSphere.frag">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
+    <None Include="shader\sphereRenderer\rotationSphere.vert">
+      <Filter>Shader Files\sphereRenderer</Filter>
+    </None>
   </ItemGroup>
 </Project>

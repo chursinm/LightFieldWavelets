@@ -32,8 +32,8 @@ private:
 	void generateLightfield(unsigned short level);
 	std::shared_ptr<SubdivisionShpere::SubdivisionSphere> mSphereData;
 	std::unique_ptr<Generator::Lightfield> mLightfield;
-	GLuint mVertexBuffer, mIndexBuffer, mLightfieldBuffer, mVertexArrayObject;
-	GLuint mGlProgram, mLightfieldGlProgram, mHighlightFacesGlProgram, mHighlightVerticesGlProgram;
+	GLuint mVertexBuffer, mIndexBuffer, mLightfieldBuffer, mCompleteLightfieldBuffer, mVertexArrayObject;
+	GLuint mGlProgram, mLightfieldGlProgram, mHighlightFacesGlProgram, mHighlightVerticesGlProgram, mRotationSphereGlProgram;
 	unsigned int mFacesCount, mCurrentLevel;
 	std::vector<unsigned int> mHighlightFaces, mHighlightVertices;
 	std::unique_ptr<Texture> mDebugTexture;

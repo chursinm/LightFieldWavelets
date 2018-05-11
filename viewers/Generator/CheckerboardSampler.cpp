@@ -34,6 +34,7 @@ glm::vec4 CheckerboardSampler::sample(const Generator::Ray& ray) const
 	{
 		const auto worldIntersection = ray.atDistance(distance);
 		const auto tangentIntersection = mPlane.mTangentMatrix * worldIntersection;
+		if(sqrt(tangentIntersection.x*tangentIntersection.x + tangentIntersection.y*tangentIntersection.y) > 25) return color;
 
 		vec3 checkercolor(checkersTexture(tangentIntersection.xy));
 		/*float dA, dB;

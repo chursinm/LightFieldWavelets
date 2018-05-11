@@ -24,6 +24,7 @@ SphereRenderer::~SphereRenderer()
 {
 	cleanupGlBuffers();
 	glDeleteProgram(mGlProgram);
+	glDeleteProgram(mRotationSphereGlProgram);
 	glDeleteProgram(mLightfieldGlProgram);
 	glDeleteProgram(mHighlightFacesGlProgram);
 	glDeleteProgram(mHighlightVerticesGlProgram);
@@ -32,10 +33,11 @@ SphereRenderer::~SphereRenderer()
 void SphereRenderer::initialize()
 {
 	mGlProgram = ShaderManager::instance().from("shader/sphereRenderer/sphereRenderer.vert", "shader/sphereRenderer/sphereRenderer.geom", "shader/sphereRenderer/sphereRenderer.frag");
+	mRotationSphereGlProgram = ShaderManager::instance().from("shader/sphereRenderer/rotationSphere.vert", "shader/sphereRenderer/rotationSphere.frag");
 	mLightfieldGlProgram = ShaderManager::instance().from("shader/sphereRenderer/lightfieldRenderer.vert", "shader/sphereRenderer/lightfieldRenderer.frag");
 	mHighlightFacesGlProgram = ShaderManager::instance().from("shader/sphereRenderer/sphereRenderer.vert", "shader/sphereRenderer/sphereRenderer.geom", "shader/sphereRenderer/sphereRendererHighlightFaces.frag");
 	mHighlightVerticesGlProgram = ShaderManager::instance().from("shader/sphereRenderer/sphereRendererHighlightVertices.vert", "shader/sphereRenderer/sphereRendererHighlightVertices.frag");
-	mDebugTexture = make_unique<Texture>("E:\\crohmann\\Unordered\\tmp\\textures");
+	mDebugTexture = make_unique<Texture>("E:\\crohmann\\Unordered\\tmp\\textures\\world_texture.asd");
 	mDebugTexture->asyncTransferToGPU(std::chrono::duration<int>::max());
 	setupGlBuffersForLevel(mCurrentLevel);
 }
@@ -55,9 +57,9 @@ void SphereRenderer::renderLightfield(const RenderData& renderData) const
 	const auto lfData = mLightfield->level(mCurrentLevel).snapshot(renderData.eyePositionWorld);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mLightfieldBuffer);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, lfData.size() * sizeof(glm::vec3), &lfData[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, lfData.size() * sizeof(glm::vec3), lfData.data());
 
-	// -------- drawing base sphere frontface --------
+	// -------- drawing base sphere backface --------
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	//glDisable(GL_CULL_FACE);
@@ -75,7 +77,9 @@ void SphereRenderer::renderLightfield(const RenderData& renderData) const
 	glBindVertexArray(mVertexArrayObject);
 	glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
 	
-	// -------- drawing base sphere backface ---------
+	glCullFace(GL_BACK); // shouldn't happen here..
+	return;
+	// -------- drawing base sphere frontface ---------
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
@@ -94,41 +98,51 @@ void SphereRenderer::renderLightfield(const RenderData& renderData) const
 void SphereRenderer::renderRotationSpheres(const RenderData& renderData)
 {
 	const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
-	for(auto vertexIterator = sphereLevel.vertices; vertexIterator != (sphereLevel.vertices + sphereLevel.numberOfVertices); ++vertexIterator)
-	{
-		auto face = sphereLevel.faces[0];
-		auto posA = face.vertARef->position;
-		auto posB = face.vertBRef->position;
-		auto scaleFac = glm::distance(posA, posB) * 0.66666f;
 
-		auto modelMat = glm::mat4x4(1.f);
-		modelMat = glm::translate(modelMat, vertexIterator->position);
-		modelMat = glm::scale(modelMat, glm::vec3(1.05f*scaleFac));
+	// TODO do more stuff just once in here
 
-		const auto viewProjection = renderData.viewProjectionMatrix * modelMat;
-		const auto viewMatrix = renderData.viewMatrix * modelMat;
-		const auto viewspaceLightPosition = viewMatrix * glm::vec4(0.f, 10.f, 0.f, 1.f);
+	// calculate world scale
+	auto face = sphereLevel.faces[0];
+	auto posA = face.vertARef->position;
+	auto posB = face.vertBRef->position;
+	const auto scaleBias = 0.7f;
+	auto scaleFac = glm::distance(posA, posB) * scaleBias;
+	
+	// mvp, mv, lightpos
+	const auto modelMat = glm::mat4x4(1.f);
+	const auto viewProjection = renderData.viewProjectionMatrix * modelMat;
+	const auto viewMatrix = renderData.viewMatrix * modelMat;
+	const auto viewspaceLightPosition = viewMatrix * glm::vec4(0.f, 10.f, 0.f, 1.f);
 
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+	// opengl
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
-		glDisable(GL_BLEND);
+	glDisable(GL_BLEND);
 
-		glUseProgram(mGlProgram);
-		mDebugTexture->bind(0u);
-		GLUtility::setUniform(mGlProgram, "mvp", viewProjection);
-		GLUtility::setUniform(mGlProgram, "viewMatrix", viewMatrix);
-		GLUtility::setUniform(mGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
-		GLUtility::setUniform(mGlProgram, "alphaMult", 0.95f);
-		GLUtility::setUniform(mGlProgram, "alphaOut", 0.05f);
-		GLUtility::setUniform(mGlProgram, "renderEdges", false);
+	glUseProgram(mRotationSphereGlProgram);
+	mDebugTexture->bind(0u);
+	GLUtility::setUniform(mRotationSphereGlProgram, "mvp", viewProjection);
+	GLUtility::setUniform(mRotationSphereGlProgram, "viewMatrix", viewMatrix);
+	GLUtility::setUniform(mRotationSphereGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
+	GLUtility::setUniform(mRotationSphereGlProgram, "scaleFac", scaleFac);
+	GLUtility::setUniform(mRotationSphereGlProgram, "vertexCount", mSphereData->getLevel(mCurrentLevel).numberOfVertices);
 
-		glBindVertexArray(mVertexArrayObject);
-		glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
-	}
+	glBindVertexArray(mVertexArrayObject);
+
+	// lightfield
+	const auto lfData = mLightfield->level(mCurrentLevel).rawData();
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, mCompleteLightfieldBuffer);
+	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, lfData->size() * sizeof(glm::vec3), lfData->data());
+	std::vector<glm::vec4> asd;
+	for(auto a : *lfData) asd.push_back(glm::vec4(a.rgb,0.0f));
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, asd.size() * sizeof(glm::vec4), &asd[0]);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, mCompleteLightfieldBuffer);
+	glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
+	glDrawElementsInstanced(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0), sphereLevel.numberOfVertices);
 }
 
 void SphereRenderer::renderPositionSphere(const RenderData& renderData)
@@ -270,10 +284,11 @@ void SphereRenderer::cleanupGlBuffers()
 	glDeleteBuffers(1, &mVertexBuffer);
 	glDeleteBuffers(1, &mIndexBuffer);
 	glDeleteBuffers(1, &mLightfieldBuffer);
+	glDeleteBuffers(1, &mCompleteLightfieldBuffer);
 	glDeleteVertexArrays(1, &mVertexArrayObject);
 }
 
-void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
+void SphereRenderer::setupGlBuffersForLevel(unsigned short level) 
 {
 	auto sphereLevel = mSphereData->getLevel(level);
 	mFacesCount = sphereLevel.numberOfFaces;
@@ -302,27 +317,44 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 		}
 		mVertexBuffer = GLUtility::generateBuffer(GL_ARRAY_BUFFER, *vertices, GL_STATIC_DRAW);
 		// TODO direct transfer using bufferSubData
-		// TODO maybe even transfer whole Sphere::Vertex and define appropriate VertexAttribPointers?
 	}
 
 	// Allocate lightfield space
 	{
 		mLightfieldBuffer = GLUtility::generateBuffer<glm::vec3>(GL_ARRAY_BUFFER, sphereLevel.numberOfVertices, nullptr, GL_DYNAMIC_DRAW);
+		mCompleteLightfieldBuffer = GLUtility::generateBuffer<glm::vec4>(GL_SHADER_STORAGE_BUFFER, mLightfield->level(level).rawData()->size(), nullptr, GL_DYNAMIC_DRAW);
 	}
 
-
+	// Create VAO
 	glGenVertexArrays(1, &mVertexArrayObject);
 	glBindVertexArray(mVertexArrayObject);
 
+	// vao - indices
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-	const auto vertexBufferLocation = glGetAttribLocation(mGlProgram, "vertex");
-	glVertexAttribPointer(vertexBufferLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	
+	// vao - positions
+	const auto vertexBufferLocation = 0; // glGetAttribLocation(mGlProgram, "vertex");
 	glEnableVertexAttribArray(vertexBufferLocation);
-	glBindBuffer(GL_ARRAY_BUFFER, mLightfieldBuffer);
-	const auto lightfieldBufferLocation = 1; // glGetAttribLocation(mGlProgram, "lightfield");
-	glVertexAttribPointer(lightfieldBufferLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+	glVertexAttribPointer(vertexBufferLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	
+	// vao - lf slice data
+	const auto lightfieldBufferLocation = 1; // glGetAttribLocation(mLightfieldGlProgram, "lightfieldIn");
 	glEnableVertexAttribArray(lightfieldBufferLocation);
+	glBindBuffer(GL_ARRAY_BUFFER, mLightfieldBuffer);
+	glVertexAttribPointer(lightfieldBufferLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+	// vao - instanced positions
+	const auto instancedPositionBufferLocation = 2; // glGetAttribLocation(mGlProgram, "instancedPosition");
+	glEnableVertexAttribArray(instancedPositionBufferLocation);
+	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
+	glVertexAttribPointer(instancedPositionBufferLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribDivisor(instancedPositionBufferLocation, 1);
+
+	// vao - lf complete data
+	const auto completeLfBufferLocation = 3;
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, mCompleteLightfieldBuffer);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, completeLfBufferLocation, mCompleteLightfieldBuffer);
 
 	glBindVertexArray(0);
 }

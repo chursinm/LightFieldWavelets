@@ -10,7 +10,7 @@ namespace Generator
 		if(mLevel == 0u) mLevel = 1u;
 		auto i = 0ull;
 		const auto positionLevelData = mSphere->getLevel(mLevel);
-		const auto rotationLevelData = mSphere->getLevel(mLevel-1u);
+		const auto rotationLevelData = mSphere->getLevel(mLevel);
 		const auto allocationSize = static_cast<vector<vec3>::size_type>(positionLevelData.numberOfVertices) * static_cast<vector<vec3>::size_type>(rotationLevelData.numberOfVertices);
 		std::cout << "trying to allocate " << allocationSize << " elements (" << allocationSize * sizeof(vec3) / 1073741824ull << " GByte)\n";
 		mRawData->reserve(allocationSize);
@@ -21,13 +21,13 @@ namespace Generator
 			{
 				const auto& rotation = rotationVertexIterator->position;
 				const Ray ray(position, -rotation, nullptr);
-				mRawData->data()[i++] = sampler.sample(ray);
-				//mRawData->push_back(sampler.sample(Sampler::Sampler::Ray(position, -rotation)));
+				//mRawData->data()[i++] = sampler.sample(ray);
+				mRawData->push_back(sampler.sample(ray));
 			}
 		}
 	}
 
-	shared_ptr<vector<vec3>> LightfieldLevel::rawData()
+	shared_ptr<vector<vec3>> LightfieldLevel::rawData() const
 	{
 		return mRawData;
 	}
@@ -52,7 +52,7 @@ namespace Generator
 
 	vector<vec3> LightfieldLevel::snapshot(const vec3& cameraPositionInPositionSphereSpace) const
 	{
-		const auto rotationLevel = mLevel-1u;
+		const auto rotationLevel = mLevel;
 		const auto positionLevel = mLevel;
 		const auto positionLevelData = mSphere->getLevel(positionLevel);
 		const auto rotationLevelData = mSphere->getLevel(rotationLevel);

@@ -64,6 +64,7 @@ vec4 fragmentColor()
 	if(intersectsplane) // checkerboard
 	{
 		vec2 checkersUv = (eyepos + eyedir * dist).xz;	
+		if(sqrt(checkersUv.x*checkersUv.x + checkersUv.y*checkersUv.y) > 25) return vec4(.1f);
 		vec2 ddxCheckersUv = dFdx( checkersUv ); 
         vec2 ddyCheckersUv = dFdy( checkersUv ); 
 		return vec4(checkersTextureGradBox(checkersUv, ddxCheckersUv, ddyCheckersUv));

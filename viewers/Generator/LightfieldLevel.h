@@ -9,7 +9,7 @@ namespace Generator
 	public:
 		explicit LightfieldLevel(std::shared_ptr<SubdivisionShpere::SubdivisionSphere> sphere, unsigned level, const Sampler::Sampler& sampler);
 		~LightfieldLevel() = default;
-		std::shared_ptr<std::vector<glm::vec3>> rawData();
+		std::shared_ptr<std::vector<glm::vec3>> rawData() const;
 		// returns the camera direction for every position
 		std::vector<glm::vec3> snapshot(const glm::vec3& cameraPositionInPositionSphereSpace) const;
 	private:
