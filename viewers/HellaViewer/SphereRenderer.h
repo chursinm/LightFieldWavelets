@@ -10,7 +10,7 @@ class SphereRenderer :
 public:
 	enum class RenderMode
 	{
-		POSITION, ROTATION, LIGHTFIELD
+		POSITION, ROTATION, LIGHTFIELD, LIGHTFIELD_SLICE
 	};
 	SphereRenderer(unsigned int levelCount);
 	~SphereRenderer();
@@ -32,7 +32,7 @@ private:
 	void generateLightfield(unsigned short level);
 	std::shared_ptr<SubdivisionShpere::SubdivisionSphere> mSphereData;
 	std::unique_ptr<Generator::Lightfield> mLightfield;
-	GLuint mVertexBuffer, mIndexBuffer, mLightfieldBuffer, mCompleteLightfieldBuffer, mVertexArrayObject;
+	GLuint mVertexBuffer, mIndexBuffer, mLightfieldSliceBuffer, mCompleteLightfieldBuffer, mVertexArrayObject;
 	GLuint mGlProgram, mLightfieldGlProgram, mHighlightFacesGlProgram, mHighlightVerticesGlProgram, mRotationSphereGlProgram;
 	unsigned int mFacesCount, mCurrentLevel;
 	std::vector<unsigned int> mHighlightFaces, mHighlightVertices;

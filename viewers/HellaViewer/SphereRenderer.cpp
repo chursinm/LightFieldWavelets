@@ -56,7 +56,7 @@ void SphereRenderer::renderLightfield(const RenderData& renderData) const
 	const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
 	const auto lfData = mLightfield->level(mCurrentLevel).snapshot(renderData.eyePositionWorld);
 
-	glBindBuffer(GL_ARRAY_BUFFER, mLightfieldBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, mLightfieldSliceBuffer);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, lfData.size() * sizeof(glm::vec3), lfData.data());
 
 	// -------- drawing base sphere backface --------
@@ -129,19 +129,10 @@ void SphereRenderer::renderRotationSpheres(const RenderData& renderData)
 	GLUtility::setUniform(mRotationSphereGlProgram, "viewMatrix", viewMatrix);
 	GLUtility::setUniform(mRotationSphereGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
 	GLUtility::setUniform(mRotationSphereGlProgram, "scaleFac", scaleFac);
-	GLUtility::setUniform(mRotationSphereGlProgram, "vertexCount", mSphereData->getLevel(mCurrentLevel).numberOfVertices);
+	GLUtility::setUniform(mRotationSphereGlProgram, "vertexCount", sphereLevel.numberOfVertices);
+	GLUtility::setUniform(mRotationSphereGlProgram, "visualize_lightfield", mRenderMode == RenderMode::LIGHTFIELD);
 
 	glBindVertexArray(mVertexArrayObject);
-
-	// lightfield
-	const auto lfData = mLightfield->level(mCurrentLevel).rawData();
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, mCompleteLightfieldBuffer);
-	//glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, lfData->size() * sizeof(glm::vec3), lfData->data());
-	std::vector<glm::vec4> asd;
-	for(auto a : *lfData) asd.push_back(glm::vec4(a.rgb,0.0f));
-	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, asd.size() * sizeof(glm::vec4), &asd[0]);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, mCompleteLightfieldBuffer);
-	glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
 	glDrawElementsInstanced(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0), sphereLevel.numberOfVertices);
 }
 
@@ -235,9 +226,22 @@ void SphereRenderer::renderPositionSphere(const RenderData& renderData)
 
 void SphereRenderer::render(const RenderData& renderData)
 {
-	if(mRenderMode == RenderMode::POSITION) renderPositionSphere(renderData);
-	if(mRenderMode == RenderMode::ROTATION) renderRotationSpheres(renderData);
-	if(mRenderMode == RenderMode::LIGHTFIELD) renderLightfield(renderData);
+	switch(mRenderMode)
+	{
+	case RenderMode::POSITION:
+		renderPositionSphere(renderData);
+		break;
+	case RenderMode::ROTATION:
+	case RenderMode::LIGHTFIELD:
+		renderRotationSpheres(renderData);
+		break;
+	case RenderMode::LIGHTFIELD_SLICE:
+		renderLightfield(renderData);
+		break;
+	default:
+		WARN_ONCE("no valid rendermode set")
+		break;
+	}
 }
 
 void SphereRenderer::selectRenderMode(RenderMode mode)
@@ -283,7 +287,7 @@ void SphereRenderer::cleanupGlBuffers()
 {
 	glDeleteBuffers(1, &mVertexBuffer);
 	glDeleteBuffers(1, &mIndexBuffer);
-	glDeleteBuffers(1, &mLightfieldBuffer);
+	glDeleteBuffers(1, &mLightfieldSliceBuffer);
 	glDeleteBuffers(1, &mCompleteLightfieldBuffer);
 	glDeleteVertexArrays(1, &mVertexArrayObject);
 }
@@ -293,7 +297,7 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 	auto sphereLevel = mSphereData->getLevel(level);
 	mFacesCount = sphereLevel.numberOfFaces;
 
-	// Upload Indices
+	// Upload sphere indices
 	{
 		auto indices = make_unique<vector<unsigned int>>(); // shorts are not enough :o 
 		indices->reserve(sphereLevel.numberOfFaces * 3);
@@ -307,7 +311,7 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 		// TODO direct transfer using bufferSubData
 	}
 
-	// Upload Vertices
+	// Upload sphere vertices
 	{
 		auto vertices = make_unique<vector<glm::vec3>>();
 		vertices->reserve(sphereLevel.numberOfVertices);
@@ -319,10 +323,16 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 		// TODO direct transfer using bufferSubData
 	}
 
-	// Allocate lightfield space
+	// Allocate lightfield memory
 	{
-		mLightfieldBuffer = GLUtility::generateBuffer<glm::vec3>(GL_ARRAY_BUFFER, sphereLevel.numberOfVertices, nullptr, GL_DYNAMIC_DRAW);
-		mCompleteLightfieldBuffer = GLUtility::generateBuffer<glm::vec4>(GL_SHADER_STORAGE_BUFFER, mLightfield->level(level).rawData()->size(), nullptr, GL_DYNAMIC_DRAW);
+		mLightfieldSliceBuffer = GLUtility::generateBuffer<glm::vec3>(GL_ARRAY_BUFFER, sphereLevel.numberOfVertices, nullptr, GL_DYNAMIC_DRAW);
+
+		const auto lfData = mLightfield->level(mCurrentLevel).rawData();
+		std::vector<glm::vec4> vec4Lightfield;
+		vec4Lightfield.reserve(lfData->size());
+		for(auto i : *lfData) vec4Lightfield.push_back(glm::vec4(i.rgb, 0.0f));
+		mCompleteLightfieldBuffer = GLUtility::generateBuffer(GL_SHADER_STORAGE_BUFFER, vec4Lightfield, GL_DYNAMIC_DRAW);
+		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT); // TODO: this is a precaution, not 100% sure about this barrier. need more intel on SSBs
 	}
 
 	// Create VAO
@@ -341,7 +351,7 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 	// vao - lf slice data
 	const auto lightfieldBufferLocation = 1; // glGetAttribLocation(mLightfieldGlProgram, "lightfieldIn");
 	glEnableVertexAttribArray(lightfieldBufferLocation);
-	glBindBuffer(GL_ARRAY_BUFFER, mLightfieldBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, mLightfieldSliceBuffer);
 	glVertexAttribPointer(lightfieldBufferLocation, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 	// vao - instanced positions

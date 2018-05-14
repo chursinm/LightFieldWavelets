@@ -67,12 +67,12 @@ vec4 fragmentColor()
 		if(sqrt(checkersUv.x*checkersUv.x + checkersUv.y*checkersUv.y) > 25) return vec4(.1f);
 		vec2 ddxCheckersUv = dFdx( checkersUv ); 
         vec2 ddyCheckersUv = dFdy( checkersUv ); 
-		return vec4(checkersTextureGradBox(checkersUv, ddxCheckersUv, ddyCheckersUv));
+		return vec4(vec3(checkersTextureGradBox(checkersUv, ddxCheckersUv, ddyCheckersUv)), 1.0f);
 		//return vec4(checkersTexture(checkersUv));
 	}
 	else // background color
 	{
-		return vec4(.1f);
+		return vec4(vec3(.1f), 1.0f);
 	}
 
 }

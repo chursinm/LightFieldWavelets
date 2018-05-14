@@ -31,9 +31,10 @@ int main(int argc, char** argv)
 	context.attachRenderer(sr);
 	context.onKeyPress([&sr](auto keymod, auto keycode)
 	{
-		if(keycode == SDLK_y) sr.selectRenderMode(SphereRenderer::RenderMode::POSITION);
-		if(keycode == SDLK_x) sr.selectRenderMode(SphereRenderer::RenderMode::ROTATION);
-		if(keycode == SDLK_c) sr.selectRenderMode(SphereRenderer::RenderMode::LIGHTFIELD);
+		if(keycode == SDLK_LESS) sr.selectRenderMode(SphereRenderer::RenderMode::POSITION);
+		if(keycode == SDLK_y) sr.selectRenderMode(SphereRenderer::RenderMode::ROTATION);
+		if(keycode == SDLK_x) sr.selectRenderMode(SphereRenderer::RenderMode::LIGHTFIELD);
+		if(keycode == SDLK_c) sr.selectRenderMode(SphereRenderer::RenderMode::LIGHTFIELD_SLICE);
 	});
 	context.onKeyPress([&sr](auto keymod, auto keycode) { if(keycode == SDLK_b) sr.increaseLevel(); else if(keycode == SDLK_v) sr.decreaseLevel(); });
 

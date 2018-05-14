@@ -5,12 +5,11 @@ using namespace glm;
 namespace Generator
 {
 	LightfieldLevel::LightfieldLevel(std::shared_ptr<SubdivisionShpere::SubdivisionSphere> sphere, unsigned level,
-		const Sampler::Sampler& sampler) : mSphere(sphere), mLevel(level), mRawData(make_shared<vector<vec3>>())
+		const Sampler::Sampler& sampler) : mSphere(sphere), mRawData(make_shared<vector<vec3>>()), mPositionSphereLevel(level), mRotationSphereLevel(std::min(level, level)) // TODO p!=r sphere
 	{
-		if(mLevel == 0u) mLevel = 1u;
 		auto i = 0ull;
-		const auto positionLevelData = mSphere->getLevel(mLevel);
-		const auto rotationLevelData = mSphere->getLevel(mLevel);
+		const auto positionLevelData = mSphere->getLevel(mPositionSphereLevel);
+		const auto rotationLevelData = mSphere->getLevel(mRotationSphereLevel);
 		const auto allocationSize = static_cast<vector<vec3>::size_type>(positionLevelData.numberOfVertices) * static_cast<vector<vec3>::size_type>(rotationLevelData.numberOfVertices);
 		std::cout << "trying to allocate " << allocationSize << " elements (" << allocationSize * sizeof(vec3) / 1073741824ull << " GByte)\n";
 		mRawData->reserve(allocationSize);
@@ -21,7 +20,6 @@ namespace Generator
 			{
 				const auto& rotation = rotationVertexIterator->position;
 				const Ray ray(position, -rotation, nullptr);
-				//mRawData->data()[i++] = sampler.sample(ray);
 				mRawData->push_back(sampler.sample(ray));
 			}
 		}
@@ -30,6 +28,16 @@ namespace Generator
 	shared_ptr<vector<vec3>> LightfieldLevel::rawData() const
 	{
 		return mRawData;
+	}
+
+	unsigned short LightfieldLevel::positionSphereLevel() const
+	{
+		return mPositionSphereLevel;
+	}
+
+	unsigned short LightfieldLevel::rotationSphereLevel() const
+	{
+		return mRotationSphereLevel;
 	}
 
 	// see https://gamedev.stackexchange.com/a/49370
@@ -52,10 +60,8 @@ namespace Generator
 
 	vector<vec3> LightfieldLevel::snapshot(const vec3& cameraPositionInPositionSphereSpace) const
 	{
-		const auto rotationLevel = mLevel;
-		const auto positionLevel = mLevel;
-		const auto positionLevelData = mSphere->getLevel(positionLevel);
-		const auto rotationLevelData = mSphere->getLevel(rotationLevel);
+		const auto positionLevelData = mSphere->getLevel(mPositionSphereLevel);
+		const auto rotationLevelData = mSphere->getLevel(mRotationSphereLevel);
 
 		vector<vec3> result;
 		result.reserve(positionLevelData.numberOfVertices);
@@ -63,7 +69,7 @@ namespace Generator
 		{
 			// Calculate faces for each position
 			const auto localRotation = normalize(cameraPositionInPositionSphereSpace - positionLevelData.vertices[i].position);
-			const auto faceIndex = mSphere->vectorToFaceIndex(localRotation, rotationLevel);
+			const auto faceIndex = mSphere->vectorToFaceIndex(localRotation, mRotationSphereLevel);
 			const auto facePtr = rotationLevelData.faces + faceIndex;
 
 			// Interpolate the color using the face & barycentric coordinates

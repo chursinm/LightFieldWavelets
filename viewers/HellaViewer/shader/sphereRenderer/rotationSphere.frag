@@ -2,6 +2,7 @@
 
 uniform vec3 viewspaceLightPosition;
 uniform sampler2D debugTexture;
+uniform int visualize_lightfield;
 
 in vec3 viewspaceVertex;
 in vec3 color;
@@ -41,16 +42,21 @@ vec3 phong(vec3 viewDir, vec3 lightDir, vec3 normal, vec3 ambient, vec3 diffuse,
 
 void main(void)
 {
-outColor = vec4(color,1.0f);
-return;
-	int primitiveMod = gl_PrimitiveID % 12;
-	vec3 color = COLORS[primitiveMod] * 0.7;
+	if(bool(visualize_lightfield))
+	{
+		outColor = vec4(color,0.5f);
+	}
+	else
+	{
+		int primitiveMod = gl_PrimitiveID % 12;
+		vec3 color = COLORS[primitiveMod] * 0.7;
 
-	vec3 viewDir = normalize(-viewspaceVertex);
-	vec3 lightDir = normalize(viewspaceLightPosition - viewspaceVertex);
-	vec3 normal = normalize(cross(dFdx(viewspaceVertex), dFdy(viewspaceVertex)));
-	outColor = vec4(phong(viewDir, lightDir, normal, color*0.2, color, color, 0.5f), 1.0f);
-	//outColor = texture(debugTexture, uv);
-	//outColor = vec4(checkerboard(uv, 1));
-	//outColor = vec4(uv, 0, 1);
+		vec3 viewDir = normalize(-viewspaceVertex);
+		vec3 lightDir = normalize(viewspaceLightPosition - viewspaceVertex);
+		vec3 normal = normalize(cross(dFdx(viewspaceVertex), dFdy(viewspaceVertex)));
+		outColor = vec4(phong(viewDir, lightDir, normal, color*0.2, color, color, 0.5f), 1.0f);
+		//outColor = texture(debugTexture, uv);
+		//outColor = vec4(checkerboard(uv, 1));
+		//outColor = vec4(uv, 0, 1);
+	}
 }
