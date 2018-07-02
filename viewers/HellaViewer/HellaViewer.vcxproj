@@ -33,7 +33,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.1.props" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.2.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -46,13 +46,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>thirdparty\SDL2_image-2.0.2\include;thirdparty\sdl2-2.0.3\include;thirdparty\openvr\headers;thirdparty\glm_include;thirdparty\glew\glew-1.11.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>thirdparty\SDL2_image-2.0.2\lib\x64;thirdparty\sdl2-2.0.3\bin\win64;thirdparty\openvr\lib\win64;thirdparty\glew\glew-1.11.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\thirdparty\openvr\headers;$(ProjectDir)\..\..\thirdparty\glm_include;$(ProjectDir)\..\..\;$(ProjectDir)\..\..\thirdparty\glew\glew-1.11.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\\thirdparty\sdl2-2.0.3\bin\win64;$(ProjectDir)\..\..\thirdparty\openvr\lib\win64;$(ProjectDir)\..\..\thirdparty\glew\glew-1.11.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>thirdparty\SDL2_image-2.0.2\include;thirdparty\sdl2-2.0.3\include;thirdparty\openvr\headers;thirdparty\glm_include;thirdparty\glew\glew-1.11.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>thirdparty\SDL2_image-2.0.2\lib\x64;thirdparty\sdl2-2.0.3\bin\win64;thirdparty\openvr\lib\win64;thirdparty\glew\glew-1.11.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\thirdparty\openvr\headers;$(ProjectDir)\..\..\thirdparty\glm_include;$(ProjectDir)\..\..\;$(ProjectDir)\..\..\thirdparty\glew\glew-1.11.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\\thirdparty\sdl2-2.0.3\bin\win64;$(ProjectDir)\..\..\thirdparty\openvr\lib\win64;$(ProjectDir)\..\..\thirdparty\glew\glew-1.11.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -115,6 +117,10 @@
     </CudaLink>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\thirdparty\tinyxml2\tinyxml2.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CudaGlArrayBuffer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -167,10 +173,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="thirdparty\tinyxml2\tinyxml2.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="TrackballCamera.cpp" />
     <ClCompile Include="VRCamera.cpp" />
   </ItemGroup>
@@ -208,6 +210,6 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.1.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 9.2.targets" />
   </ImportGroup>
 </Project>
