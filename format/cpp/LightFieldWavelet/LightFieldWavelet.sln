@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LightFieldWaveletTests", "LightFieldWaveletTests\LightFieldWaveletTests.vcxproj", "{691800A0-A8C2-4F1E-BB09-725A25EA6952}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LightFieldWaveletLib", "LightFieldWaveletLib\LightFieldWaveletLib.vcxproj", "{8A7324A6-8140-4FF2-9A96-73A82F83F676}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{691800A0-A8C2-4F1E-BB09-725A25EA6952}.Release|x64.Build.0 = Release|x64
 		{691800A0-A8C2-4F1E-BB09-725A25EA6952}.Release|x86.ActiveCfg = Release|Win32
 		{691800A0-A8C2-4F1E-BB09-725A25EA6952}.Release|x86.Build.0 = Release|Win32
+		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Debug|x64.ActiveCfg = Debug|x64
+		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Debug|x64.Build.0 = Debug|x64
+		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Debug|x86.ActiveCfg = Debug|Win32
+		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Debug|x86.Build.0 = Debug|Win32
+		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Release|x64.ActiveCfg = Release|x64
+		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Release|x64.Build.0 = Release|x64
+		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Release|x86.ActiveCfg = Release|Win32
+		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
