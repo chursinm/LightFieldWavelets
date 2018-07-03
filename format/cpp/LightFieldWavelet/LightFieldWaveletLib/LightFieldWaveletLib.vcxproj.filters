@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="SphereStructure">
+      <UniqueIdentifier>{26d7ec05-bfbf-4ed0-977a-c4d5eb71c066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightFieldMatrix">
+      <UniqueIdentifier>{3d7761c3-f5bf-49f2-b52e-b9df59ca1377}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WaveletCoeffDictionary">
+      <UniqueIdentifier>{35eb113d-78ac-4f3c-aef2-e3c78ea28593}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -21,10 +30,31 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SubdivisionSphere.h">
+      <Filter>SphereStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="LightFieldMatrix.h">
+      <Filter>LightFieldMatrix</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveletCoeffDictionary.h">
+      <Filter>WaveletCoeffDictionary</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SubdivisionSphere.cpp">
+      <Filter>SphereStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="LightFieldMatrix.cpp">
+      <Filter>LightFieldMatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveletCoeffDictionary.cpp">
+      <Filter>WaveletCoeffDictionary</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
