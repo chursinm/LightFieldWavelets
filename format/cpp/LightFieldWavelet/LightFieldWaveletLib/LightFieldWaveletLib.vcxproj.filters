@@ -13,14 +13,23 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="SphereStructure">
+    <Filter Include="WaveletLib">
+      <UniqueIdentifier>{bafb10bb-9074-495a-acab-6abd7cbe98bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WaveletLib\SphereStructure">
       <UniqueIdentifier>{26d7ec05-bfbf-4ed0-977a-c4d5eb71c066}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LightFieldMatrix">
+    <Filter Include="WaveletLib\WaveletCoeffDictionary">
+      <UniqueIdentifier>{35eb113d-78ac-4f3c-aef2-e3c78ea28593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WaveletLib\LightFieldMatrix">
       <UniqueIdentifier>{3d7761c3-f5bf-49f2-b52e-b9df59ca1377}</UniqueIdentifier>
     </Filter>
-    <Filter Include="WaveletCoeffDictionary">
-      <UniqueIdentifier>{35eb113d-78ac-4f3c-aef2-e3c78ea28593}</UniqueIdentifier>
+    <Filter Include="WaveletLib\RaysDictionary">
+      <UniqueIdentifier>{dc2249eb-8974-462c-bb7f-42ae704dcc49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WaveletLib\WaveletCompression">
+      <UniqueIdentifier>{c220af4a-83d4-4416-a68c-a3f042ba8123}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -31,16 +40,22 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SubdivisionSphere.h">
-      <Filter>SphereStructure</Filter>
+      <Filter>WaveletLib\SphereStructure</Filter>
     </ClInclude>
     <ClInclude Include="LightFieldMatrix.h">
-      <Filter>LightFieldMatrix</Filter>
+      <Filter>WaveletLib\LightFieldMatrix</Filter>
     </ClInclude>
     <ClInclude Include="WaveletCoeffDictionary.h">
-      <Filter>WaveletCoeffDictionary</Filter>
+      <Filter>WaveletLib\WaveletCoeffDictionary</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RaysDictionary.h">
+      <Filter>WaveletLib\RaysDictionary</Filter>
+    </ClInclude>
+    <ClInclude Include="WaveletCompression.h">
+      <Filter>WaveletLib\WaveletCompression</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -48,13 +63,19 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SubdivisionSphere.cpp">
-      <Filter>SphereStructure</Filter>
+      <Filter>WaveletLib\SphereStructure</Filter>
     </ClCompile>
     <ClCompile Include="LightFieldMatrix.cpp">
-      <Filter>LightFieldMatrix</Filter>
+      <Filter>WaveletLib\LightFieldMatrix</Filter>
     </ClCompile>
     <ClCompile Include="WaveletCoeffDictionary.cpp">
-      <Filter>WaveletCoeffDictionary</Filter>
+      <Filter>WaveletLib\WaveletCoeffDictionary</Filter>
+    </ClCompile>
+    <ClCompile Include="RaysDictionary.cpp">
+      <Filter>WaveletLib\RaysDictionary</Filter>
+    </ClCompile>
+    <ClCompile Include="WaveletCompression.cpp">
+      <Filter>WaveletLib\WaveletCompression</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

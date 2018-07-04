@@ -149,13 +149,16 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="LightFieldMatrix.h" />
+    <ClInclude Include="RaysDictionary.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SubdivisionSphere.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WaveletCoeffDictionary.h" />
+    <ClInclude Include="WaveletCompression.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LightFieldMatrix.cpp" />
+    <ClCompile Include="RaysDictionary.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -164,6 +167,7 @@
     </ClCompile>
     <ClCompile Include="SubdivisionSphere.cpp" />
     <ClCompile Include="WaveletCoeffDictionary.cpp" />
+    <ClCompile Include="WaveletCompression.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
