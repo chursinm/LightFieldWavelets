@@ -6,7 +6,6 @@
 #pragma once
 
 #include "targetver.h"
-
 #include <stdio.h>
 #include <tchar.h>
 
@@ -28,6 +27,9 @@
 #define SDL_MAIN_HANDLED // as we do not actually want sdl to handle anything
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SubdivisionSphere.h>
+#include <SphereFace.h>
+#include <SphereVertex.h>
 
 
 

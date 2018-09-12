@@ -74,22 +74,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LibRelease|x64'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LibDebug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -193,8 +193,8 @@
     <ClCompile Include="TexturedPlaneSampler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\LightFieldVaveletLib.vcxproj">
-      <Project>{cd45ae67-a7e3-443f-9762-fc84bce39da3}</Project>
+    <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\LightFieldWaveletLib.vcxproj">
+      <Project>{8a7324a6-8140-4ff2-9a96-73a82f83f676}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

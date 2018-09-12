@@ -1,6 +1,8 @@
 #pragma once
 #include "Sampler.h"
-#include "SubdivisionSphere.h"
+//#include "SubdivisionSphere.h"
+
+
 
 namespace Generator
 {
@@ -18,8 +20,8 @@ namespace Generator
 		// Per Sphere
 		glm::vec3 sphereCenter; // basically always 0,0,0
 		float sphereRadius; // should be 1, closer to 0.98 in reality
-		SubdivisionShpere::Face *faces;
-		SubdivisionShpere::Vertex *vertices;
+		LightField::SphereFace *faces;
+		LightField::SphereVertex *vertices;
 		std::vector<glm::vec3> normal; // eg normal[i] = normalize( (vertices+i)->position - sphereCenter )
 
 		// Per Ray Data (Sphere x Sphere)

@@ -201,8 +201,8 @@
     <None Include="shader\stereo.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldVaveletLib\LightFieldVaveletLib.vcxproj">
-      <Project>{cd45ae67-a7e3-443f-9762-fc84bce39da3}</Project>
+    <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\LightFieldWaveletLib.vcxproj">
+      <Project>{8a7324a6-8140-4ff2-9a96-73a82f83f676}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Generator\OfflineRendering.vcxproj">
       <Project>{06181689-f02a-43b7-8d01-ba5a188eef76}</Project>

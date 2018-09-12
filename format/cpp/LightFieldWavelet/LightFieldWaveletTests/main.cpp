@@ -1,14 +1,16 @@
 #include <iostream>
+#include <vector>
+
 #include <SubdivisionSphere.h>
-using namespace std;
+#include <WaveletCompression.h>
+
+
+
 
 
 
 int main()
 {
-	SubdivisionSphere::SubdivisionSphere* subsphere = new SubdivisionSphere::SubdivisionSphere();
-	
-	delete subsphere;
-	cout << "Hello, World!"<< endl;
+	LightField::SubdivisionSphere subsphere(0);
 	return 0;
 }

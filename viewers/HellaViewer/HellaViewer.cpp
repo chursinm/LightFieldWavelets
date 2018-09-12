@@ -11,6 +11,8 @@
 #include "SphereRenderer.h"
 #include "CameraArrayRenderer.h"
 
+
+
 void play_with_haar_lifting();
 
 int main(int argc, char** argv)
