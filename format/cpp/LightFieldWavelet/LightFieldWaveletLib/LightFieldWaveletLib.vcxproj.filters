@@ -57,9 +57,6 @@
     <ClInclude Include="WaveletCompression.h">
       <Filter>WaveletLib\WaveletCompression</Filter>
     </ClInclude>
-    <ClInclude Include="SphereInitialLevel.h">
-      <Filter>WaveletLib</Filter>
-    </ClInclude>
     <ClInclude Include="SphereEdge.h">
       <Filter>WaveletLib\SphereStructure\SphereData</Filter>
     </ClInclude>
@@ -97,9 +94,6 @@
     </ClCompile>
     <ClCompile Include="SubdivisionSphere.cpp">
       <Filter>WaveletLib\SphereStructure</Filter>
-    </ClCompile>
-    <ClCompile Include="SphereInitialLevel.cpp">
-      <Filter>WaveletLib\SphereStructure\SphereData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

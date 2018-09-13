@@ -1,13 +1,11 @@
 #pragma once
 
 
-#include "stdafx.h"
+#include <glm/glm.hpp>
 #include "SphereEdge.h"
 
 
-
-
-namespace LightField{
+namespace LightField {
 
 	class SphereVertex{
 	public:

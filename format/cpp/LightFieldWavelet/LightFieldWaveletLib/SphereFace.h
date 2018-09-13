@@ -1,10 +1,11 @@
 #pragma once
 #include "SphereVertex.h"
 
-class SphereVertex {};
+
 
 namespace LightField
 {
+	class SphereVertex;
 	class SphereFace
 	{
 	public:

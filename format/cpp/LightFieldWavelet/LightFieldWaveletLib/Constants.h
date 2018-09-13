@@ -4,7 +4,7 @@
 //constants
 
 #define NUMBEROFLEVELS 8
-#define EPSILON 0.01
+#define EPSILON 0.01f
 
 
 //test variables
