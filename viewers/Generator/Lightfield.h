@@ -7,7 +7,7 @@ namespace Generator
 	class Lightfield
 	{
 	public:
-		Lightfield(std::shared_ptr<SubdivisionShpere::SubdivisionSphere> sphere, unsigned levels, std::shared_ptr<Sampler::Sampler> sampler);
+		Lightfield(std::shared_ptr<LightField::SubdivisionSphere> sphere, unsigned levels, std::shared_ptr<Sampler::Sampler> sampler);
 		~Lightfield() = default;
 		const LightfieldLevel& level(unsigned i);
 	private:

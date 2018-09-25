@@ -19,7 +19,7 @@ bool floatEqual(const float& a, const float& b)
 	return abs(a - b) < epsilon;
 }
 
-void zeigeSeitenverhaeltnisse(SubdivisionShpere::SubdivisionSphere* sphereData)
+void zeigeSeitenverhaeltnisse(LightField::SubdivisionSphere* sphereData)
 {
 	for(auto level = 0u; level < sphereData->getNumberOfLevels(); ++level)
 	{
@@ -27,11 +27,11 @@ void zeigeSeitenverhaeltnisse(SubdivisionShpere::SubdivisionSphere* sphereData)
 		auto gleichseitige = 0u;
 		auto gleichschenkelige = 0u;
 		auto allgemeine = 0u;
-		for(auto positionFacesIterator = levelData.faces; positionFacesIterator != (levelData.faces + levelData.numberOfFaces); ++positionFacesIterator)
+		for(auto positionFacesIterator: levelData.getFaces())
 		{
-			auto& vert01 = positionFacesIterator->vertARef->position;
-			auto& vert02 = positionFacesIterator->vertBRef->position;
-			auto& vert03 = positionFacesIterator->vertCRef->position;
+			auto& vert01 = positionFacesIterator.vertices[0]->pos;
+			auto& vert02 = positionFacesIterator.vertices[1]->pos;
+			auto& vert03 = positionFacesIterator.vertices[2]->pos;
 			auto d1 = distance(vert01, vert02);
 			auto d2 = distance(vert01, vert03);
 			auto d3 = distance(vert02, vert03);
@@ -53,16 +53,16 @@ void zeigeSeitenverhaeltnisse(SubdivisionShpere::SubdivisionSphere* sphereData)
 	}
 }
 
-void zeigePolarkoordinaten(SubdivisionShpere::SubdivisionSphere* sphereData)
+void zeigePolarkoordinaten(LightField::SubdivisionSphere* sphereData)
 {
 	constexpr auto pi = 3.1415926535897932384626433832795f;
 	for(auto level = 0u; level < sphereData->getNumberOfLevels(); ++level)
 	{
 		auto levelData = sphereData->getLevel(level);
 		std::cout << "Level " << level << std::endl;
-		for(auto vertexIterator = levelData.vertices; vertexIterator != (levelData.vertices + levelData.numberOfVertices); ++vertexIterator)
+		for(auto vertexIterator : levelData.getVertices())
 		{
-			auto& vertex = vertexIterator->position;
+			auto& vertex = vertexIterator.pos;
 			vec3 test = normalize(vertex);
 			// Rotation Y Axis (A)
 			vec2 yRotVert = test.xz; //normalize(vertex.xz);
@@ -77,7 +77,7 @@ void zeigePolarkoordinaten(SubdivisionShpere::SubdivisionSphere* sphereData)
 }
 int main(int argc, char **argv)
 {
-	auto sphereLevelCount = 5u;
+	auto sphereLevelCount = 1u;
 	if(argc == 2)
 	{
 		stringstream(argv[1]) >> sphereLevelCount;
@@ -93,17 +93,19 @@ int main(int argc, char **argv)
 	const auto plane2Sampler = make_shared<CheckerboardSampler>(0.f, glm::vec3(0.5f, 0.f, 0.f), plane2);
 	const auto setSampler = make_unique<SetSampler>(vector<shared_ptr<Sampler>> { planeSampler, plane2Sampler }, glm::vec3(0.2f,0.f,0.f));
 
-	auto sphereData = std::make_shared<SubdivisionShpere::SubdivisionSphere>(sphereLevelCount);
+	auto sphereData = std::make_shared<LightField::SubdivisionSphere>(sphereLevelCount);
 
 	for(auto levelIndex = 0u; levelIndex < sphereData->getNumberOfLevels(); ++levelIndex)
 	{
 		auto levelData = sphereData->getLevel(levelIndex);
-		for(auto facesIterator = levelData.faces; facesIterator != (levelData.faces + levelData.numberOfFaces); ++facesIterator)
+		for(auto facesIterator : levelData.getFaces())
 		{
-			auto centralVertex = normalize(facesIterator->vertARef->position + facesIterator->vertBRef->position + facesIterator->vertCRef->position);
-			auto halfCentralVertex = normalize(centralVertex + facesIterator->vertBRef->position);
+			auto centralVertex = normalize(	facesIterator.vertices[0]->pos + 
+											facesIterator.vertices[1]->pos +
+											facesIterator.vertices[2]->pos 	);
+			auto halfCentralVertex = normalize(centralVertex + facesIterator.vertices[1]->pos);
 			auto faceIndex = sphereData->vectorToFaceIndex(halfCentralVertex, levelIndex);
-			if(faceIndex != facesIterator->index)
+			if(faceIndex != facesIterator.index)
 				std::cout << "break";
 		}
 	}

@@ -2,7 +2,7 @@
 #include "Lightfield.h"
 
 
-Generator::Lightfield::Lightfield(const std::shared_ptr<SubdivisionShpere::SubdivisionSphere> sphere, const unsigned levels, const std::shared_ptr<Sampler::Sampler> sampler): mLevels(levels)
+Generator::Lightfield::Lightfield(const std::shared_ptr<LightField::SubdivisionSphere> sphere, const unsigned levels, const std::shared_ptr<Sampler::Sampler> sampler): mLevels(levels)
 {
 	for(auto i = 0u; i < levels; ++i)
 	{

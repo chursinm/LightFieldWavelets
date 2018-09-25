@@ -87,6 +87,8 @@ namespace LightField
 	void SphereLevel::initilizeEdges()
 	{
 		std::vector<SphereVertex*>  i, j;
+
+		// fill all vertices as begin and end of edges
 		for (auto& face : faces)
 		{
 			i.push_back(face.vertices[0]);
@@ -122,7 +124,7 @@ namespace LightField
 		}
 
 		std::vector<int> I;
-
+		// take only in ascending direction
 		for (int iter = 0; iter < i.size(); iter++)
 		{
 	
@@ -131,8 +133,9 @@ namespace LightField
 				I.push_back(iter);
 			}
 		}
-		std::vector<SphereVertex*>  i_ordered, j_ordered;
 
+		//sort them according to bedin and end
+		std::vector<SphereVertex*>  i_ordered, j_ordered;
 		for (auto index : I)
 		{
 			i_ordered.push_back(i[index]);
@@ -145,10 +148,7 @@ namespace LightField
 		{
 			index.push_back(iter);
 		}
-
-
 		
-
 		std::sort(index.begin(), index.end(),
 					[&](const int& a, const int& b)
 					{			
@@ -173,10 +173,10 @@ namespace LightField
 		{
 			edges[iter].vertices[0] = i_ordered[I[iter]];
 			edges[iter].vertices[1] = j_ordered[I[iter]];
-		}
+		}		
 	}
 
-
+	
 
 }
 

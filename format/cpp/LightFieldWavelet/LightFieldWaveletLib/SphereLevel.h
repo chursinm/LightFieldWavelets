@@ -17,13 +17,13 @@ namespace LightField
 		const	SphereFace&		getFace(int index)		const			{ return faces[index]; }
 
 		const	auto&			getFaces()				const			{ return faces; }
-		const	auto&			getEgges()				const			{ return edges; }
+		const	auto&			getEdges()				const			{ return edges; }
 		const	auto&			getVertices()			const			{ return vertices; }
 	
 		
-		size_t	getNumberOfVertices()				{ return vertices.size();	}
-		size_t	getNumberOfEdges()					{ return edges.size();		}
-		size_t	getNumberOfFaces()					{ return faces.size();		}
+		size_t	getNumberOfVertices()	const			{ return vertices.size();	}
+		size_t	getNumberOfEdges()		const			{ return edges.size();		}
+		size_t	getNumberOfFaces()		const 			{ return faces.size();		}
 
 	protected:
 		std::vector <SphereVertex>	vertices;

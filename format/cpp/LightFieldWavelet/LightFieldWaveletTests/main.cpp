@@ -40,7 +40,7 @@ int main()
 		std::cout << "check level " << level.getIndex() << std::endl;
 		for (const auto& face : level.getFaces())
 		{
-			for (int testSample = 0; testSample < 1; testSample++)
+			for (int testSample = 0; testSample < 10; testSample++)
 			{
 				glm::vec3 sample = glm::linearRand(glm::vec3(EPSILON), glm::vec3(1 - EPSILON));
 				glm::vec3 baricetric = sample / (sample.x + sample.y + sample.z);

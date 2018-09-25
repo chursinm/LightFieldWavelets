@@ -30,7 +30,7 @@ private:
 	void cleanupGlBuffers();
 	void setupGlBuffersForLevel(unsigned short level);
 	void generateLightfield(unsigned short level);
-	std::shared_ptr<SubdivisionShpere::SubdivisionSphere> mSphereData;
+	std::shared_ptr<LightField::SubdivisionSphere> mSphereData;
 	std::unique_ptr<Generator::Lightfield> mLightfield;
 	GLuint mVertexBuffer, mIndexBuffer, mLightfieldSliceBuffer, mCompleteLightfieldBuffer, mVertexArrayObject;
 	GLuint mGlProgram, mLightfieldGlProgram, mHighlightFacesGlProgram, mHighlightVerticesGlProgram, mRotationSphereGlProgram;

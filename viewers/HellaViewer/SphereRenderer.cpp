@@ -14,7 +14,7 @@ using namespace std; // too many std calls :D
 #define RENDER_LIGHTFIELD 1
 
 SphereRenderer::SphereRenderer(unsigned int levelCount) :
-	mSphereData(make_shared<SubdivisionShpere::SubdivisionSphere>(levelCount)), mFacesCount(0), mCurrentLevel(1), mRenderMode(RenderMode::POSITION)
+	mSphereData(make_shared<LightField::SubdivisionSphere>(levelCount)), mFacesCount(0), mCurrentLevel(0), mRenderMode(RenderMode::POSITION)
 {
 	generateLightfield(levelCount);
 }
@@ -23,7 +23,7 @@ SphereRenderer::SphereRenderer(unsigned int levelCount) :
 SphereRenderer::~SphereRenderer()
 {
 	cleanupGlBuffers();
-	glDeleteProgram(mGlProgram);
+	glDeleteProgram(mGlProgram);	
 	glDeleteProgram(mRotationSphereGlProgram);
 	glDeleteProgram(mLightfieldGlProgram);
 	glDeleteProgram(mHighlightFacesGlProgram);
@@ -102,9 +102,9 @@ void SphereRenderer::renderRotationSpheres(const RenderData& renderData)
 	// TODO do more stuff just once in here
 
 	// calculate world scale
-	auto face = sphereLevel.faces[0];
-	auto posA = face.vertARef->position;
-	auto posB = face.vertBRef->position;
+	auto face = sphereLevel.getFaces()[0];
+	auto posA = face.vertices[0]->pos;
+	auto posB = face.vertices[1]->pos;
 	const auto scaleBias = 0.7f;
 	auto scaleFac = glm::distance(posA, posB) * scaleBias;
 	
@@ -129,11 +129,12 @@ void SphereRenderer::renderRotationSpheres(const RenderData& renderData)
 	GLUtility::setUniform(mRotationSphereGlProgram, "viewMatrix", viewMatrix);
 	GLUtility::setUniform(mRotationSphereGlProgram, "viewspaceLightPosition", viewspaceLightPosition);
 	GLUtility::setUniform(mRotationSphereGlProgram, "scaleFac", scaleFac);
-	GLUtility::setUniform(mRotationSphereGlProgram, "vertexCount", sphereLevel.numberOfVertices);
+	const int numberOfVertices = sphereLevel.getNumberOfVertices();
+	GLUtility::setUniform(mRotationSphereGlProgram, "vertexCount", numberOfVertices);
 	GLUtility::setUniform(mRotationSphereGlProgram, "visualize_lightfield", mRenderMode == RenderMode::LIGHTFIELD);
 
 	glBindVertexArray(mVertexArrayObject);
-	glDrawElementsInstanced(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0), sphereLevel.numberOfVertices);
+	glDrawElementsInstanced(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0), sphereLevel.getNumberOfVertices());
 }
 
 void SphereRenderer::renderPositionSphere(const RenderData& renderData)
@@ -178,7 +179,7 @@ void SphereRenderer::renderPositionSphere(const RenderData& renderData)
 	for(auto i : mHighlightVertices)
 	{
 		const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
-		if(i < sphereLevel.numberOfVertices)
+		if(i < sphereLevel.getNumberOfVertices())
 		{
 			glDrawArrays(GL_POINTS, i, 1u);
 		}
@@ -199,7 +200,7 @@ void SphereRenderer::renderPositionSphere(const RenderData& renderData)
 	for(auto i : mHighlightFaces)
 	{
 		const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
-		if(i < sphereLevel.numberOfFaces)
+		if(i < sphereLevel.getNumberOfFaces())
 		{
 			glDrawElements(GL_TRIANGLES, 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(sizeof(unsigned int) * 3u * i));
 		}
@@ -295,17 +296,17 @@ void SphereRenderer::cleanupGlBuffers()
 void SphereRenderer::setupGlBuffersForLevel(unsigned short level) 
 {
 	auto sphereLevel = mSphereData->getLevel(level);
-	mFacesCount = sphereLevel.numberOfFaces;
+	mFacesCount = sphereLevel.getNumberOfFaces();
 
 	// Upload sphere indices
 	{
 		auto indices = make_unique<vector<unsigned int>>(); // shorts are not enough :o 
-		indices->reserve(sphereLevel.numberOfFaces * 3);
-		for(auto faceIterator = sphereLevel.faces; faceIterator != (sphereLevel.faces + sphereLevel.numberOfFaces); ++faceIterator)
+		indices->reserve(sphereLevel.getNumberOfFaces() * 3);
+		for(auto faceIterator : sphereLevel.getFaces())
 		{
-			indices->push_back(faceIterator->vertA);
-			indices->push_back(faceIterator->vertB);
-			indices->push_back(faceIterator->vertC);
+			indices->push_back(faceIterator.vertices[0]->index);
+			indices->push_back(faceIterator.vertices[1]->index);
+			indices->push_back(faceIterator.vertices[2]->index);
 		}
 		mIndexBuffer = GLUtility::generateBuffer(GL_ELEMENT_ARRAY_BUFFER, *indices, GL_STATIC_DRAW);
 		// TODO direct transfer using bufferSubData
@@ -314,10 +315,10 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 	// Upload sphere vertices
 	{
 		auto vertices = make_unique<vector<glm::vec3>>();
-		vertices->reserve(sphereLevel.numberOfVertices);
-		for(auto vertexIterator = sphereLevel.vertices; vertexIterator != (sphereLevel.vertices + sphereLevel.numberOfVertices); ++vertexIterator)
+		vertices->reserve(sphereLevel.getNumberOfVertices());
+		for(auto vertexIterator : sphereLevel.getVertices())
 		{
-			vertices->push_back(vertexIterator->position);
+			vertices->push_back(vertexIterator.pos);
 		}
 		mVertexBuffer = GLUtility::generateBuffer(GL_ARRAY_BUFFER, *vertices, GL_STATIC_DRAW);
 		// TODO direct transfer using bufferSubData
@@ -325,7 +326,7 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 
 	// Allocate lightfield memory
 	{
-		mLightfieldSliceBuffer = GLUtility::generateBuffer<glm::vec3>(GL_ARRAY_BUFFER, sphereLevel.numberOfVertices, nullptr, GL_DYNAMIC_DRAW);
+		mLightfieldSliceBuffer = GLUtility::generateBuffer<glm::vec3>(GL_ARRAY_BUFFER, sphereLevel.getNumberOfVertices(), nullptr, GL_DYNAMIC_DRAW);
 
 		const auto lfData = mLightfield->level(mCurrentLevel).rawData();
 		std::vector<glm::vec4> vec4Lightfield;

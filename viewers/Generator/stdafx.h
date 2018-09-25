@@ -19,6 +19,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <algorithm>
 
 #define GLM_FORCE_SWIZZLE 1 
 #define GLM_ENABLE_EXPERIMENTAL 1
