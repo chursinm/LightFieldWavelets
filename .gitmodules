@@ -4,6 +4,3 @@
 [submodule "thirdparty/openvr"]
 	path = thirdparty/openvr
 	url = https://github.com/ValveSoftware/openvr.git
-[submodule "thirdparty/RWR"]
-	path = thirdparty/RWR
-	url = git@gitlab.ssc-os.local:LightVR/RWR.git
