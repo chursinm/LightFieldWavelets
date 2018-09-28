@@ -8,7 +8,10 @@ namespace LightField
 {
 	SubdivisionSphere::SubdivisionSphere(int numberOfLevels)
 	{
-		levels.emplace_back();
+		if (numberOfLevels > 0)
+		{
+			levels.emplace_back();
+		}		
 		for (int i = 1; i < numberOfLevels; i++)
 		{			
 			levels.emplace_back(&levels.back());
@@ -35,26 +38,29 @@ namespace LightField
 		}
 
 
-		/*for (int iter = 1; iter <= level; iter++)
-		{
-			if (sameSide(face->childFaceARef->vertBRef->position, face->childFaceARef->vertCRef->position, face->childFaceARef->vertARef->position, vect))
+		for (int iter = 1; iter <= maxLevelInd; iter++)
+		{		
+			if (sameSide(face->childFaces[0]->vertices[1]->pos, face->childFaces[0]->vertices[2]->pos, face->childFaces[0]->vertices[0]->pos, vect))
 			{
-				face = face->childFaceARef;
+				face = face->childFaces[0];
 				continue;
 			}
-			if (sameSide(face->childFaceBRef->vertBRef->position, face->childFaceBRef->vertCRef->position, face->childFaceBRef->vertARef->position, vect))
+			if (sameSide(face->childFaces[1]->vertices[1]->pos, face->childFaces[1]->vertices[2]->pos, face->childFaces[1]->vertices[0]->pos, vect))
 			{
-				face = face->childFaceBRef;
+				face = face->childFaces[1];
 				continue;
 			}
-			if (sameSide(face->childFaceCRef->vertBRef->position, face->childFaceCRef->vertCRef->position, face->childFaceCRef->vertARef->position, vect))
+			if (sameSide(face->childFaces[2]->vertices[1]->pos, face->childFaces[2]->vertices[2]->pos, face->childFaces[2]->vertices[0]->pos, vect))
 			{
-				face = face->childFaceCRef;
+				face = face->childFaces[2];
 				continue;
 			}
-			face = face->childFaceDRef;
 
-		}*/
+
+
+			face = face->childFaces[3];
+
+		}
 
 		return face->index;
 

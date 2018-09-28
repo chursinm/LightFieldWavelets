@@ -7,10 +7,10 @@ namespace LightField
 	class SphereLevel
 	{
 	public:
-		SphereLevel(SphereLevel* prevLever);				
+		SphereLevel(SphereLevel* prevLevelIn);				
 		SphereLevel();
 
-				int				getIndex()				const			{ return index; }	
+		int						getIndex()				const			{ return index; }	
 
 		const	SphereVertex&	getVertex(int index)	const			{ return vertices[index]; }
 		const	SphereEdge&		getEdge(int index)		const			{ return edges[index]; }
@@ -29,8 +29,11 @@ namespace LightField
 		std::vector <SphereVertex>	vertices;
 		std::vector <SphereEdge>	edges;
 		std::vector <SphereFace>	faces;
+		SphereLevel*				prevLevel;
 		int index = 0;
 		friend class SubdivisionSphere;
-		void initilizeEdges();
+		void fillConnectionsGraph();
+		void perfomSubdivision();
+		
 	};
 }
