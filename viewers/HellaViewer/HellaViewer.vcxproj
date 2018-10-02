@@ -204,9 +204,6 @@
     <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\LightFieldWaveletLib.vcxproj">
       <Project>{8a7324a6-8140-4ff2-9a96-73a82f83f676}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\generators\SimpleGenerators\OfflineRendering.vcxproj">
-      <Project>{06181689-f02a-43b7-8d01-ba5a188eef76}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

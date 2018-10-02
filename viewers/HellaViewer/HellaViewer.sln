@@ -5,16 +5,12 @@ VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HellaViewer", "HellaViewer.vcxproj", "{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Generator", "..\..\generators\SimpleGenerators\OfflineRendering.vcxproj", "{06181689-F02A-43B7-8D01-BA5A188EEF76}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LightFieldWaveletLib", "..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\LightFieldWaveletLib.vcxproj", "{8A7324A6-8140-4FF2-9A96-73A82F83F676}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
-		GeneratorDebug|x64 = GeneratorDebug|x64
-		GeneratorDebug|x86 = GeneratorDebug|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -22,31 +18,13 @@ Global
 		{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}.Debug|x64.ActiveCfg = Debug|x64
 		{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}.Debug|x64.Build.0 = Debug|x64
 		{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}.Debug|x86.ActiveCfg = Debug|x64
-		{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}.GeneratorDebug|x64.ActiveCfg = Debug|x64
-		{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}.GeneratorDebug|x64.Build.0 = Debug|x64
-		{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}.GeneratorDebug|x86.ActiveCfg = Release|x64
-		{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}.GeneratorDebug|x86.Build.0 = Release|x64
 		{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}.Release|x64.ActiveCfg = Release|x64
 		{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}.Release|x64.Build.0 = Release|x64
 		{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}.Release|x86.ActiveCfg = Release|x64
-		{06181689-F02A-43B7-8D01-BA5A188EEF76}.Debug|x64.ActiveCfg = LibDebug|x64
-		{06181689-F02A-43B7-8D01-BA5A188EEF76}.Debug|x64.Build.0 = LibDebug|x64
-		{06181689-F02A-43B7-8D01-BA5A188EEF76}.Debug|x86.ActiveCfg = Debug|x64
-		{06181689-F02A-43B7-8D01-BA5A188EEF76}.GeneratorDebug|x64.ActiveCfg = Debug|x64
-		{06181689-F02A-43B7-8D01-BA5A188EEF76}.GeneratorDebug|x64.Build.0 = Debug|x64
-		{06181689-F02A-43B7-8D01-BA5A188EEF76}.GeneratorDebug|x86.ActiveCfg = Release|x64
-		{06181689-F02A-43B7-8D01-BA5A188EEF76}.GeneratorDebug|x86.Build.0 = Release|x64
-		{06181689-F02A-43B7-8D01-BA5A188EEF76}.Release|x64.ActiveCfg = LibRelease|x64
-		{06181689-F02A-43B7-8D01-BA5A188EEF76}.Release|x64.Build.0 = LibRelease|x64
-		{06181689-F02A-43B7-8D01-BA5A188EEF76}.Release|x86.ActiveCfg = Release|x64
 		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Debug|x64.ActiveCfg = Debug|x64
 		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Debug|x64.Build.0 = Debug|x64
 		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Debug|x86.ActiveCfg = Debug|Win32
 		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Debug|x86.Build.0 = Debug|Win32
-		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.GeneratorDebug|x64.ActiveCfg = Debug|x64
-		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.GeneratorDebug|x64.Build.0 = Debug|x64
-		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.GeneratorDebug|x86.ActiveCfg = Debug|Win32
-		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.GeneratorDebug|x86.Build.0 = Debug|Win32
 		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Release|x64.ActiveCfg = Release|x64
 		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Release|x64.Build.0 = Release|x64
 		{8A7324A6-8140-4FF2-9A96-73A82F83F676}.Release|x86.ActiveCfg = Release|Win32
