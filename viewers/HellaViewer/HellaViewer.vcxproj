@@ -46,13 +46,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)\..\..\;$(ProjectDir)\..\..\thirdparty\openvr\headers;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\thirdparty\glm_include;$(ProjectDir)\..\..\thirdparty\glew\glew-1.11.0\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
+    <IncludePath>$(ProjectDir)\..\..\generators\SimpleGenerators;$(ProjectDir)\..\..\;$(ProjectDir)\..\..\thirdparty\openvr\headers;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\thirdparty\glm_include;$(ProjectDir)\..\..\thirdparty\glew\glew-1.11.0\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\glew\glew-1.11.0\lib\Release\x64;$(ProjectDir)\..\..\thirdparty\openvr\lib\win64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)\..\..\;$(ProjectDir)\..\..\thirdparty\openvr\headers;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\thirdparty\glm_include;$(ProjectDir)\..\..\thirdparty\glew\glew-1.11.0\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
+    <IncludePath>$(ProjectDir)\..\..\generators\SimpleGenerators;$(ProjectDir)\..\..\;$(ProjectDir)\..\..\thirdparty\openvr\headers;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\thirdparty\glm_include;$(ProjectDir)\..\..\thirdparty\glew\glew-1.11.0\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\glew\glew-1.11.0\lib\Release\x64;$(ProjectDir)\..\..\thirdparty\openvr\lib\win64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
@@ -204,7 +204,7 @@
     <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\LightFieldWaveletLib.vcxproj">
       <Project>{8a7324a6-8140-4ff2-9a96-73a82f83f676}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Generator\OfflineRendering.vcxproj">
+    <ProjectReference Include="..\..\generators\SimpleGenerators\OfflineRendering.vcxproj">
       <Project>{06181689-f02a-43b7-8d01-ba5a188eef76}</Project>
     </ProjectReference>
   </ItemGroup>

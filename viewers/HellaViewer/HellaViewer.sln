@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HellaViewer", "HellaViewer.vcxproj", "{B981EAF3-0F05-4893-8630-8DDA4B39E2A1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Generator", "..\Generator\OfflineRendering.vcxproj", "{06181689-F02A-43B7-8D01-BA5A188EEF76}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Generator", "..\..\generators\SimpleGenerators\OfflineRendering.vcxproj", "{06181689-F02A-43B7-8D01-BA5A188EEF76}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LightFieldWaveletLib", "..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\LightFieldWaveletLib.vcxproj", "{8A7324A6-8140-4FF2-9A96-73A82F83F676}"
 EndProject

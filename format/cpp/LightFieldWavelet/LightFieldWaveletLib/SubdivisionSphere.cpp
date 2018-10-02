@@ -7,7 +7,7 @@
 namespace LightField
 {
 	SubdivisionSphere::SubdivisionSphere(int numberOfLevels)
-	{
+	{		
 		if (numberOfLevels > 0)
 		{
 			levels.emplace_back();
