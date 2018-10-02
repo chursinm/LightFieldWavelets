@@ -73,22 +73,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
+    <LibraryPath>D:\Projects\LightField\LightFieldCode\thirdparty\SDL2_image-2.0.2\lib\x64;D:\Projects\LightField\LightFieldCode\thirdparty\sdl2-2.0.3\bin\win64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LibRelease|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
+    <LibraryPath>D:\Projects\LightField\LightFieldCode\thirdparty\SDL2_image-2.0.2\lib\x64;D:\Projects\LightField\LightFieldCode\thirdparty\sdl2-2.0.3\bin\win64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
+    <LibraryPath>D:\Projects\LightField\LightFieldCode\thirdparty\SDL2_image-2.0.2\lib\x64;D:\Projects\LightField\LightFieldCode\thirdparty\sdl2-2.0.3\bin\win64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LibDebug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
+    <LibraryPath>D:\Projects\LightField\LightFieldCode\thirdparty\SDL2_image-2.0.2\lib\x64;D:\Projects\LightField\LightFieldCode\thirdparty\sdl2-2.0.3\bin\win64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\lib\x64;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\bin\win64</LibraryPath>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\..\..\thirdparty\SDL2_image-2.0.2\include;$(ProjectDir)\..\..\thirdparty\sdl2-2.0.3\include;$(ProjectDir)\..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -108,6 +108,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2_image.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LibRelease|x64'">
@@ -142,6 +143,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2_image.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LibDebug|x64'">
