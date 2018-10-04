@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -150,8 +150,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
-    <ClInclude Include="LightFieldMatrix.h" />
-    <ClInclude Include="RaysDictionary.h" />
+    <ClInclude Include="LevelMatrix.h" />
+    <ClInclude Include="LightFieldData.h" />
     <ClInclude Include="SphereEdge.h" />
     <ClInclude Include="SphereLevel.h" />
     <ClInclude Include="SphereFace.h" />
@@ -163,8 +163,8 @@
     <ClInclude Include="WaveletCompression.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LightFieldMatrix.cpp" />
-    <ClCompile Include="RaysDictionary.cpp" />
+    <ClCompile Include="LevelMatrix.cpp" />
+    <ClCompile Include="LightFieldData.cpp" />
     <ClCompile Include="SphereLevel.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

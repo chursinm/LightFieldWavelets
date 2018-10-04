@@ -13,11 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Sampler">
+    <Filter Include="RWRSampler">
+      <UniqueIdentifier>{f548d40a-092b-4773-a416-fd46da3e0469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Samplers">
       <UniqueIdentifier>{2d230f84-0e7a-4a31-8c5e-abdd2d68fa75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Sampler">
-      <UniqueIdentifier>{7fae67bb-12c5-4f17-b778-69e1f7a455c6}</UniqueIdentifier>
+    <Filter Include="Samplers\Rays">
+      <UniqueIdentifier>{413cc2b0-6e7c-42dc-958f-d8e5b7269cb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LightField">
+      <UniqueIdentifier>{f42778a0-45e7-4e53-ac8d-774b97b57f25}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -28,72 +34,66 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ColoredPlaneSampler.h">
-      <Filter>Header Files\Sampler</Filter>
+      <Filter>Samplers</Filter>
     </ClInclude>
     <ClInclude Include="PlaneSampler.h">
-      <Filter>Header Files\Sampler</Filter>
+      <Filter>Samplers</Filter>
     </ClInclude>
     <ClInclude Include="Sampler.h">
-      <Filter>Header Files\Sampler</Filter>
+      <Filter>Samplers</Filter>
     </ClInclude>
     <ClInclude Include="TexturedPlaneSampler.h">
-      <Filter>Header Files\Sampler</Filter>
+      <Filter>Samplers</Filter>
     </ClInclude>
     <ClInclude Include="SetSampler.h">
-      <Filter>Header Files\Sampler</Filter>
-    </ClInclude>
-    <ClInclude Include="Generator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LightfieldLevel.h">
-      <Filter>Header Files</Filter>
+      <Filter>Samplers</Filter>
     </ClInclude>
     <ClInclude Include="CheckerboardSampler.h">
-      <Filter>Header Files\Sampler</Filter>
+      <Filter>Samplers</Filter>
+    </ClInclude>
+    <ClInclude Include="RWRReader.h">
+      <Filter>RWRSampler</Filter>
     </ClInclude>
     <ClInclude Include="Ray.h">
-      <Filter>Header Files</Filter>
+      <Filter>Samplers\Rays</Filter>
     </ClInclude>
-    <ClInclude Include="Lightfield.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="LightFieldСontainer.h">
+      <Filter>LightField</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ColoredPlaneSampler.cpp">
-      <Filter>Source Files\Sampler</Filter>
-    </ClCompile>
-    <ClCompile Include="PlaneSampler.cpp">
-      <Filter>Source Files\Sampler</Filter>
-    </ClCompile>
-    <ClCompile Include="TexturedPlaneSampler.cpp">
-      <Filter>Source Files\Sampler</Filter>
-    </ClCompile>
-    <ClCompile Include="Sampler.cpp">
-      <Filter>Source Files\Sampler</Filter>
-    </ClCompile>
-    <ClCompile Include="SetSampler.cpp">
-      <Filter>Source Files\Sampler</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Generator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LightfieldLevel.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="RWRReader.cpp">
+      <Filter>RWRSampler</Filter>
     </ClCompile>
     <ClCompile Include="CheckerboardSampler.cpp">
-      <Filter>Source Files\Sampler</Filter>
+      <Filter>Samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="ColoredPlaneSampler.cpp">
+      <Filter>Samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaneSampler.cpp">
+      <Filter>Samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>Samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="SetSampler.cpp">
+      <Filter>Samplers</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedPlaneSampler.cpp">
+      <Filter>Samplers</Filter>
     </ClCompile>
     <ClCompile Include="Ray.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Samplers\Rays</Filter>
     </ClCompile>
-    <ClCompile Include="Lightfield.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="LightFieldСontainer.cpp">
+      <Filter>LightField</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

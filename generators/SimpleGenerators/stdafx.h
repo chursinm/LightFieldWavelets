@@ -32,6 +32,9 @@
 #include <SphereFace.h>
 #include <SphereVertex.h>
 
+#include <RayExtractor.h>
+#include <LightFieldData.h>
+
 
 
 // TODO: reference additional headers your program requires here

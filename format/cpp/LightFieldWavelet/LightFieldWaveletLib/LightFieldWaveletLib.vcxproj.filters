@@ -25,9 +25,6 @@
     <Filter Include="WaveletLib\LightFieldMatrix">
       <UniqueIdentifier>{3d7761c3-f5bf-49f2-b52e-b9df59ca1377}</UniqueIdentifier>
     </Filter>
-    <Filter Include="WaveletLib\RaysDictionary">
-      <UniqueIdentifier>{dc2249eb-8974-462c-bb7f-42ae704dcc49}</UniqueIdentifier>
-    </Filter>
     <Filter Include="WaveletLib\WaveletCompression">
       <UniqueIdentifier>{c220af4a-83d4-4416-a68c-a3f042ba8123}</UniqueIdentifier>
     </Filter>
@@ -42,17 +39,11 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LightFieldMatrix.h">
-      <Filter>WaveletLib\LightFieldMatrix</Filter>
-    </ClInclude>
     <ClInclude Include="WaveletCoeffDictionary.h">
       <Filter>WaveletLib\WaveletCoeffDictionary</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RaysDictionary.h">
-      <Filter>WaveletLib\RaysDictionary</Filter>
     </ClInclude>
     <ClInclude Include="WaveletCompression.h">
       <Filter>WaveletLib\WaveletCompression</Filter>
@@ -72,19 +63,19 @@
     <ClInclude Include="SubdivisionSphere.h">
       <Filter>WaveletLib\SphereStructure</Filter>
     </ClInclude>
+    <ClInclude Include="LevelMatrix.h">
+      <Filter>WaveletLib\LightFieldMatrix</Filter>
+    </ClInclude>
+    <ClInclude Include="LightFieldData.h">
+      <Filter>WaveletLib\LightFieldMatrix</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LightFieldMatrix.cpp">
-      <Filter>WaveletLib\LightFieldMatrix</Filter>
-    </ClCompile>
     <ClCompile Include="WaveletCoeffDictionary.cpp">
       <Filter>WaveletLib\WaveletCoeffDictionary</Filter>
-    </ClCompile>
-    <ClCompile Include="RaysDictionary.cpp">
-      <Filter>WaveletLib\RaysDictionary</Filter>
     </ClCompile>
     <ClCompile Include="WaveletCompression.cpp">
       <Filter>WaveletLib\WaveletCompression</Filter>
@@ -94,6 +85,12 @@
     </ClCompile>
     <ClCompile Include="SubdivisionSphere.cpp">
       <Filter>WaveletLib\SphereStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelMatrix.cpp">
+      <Filter>WaveletLib\LightFieldMatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="LightFieldData.cpp">
+      <Filter>WaveletLib\LightFieldMatrix</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-// OfflineRendering.cpp : Defines the entry point for the console application.
+﻿// OfflineRendering.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
@@ -6,8 +6,9 @@
 #include "SubdivisionSphere.h"
 #include "ColoredPlaneSampler.h"
 #include "SetSampler.h"
-#include "LightfieldLevel.h"
+//#include "LightfieldLevel.h"
 #include "CheckerboardSampler.h"
+#include "LightFieldСontainer.h"
 
 using namespace glm;
 using namespace std;
@@ -75,9 +76,53 @@ void zeigePolarkoordinaten(LightField::SubdivisionSphere* sphereData)
 		}
 	}
 }
+
+void testRays(const std::string& fileName)
+{
+	HellaRayExtractor::RayExtractor * rwrdata = new HellaRayExtractor::RayExtractor((char*)fileName.c_str());
+
+	// Show which data is provided with each ray
+	// Attention: non available data is initialized with default values
+	HellaRayExtractor::RayInfo info = rwrdata->getRayInfo();
+	cout << "Available ray components:" << endl << endl;
+	if (info.has_startPoint)            cout << "  startPoint" << endl;
+	if (info.has_direction)             cout << "  direction" << endl;
+	if (info.has_intensity)             cout << "  intensity" << endl;
+	if (info.has_CIEx && info.has_CIEy) cout << "  CIEx and CIEy" << endl;
+	if (info.has_wavelength)            cout << "  wavelength" << endl;
+	if (info.has_layer)                 cout << "  layer" << endl << endl;;
+
+	// extract all rays 
+	unsigned __int64 numRays = rwrdata->getTotalNumberOfRays();
+	unsigned __int64 stepSize = numRays / 100;
+	cout << "Number of rays in RWR file : " << numRays << endl;
+	cout << "Press any key to continue";
+	cin.get();
+	HellaRayExtractor::Ray nextRay;
+	unsigned __int64 rayCount = 0;
+	while (rwrdata->getNextRay(nextRay)) {
+
+		if (rayCount % stepSize == 0) {
+			cout.precision(2);
+			cout << 100.0*(double)rayCount / (double)numRays << " %\t:("
+				<< nextRay.startPoint[0] << ",\t"
+				<< nextRay.startPoint[1] << ",\t"
+				<< nextRay.startPoint[2] << "),  \t("
+				<< nextRay.direction[0] << ",\t"
+				<< nextRay.direction[1] << ",\t"
+				<< nextRay.direction[2] << "),\t"
+				<< nextRay.intensity << ",\t("
+				<< nextRay.CIEx << " " << nextRay.CIEy << "),\t"
+				<< nextRay.layer << endl;
+		}
+		rayCount++;
+	};
+
+}
+
 int main(int argc, char **argv)
 {
-	auto sphereLevelCount = 1u;
+	/*auto sphereLevelCount = 1u;
 	if(argc == 2)
 	{
 		stringstream(argv[1]) >> sphereLevelCount;
@@ -112,7 +157,16 @@ int main(int argc, char **argv)
 
 	Generator::LightfieldLevel lfl(sphereData, 0, *setSampler);
 	auto rawData = lfl.rawData();
-	auto cam0Data = lfl.snapshot(vec3(0,0,0));
+	auto cam0Data = lfl.snapshot(vec3(0,0,0));*/
+
+	std::cout << "test ray file" << std::endl;
+	//testRays("c:/temp/test.rwr");
+
+	
+	auto subsphere = std::make_shared<LightField::SubdivisionSphere>(3);
+	auto  rwrReader = std::make_shared<Generator::RWRReader>("c:/temp/test.rwr");
+
+	Generator::LightFieldСontainer lfg(subsphere, rwrReader);
 
 	return 0;
 }
