@@ -12,10 +12,10 @@ namespace LightField
 	{
 	public:
 		LightFieldData(const std::shared_ptr <SubdivisionSphere> subsphere);
-		
+		std::shared_ptr<LevelMatrix> getLevelMatrix(int level) const { return levelMatices[level]; } 
 	private:
 		std::shared_ptr <SubdivisionSphere> subSphere;
-		std::vector <LevelMatrix*> levelMatices;
+		std::vector <std::shared_ptr<LevelMatrix>> levelMatices;
 		
 	};
 }
