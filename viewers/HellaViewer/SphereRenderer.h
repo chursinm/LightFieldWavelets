@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 #include "Renderer.h"
 #include "SubdivisionSphere.h"
 #include "Texture.h"
-#include "Lightfield.h"
+
 
 class SphereRenderer :
 	public Renderer
@@ -29,9 +29,9 @@ private:
 
 	void cleanupGlBuffers();
 	void setupGlBuffersForLevel(unsigned short level);
-	void generateLightfield(unsigned short level);
+	void generateLightfield();
 	std::shared_ptr<LightField::SubdivisionSphere> mSphereData;
-	std::unique_ptr<Generator::Lightfield> mLightfield;
+	std::unique_ptr<Generator::LightFieldСontainer> mLightfieldContainer;
 	GLuint mVertexBuffer, mIndexBuffer, mLightfieldSliceBuffer, mCompleteLightfieldBuffer, mVertexArrayObject;
 	GLuint mGlProgram, mLightfieldGlProgram, mHighlightFacesGlProgram, mHighlightVerticesGlProgram, mRotationSphereGlProgram;
 	unsigned int mFacesCount, mCurrentLevel;

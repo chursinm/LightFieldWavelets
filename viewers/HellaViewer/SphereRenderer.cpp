@@ -1,10 +1,9 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "SphereRenderer.h"
 #include "GLUtility.h"
 #include "ShaderManager.h"
 #include <climits>
 #include <glm/gtc/matrix_transform.inl>
-#include "LightfieldLevel.h"
 #include "ColoredPlaneSampler.h"
 #include "SetSampler.h"
 #include "CheckerboardSampler.h"
@@ -16,7 +15,7 @@ using namespace std; // too many std calls :D
 SphereRenderer::SphereRenderer(unsigned int levelCount) :
 	mSphereData(make_shared<LightField::SubdivisionSphere>(levelCount)), mFacesCount(0), mCurrentLevel(0), mRenderMode(RenderMode::POSITION)
 {
-	generateLightfield(levelCount);
+	generateLightfield();
 }
 
 
@@ -54,7 +53,7 @@ void SphereRenderer::renderLightfield(const RenderData& renderData) const
 	const auto viewspaceLightPosition = viewMatrix * glm::vec4(0.f, 10.f, 0.f, 1.f);
 	
 	const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
-	const auto lfData = mLightfield->level(mCurrentLevel).snapshot(renderData.eyePositionWorld);
+	const auto lfData = mLightfieldContainer->snapshot(renderData.eyePositionWorld, mCurrentLevel);
 
 	glBindBuffer(GL_ARRAY_BUFFER, mLightfieldSliceBuffer);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, lfData.size() * sizeof(glm::vec3), lfData.data());
@@ -328,10 +327,24 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 	{
 		mLightfieldSliceBuffer = GLUtility::generateBuffer<glm::vec3>(GL_ARRAY_BUFFER, sphereLevel.getNumberOfVertices(), nullptr, GL_DYNAMIC_DRAW);
 
-		const auto lfData = mLightfield->level(mCurrentLevel).rawData();
-		std::vector<glm::vec4> vec4Lightfield;
+		/*const auto lfData = mLightfieldContainer->level(mCurrentLevel).rawData();
+		
 		vec4Lightfield.reserve(lfData->size());
-		for(auto i : *lfData) vec4Lightfield.push_back(glm::vec4(i.rgb, 0.0f));
+		for(auto i : *lfData) vec4Lightfield.push_back(glm::vec4(i.rgb, 0.0f));*/
+
+		int size = mLightfieldContainer->getLightFieldData().getLevelMatrix(mCurrentLevel)->getSize();
+		std::vector<glm::vec4> vec4Lightfield;
+		vec4Lightfield.reserve(size*size);
+		for (int i = 0; i <size ;i++)
+		{
+			for (int j = 0; j < size; j++)
+			{
+				vec4Lightfield.push_back(glm::vec4(mLightfieldContainer->getLightFieldData().getLevelMatrix(mCurrentLevel)->getValue(i, j).rgb,0.0f));
+			}
+		}
+
+
+
 		mCompleteLightfieldBuffer = GLUtility::generateBuffer(GL_SHADER_STORAGE_BUFFER, vec4Lightfield, GL_DYNAMIC_DRAW);
 		glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT); // TODO: this is a precaution, not 100% sure about this barrier. need more intel on SSBs
 	}
@@ -370,7 +383,7 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 	glBindVertexArray(0);
 }
 
-void SphereRenderer::generateLightfield(unsigned short levels)
+void SphereRenderer::generateLightfield()
 {
 	// some aliases for readability
 	using namespace Generator::Sampler;
@@ -384,5 +397,5 @@ void SphereRenderer::generateLightfield(unsigned short levels)
 	const auto planeSampler = make_shared<CheckerboardSampler>(5.0f, vec3(0.1f), plane);
 	//const auto planeSampler = make_shared<TexturedPlaneSampler>("E:\\crohmann\\tmp\\world_texture.jpg", 2.5f, vec3(0.1f), plane);
 
-	mLightfield = make_unique<Generator::Lightfield>(mSphereData, levels, planeSampler);
+	mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData,  planeSampler);
 }

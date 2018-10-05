@@ -193,11 +193,11 @@
     <ClCompile Include="TexturedPlaneSampler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\rwr\RWRExtract\RWRReader\RWRRayReader.vcxproj">
-      <Project>{3e7ccd64-06b7-4bcd-82f3-c7c84f570330}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\format\cpp\LightFieldWavelet\LightFieldWaveletLib\LightFieldWaveletLib.vcxproj">
       <Project>{8a7324a6-8140-4ff2-9a96-73a82f83f676}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\thirdparty\rwr\RWRExtract\RWRReader\RWRRayReader.vcxproj">
+      <Project>{3e7ccd64-06b7-4bcd-82f3-c7c84f570330}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

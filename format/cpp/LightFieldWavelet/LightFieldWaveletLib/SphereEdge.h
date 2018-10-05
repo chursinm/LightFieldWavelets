@@ -3,7 +3,8 @@
 #include "SphereVertex.h"
 
 namespace LightField {
-
+	class SphereVertex;
+	class SphereFace;
 	class SphereEdge {
 	public:
 		int				index			= 0;

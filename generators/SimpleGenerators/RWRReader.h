@@ -1,10 +1,13 @@
 #pragma once
 #include "Ray.h"
+#include <LightFieldData.h>
+#include <SubdivisionSphere.h>
 
 
 
 namespace Generator
 {
+	
 	class RWRReader
 	{
 	public:

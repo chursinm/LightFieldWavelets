@@ -14,6 +14,8 @@ namespace Generator
 
 		std::vector<glm::vec3> snapshot(const glm::vec3& cameraPositionInPositionSphereSpace, int levelInd) const;
 
+		LightField::LightFieldData& getLightFieldData() { return lightFieldData; }
+
 		~LightFieldСontainer() = default;		
 	private:	
 		std::shared_ptr<LightField::SubdivisionSphere>	subdivistionSphere;
