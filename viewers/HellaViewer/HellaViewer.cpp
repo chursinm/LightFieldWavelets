@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	CheckerboardRenderer cbr;
 	context.attachRenderer(cbr);
 
-	SphereRenderer sr(8u);
+	SphereRenderer sr(4u);
 	//sr.highlightFaces({ 1u,3u,5u,10u });
 	//sr.highlightVertices({ 1u,3u,5u,10u });
 	context.attachRenderer(sr);

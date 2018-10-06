@@ -395,7 +395,9 @@ void SphereRenderer::generateLightfield()
 	//const auto planeSampler = make_shared<CheckerboardSampler>(0.f, vec3(1.0f, 0.f, 0.f), plane);
 	Plane plane(vec3(0, -1, 0), vec3(0, 1, 0), vec3(0, 0, 1), vec3(1, 0, 0)); // mind the backface culling!
 	const auto planeSampler = make_shared<CheckerboardSampler>(5.0f, vec3(0.1f), plane);
+	const auto rwrReader = make_shared<Generator::RWRReader>("c:/temp/test.rwr");
 	//const auto planeSampler = make_shared<TexturedPlaneSampler>("E:\\crohmann\\tmp\\world_texture.jpg", 2.5f, vec3(0.1f), plane);
 
-	mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData,  planeSampler);
+	//mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData,  planeSampler);
+	mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData, rwrReader);
 }

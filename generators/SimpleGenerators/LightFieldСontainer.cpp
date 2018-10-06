@@ -35,7 +35,7 @@ Generator::LightFieldСontainer::LightFieldСontainer(std::shared_ptr<LightField
 // Compute barycentric coordinates (u, v, w) for
 // point p with respect to triangle (a, b, c)
 // TODO move this to the subdivision project. precalculate and store v0, v1, d00, d01, d11 and invDenom while at it.
-void Barycentric(const vec3& p, const vec3& a, const vec3& b, const vec3& c, vec3& uvw)
+/*void Barycentric(const vec3& p, const vec3& a, const vec3& b, const vec3& c, vec3& uvw)
 {
 	const auto v0 = b - a, v1 = c - a, v2 = p - a;
 	const auto d00 = dot(v0, v0);
@@ -47,7 +47,7 @@ void Barycentric(const vec3& p, const vec3& a, const vec3& b, const vec3& c, vec
 	uvw.y = (d11 * d20 - d01 * d21) * invDenom;
 	uvw.z = (d00 * d21 - d01 * d20) * invDenom;
 	uvw.x = 1.0f - uvw.y - uvw.z;
-}
+}*/
 
 std::vector<vec3> Generator::LightFieldСontainer::snapshot(const glm::vec3 & cameraPositionInPositionSphereSpace,int levelInd) const
 {
@@ -59,7 +59,7 @@ std::vector<vec3> Generator::LightFieldСontainer::snapshot(const glm::vec3 & ca
 		const auto faceIndex = subdivistionSphere->vectorToFaceIndex(localRotation, levelInd);
 		const auto face = subdivistionSphere->getLevel(levelInd).getFace(faceIndex);
 		vec3 uvw(0.f);
-		Barycentric(localRotation, face.vertices[0]->pos, face.vertices[1]->pos, face.vertices[2]->pos, uvw);
+		LightField::LightFieldData::Barycentric(localRotation, face.vertices[0]->pos, face.vertices[1]->pos, face.vertices[2]->pos, uvw);
 		
 		
 		result.push_back(

@@ -21,6 +21,14 @@ namespace LightField
 		size_t dim_j = j;
 		data[dim_i *dim_size+ dim_j] = vec;
 	}
+	void LevelMatrix::addValue(glm::vec3 vec, int i, int j)
+	{
+		size_t dim_i = i;
+		size_t dim_size = size;
+		size_t dim_j = j;
+		data[dim_i *dim_size + dim_j] += vec;
+
+	}
 	glm::vec3 LevelMatrix::getValue(const int i, const int j)
 	{
 		return data[i*size + j];
