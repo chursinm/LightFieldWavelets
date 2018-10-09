@@ -14,7 +14,7 @@ namespace Generator
 		explicit RWRReader(const std::string nameOfRWRFileIn) ;
 		void projectRaysToSphere(std::shared_ptr<LightField::SubdivisionSphere> subsphere, LightField::LightFieldData& lightFieldData) ;		
 	private:
-		std::vector<Ray> allRays;
+		std::vector<Ray>* allRays;
 		
 		
 	};

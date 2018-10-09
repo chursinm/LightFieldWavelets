@@ -5,7 +5,7 @@ namespace Generator
 	{
 		Ray(const glm::vec3& origin, const glm::vec3& direction) : mOrigin(origin), mDirection(glm::normalize(direction)) {}
 		Ray(const glm::vec3& origin, const glm::vec3& direction, const double intesityIn) : mOrigin(origin), mDirection(glm::normalize(direction)), intensity(intesityIn){}
-		Ray(const glm::vec3& origin, const glm::vec3& direction, void* noNormalize) : mOrigin(origin), mDirection(direction){}
+		//Ray(const glm::vec3& origin, const glm::vec3& direction, void* noNormalize) : mOrigin(origin), mDirection(direction){}
 		glm::vec3 mOrigin, mDirection;
 		double intensity;     /// Intensity of the ray in relative lumen units
 		double CIEx;          /// CIE1931 x coordinate of the rays color
