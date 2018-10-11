@@ -18,7 +18,7 @@ using namespace std; // too many std calls :D
 0.0f, 0.0f, 0.0f, 0.0f,
 0.0f, 1.0f, -2.0f, 0.0f };*/
 
-glm::vec3 spherePos(0.0, 1.5f, -1.5);
+glm::vec3 spherePos(0.0, 1.3f, -1.5);
 
 
 
