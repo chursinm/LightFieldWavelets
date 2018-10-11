@@ -15,6 +15,7 @@ namespace Generator
 		void projectRaysToSphere(std::shared_ptr<LightField::SubdivisionSphere> subsphere, LightField::LightFieldData& lightFieldData) ;		
 	private:
 		std::vector<Ray>* allRays;
+		void accumilateRay(std::shared_ptr<LightField::SubdivisionSphere> subsphere, LightField::LightFieldData& lightFieldData,const LightField::SphereLevel& level, Ray& ray, float invEnergy, float mult);
 		
 		
 	};

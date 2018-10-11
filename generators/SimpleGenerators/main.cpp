@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 	auto subsphere = std::make_shared<LightField::SubdivisionSphere>(3);
 	auto  rwrReader = std::make_shared<Generator::RWRReader>("c:/temp/test.rwr");
 
-	Generator::LightFieldСontainer lfg(subsphere, rwrReader);
+	Generator::LightFieldСontainer lfg(subsphere, glm::vec3(0.0f), rwrReader);
 
 	return 0;
 }

@@ -4,10 +4,11 @@
 
 using namespace glm;
 
-Generator::LightFieldСontainer::LightFieldСontainer(std::shared_ptr<LightField::SubdivisionSphere> sphereIn, std::shared_ptr<Sampler::Sampler> samplerIn):
+Generator::LightFieldСontainer::LightFieldСontainer(std::shared_ptr<LightField::SubdivisionSphere> sphereIn, const glm::vec3& spherePosIn, std::shared_ptr<Sampler::Sampler> samplerIn):
 	subdivistionSphere(sphereIn),
 	sampler(samplerIn),
-	lightFieldData(subdivistionSphere)
+	lightFieldData(subdivistionSphere),
+	spherePos(spherePosIn)
 {
 	for (const auto& level : subdivistionSphere->getLevels())
 	{
@@ -15,19 +16,20 @@ Generator::LightFieldСontainer::LightFieldСontainer(std::shared_ptr<LightField
 		{
 			for (const auto& vRot : level.getVertices())
 			{
-				const auto& rotation = vRot.pos;
+				const auto& rotation = vRot.pos ;
 				const auto& position = vPos.pos;
-				const Ray ray(position, -rotation);
+				const Ray ray(position+spherePos, -rotation);
 				lightFieldData.getLevelMatrix(level.getIndex())->setValue(sampler->sample(ray),vPos.index, vRot.index);
 			}
 		}
 	}
 }
 
-Generator::LightFieldСontainer::LightFieldСontainer(std::shared_ptr<LightField::SubdivisionSphere> sphereIn, std::shared_ptr<Generator::RWRReader> rwrReaderIn):
+Generator::LightFieldСontainer::LightFieldСontainer(std::shared_ptr<LightField::SubdivisionSphere> sphereIn, const glm::vec3& spherePosIn,  std::shared_ptr<Generator::RWRReader> rwrReaderIn):
 	subdivistionSphere(sphereIn),
 	rwrReader(rwrReaderIn),
-	lightFieldData(subdivistionSphere)
+	lightFieldData(subdivistionSphere),
+	spherePos(spherePosIn)
 {
 	rwrReader->projectRaysToSphere(subdivistionSphere,lightFieldData);
 }
@@ -55,7 +57,7 @@ std::vector<vec3> Generator::LightFieldСontainer::snapshot(const glm::vec3 & ca
 	result.reserve(subdivistionSphere->getLevel(levelInd).getNumberOfVertices());
 	for (const auto& vPos : subdivistionSphere->getLevel(levelInd).getVertices())
 	{
-		const auto localRotation = glm::normalize(cameraPositionInPositionSphereSpace - vPos.pos);
+		const auto localRotation = glm::normalize(cameraPositionInPositionSphereSpace - vPos.pos-spherePos);
 		const auto faceIndex = subdivistionSphere->vectorToFaceIndex(localRotation, levelInd);
 		const auto face = subdivistionSphere->getLevel(levelInd).getFace(faceIndex);
 		vec3 uvw(0.f);

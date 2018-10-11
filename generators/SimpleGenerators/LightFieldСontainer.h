@@ -8,9 +8,10 @@ namespace Generator
 	class LightFieldСontainer
 	{
 	public:
-		explicit LightFieldСontainer(std::shared_ptr<LightField::SubdivisionSphere> sphereIn, std::shared_ptr<Sampler::Sampler> samplerIn);
+		explicit LightFieldСontainer(std::shared_ptr<LightField::SubdivisionSphere> sphereIn, const glm::vec3& spherePosIn, std::shared_ptr<Sampler::Sampler> samplerIn);
 
-		explicit LightFieldСontainer(std::shared_ptr<LightField::SubdivisionSphere> sphereIn, std::shared_ptr<Generator::RWRReader> rwrReaderIn );
+
+		explicit LightFieldСontainer(std::shared_ptr<LightField::SubdivisionSphere> sphereIn, const glm::vec3& spherePosIn, std::shared_ptr<Generator::RWRReader> rwrReaderIn );
 
 		std::vector<glm::vec3> snapshot(const glm::vec3& cameraPositionInPositionSphereSpace, int levelInd) const;
 
@@ -22,6 +23,7 @@ namespace Generator
 		std::shared_ptr<Sampler::Sampler>				sampler;
 		std::shared_ptr<Generator::RWRReader>			rwrReader;
 		LightField::LightFieldData						lightFieldData;
+		const glm::vec3									spherePos;
 		
 		
 	};

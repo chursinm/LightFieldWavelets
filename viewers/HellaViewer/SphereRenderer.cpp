@@ -12,6 +12,17 @@ using namespace std; // too many std calls :D
 #define DEBUG_ROTATION_SPHERES 0
 #define RENDER_LIGHTFIELD 1
 
+
+/*float hight[16] = { 0.0f, 0.0f, 0.0f, 0.0f,
+0.0f, 0.0f, 0.0f, 0.0f,
+0.0f, 0.0f, 0.0f, 0.0f,
+0.0f, 1.0f, -2.0f, 0.0f };*/
+
+glm::vec3 spherePos(0.0, 1.5f, -1.5);
+
+
+
+
 SphereRenderer::SphereRenderer(unsigned int levelCount) :
 	mSphereData(make_shared<LightField::SubdivisionSphere>(levelCount)), mFacesCount(0), mCurrentLevel(0), mRenderMode(RenderMode::POSITION)
 {
@@ -45,9 +56,17 @@ void SphereRenderer::update(double timestep)
 {
 }
 
+
 void SphereRenderer::renderLightfield(const RenderData& renderData) const
 {
-	auto modelMat = glm::mat4x4(1.f);
+
+	float hight[16] = { 0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f,
+		spherePos.x, spherePos.y, spherePos.z, 0.0f };
+
+	auto modelMat = glm::mat4x4(1.f)+ glm::make_mat4x4(hight) ;
+	//auto modelMat = glm::mat4x4(1.f);
 	const auto viewProjection = renderData.viewProjectionMatrix * modelMat;
 	const auto viewMatrix = renderData.viewMatrix * modelMat;
 	const auto viewspaceLightPosition = viewMatrix * glm::vec4(0.f, 10.f, 0.f, 1.f);
@@ -77,7 +96,7 @@ void SphereRenderer::renderLightfield(const RenderData& renderData) const
 	glDrawElements(GL_TRIANGLES, mFacesCount * 3u, GL_UNSIGNED_INT, reinterpret_cast<void*>(0));
 	
 	glCullFace(GL_BACK); // shouldn't happen here..
-	return;
+	//return;
 	// -------- drawing base sphere frontface ---------
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -96,6 +115,11 @@ void SphereRenderer::renderLightfield(const RenderData& renderData) const
 
 void SphereRenderer::renderRotationSpheres(const RenderData& renderData)
 {
+	float hight[16] = { 0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f,
+		spherePos.x, spherePos.y, spherePos.z, 0.0f };
+
 	const auto sphereLevel = mSphereData->getLevel(mCurrentLevel);
 
 	// TODO do more stuff just once in here
@@ -108,8 +132,12 @@ void SphereRenderer::renderRotationSpheres(const RenderData& renderData)
 	auto scaleFac = glm::distance(posA, posB) * scaleBias;
 	
 	// mvp, mv, lightpos
-	const auto modelMat = glm::mat4x4(1.f);
+	auto modelMat = glm::mat4x4(1.f) + glm::make_mat4x4(hight);
+	//auto modelMat = glm::mat4x4(1.f);
 	const auto viewProjection = renderData.viewProjectionMatrix * modelMat;
+
+	//const auto modelMat = glm::mat4x4(1.f);
+	//const auto viewProjection = renderData.viewProjectionMatrix * modelMat;
 	const auto viewMatrix = renderData.viewMatrix * modelMat;
 	const auto viewspaceLightPosition = viewMatrix * glm::vec4(0.f, 10.f, 0.f, 1.f);
 
@@ -138,7 +166,12 @@ void SphereRenderer::renderRotationSpheres(const RenderData& renderData)
 
 void SphereRenderer::renderPositionSphere(const RenderData& renderData)
 {
-	auto modelMat = glm::mat4x4(1.f);
+	float hight[16] = { 0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f,
+		spherePos.x, spherePos.y, spherePos.z, 0.0f };
+
+	auto modelMat = glm::mat4x4(1.f)+glm::make_mat4x4(hight);
 	const auto viewProjection = renderData.viewProjectionMatrix * modelMat;
 	const auto viewMatrix = renderData.viewMatrix * modelMat;
 	const auto viewspaceLightPosition = viewMatrix * glm::vec4(0.f, 10.f, 0.f, 1.f);
@@ -332,9 +365,10 @@ void SphereRenderer::setupGlBuffersForLevel(unsigned short level)
 		vec4Lightfield.reserve(lfData->size());
 		for(auto i : *lfData) vec4Lightfield.push_back(glm::vec4(i.rgb, 0.0f));*/
 
-		int size = mLightfieldContainer->getLightFieldData().getLevelMatrix(mCurrentLevel)->getSize();
+		size_t size = mLightfieldContainer->getLightFieldData().getLevelMatrix(mCurrentLevel)->getSize();
+		size_t size_quad = size * size;
 		std::vector<glm::vec4> vec4Lightfield;
-		vec4Lightfield.reserve(size*size);
+		vec4Lightfield.reserve(size_quad);
 		for (int i = 0; i <size ;i++)
 		{
 			for (int j = 0; j < size; j++)
@@ -399,10 +433,11 @@ void SphereRenderer::generateLightfield()
 	//const auto planeSampler = make_shared<TexturedPlaneSampler>("E:\\crohmann\\tmp\\world_texture.jpg", 2.5f, vec3(0.1f), plane);
 
 
-	//const auto rwrReader = make_shared<Generator::RWRReader>("c:/temp/leuchteKlein.rwr");
-	//mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData, rwrReader);
+	const auto rwrReader = make_shared<Generator::RWRReader>("c:/temp/leuchteKlein.rwr");
+	mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData, spherePos, rwrReader);
 
-	const auto planeSampler = make_shared<CheckerboardSampler>(5.0f, vec3(0.1f), plane);
-	mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData,  planeSampler);
+
+	//const auto planeSampler = make_shared<CheckerboardSampler>(5.0f, vec3(0.1f), plane);
+	//mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData, spherePos, planeSampler);
 
 }
