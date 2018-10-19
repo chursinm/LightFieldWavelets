@@ -18,14 +18,14 @@ namespace Generator
 		unsigned __int64 rayCount = 0;
 		allRays->reserve(numRays);
 		while (rwrdata->getNextRay(nextRay)) {
-			if (rayCount % 10 == 0)
+			//if (rayCount % 1000 == 0)
 			{
 				glm::vec3 origin(nextRay.startPoint[0], nextRay.startPoint[1], nextRay.startPoint[2]);
 				glm::vec3 direction(nextRay.direction[0], nextRay.direction[1], nextRay.direction[2]);
 				allRays->push_back(Ray(origin, direction, nextRay.intensity, nextRay.CIEx, nextRay.CIEy, nextRay.layer));
-				//allRays->at(allRays->size() - 1).getRGB();
-				if (rayCount%10000000 == 0)
-				std::cout << "read " << rayCount/10 << " rays" << std::endl ;
+				
+				//if (rayCount%10000000 == 0)
+				//std::cout << "read " << rayCount/1000 << " rays" << std::endl ;
 			}
 			rayCount++;
 		}
@@ -44,7 +44,8 @@ namespace Generator
 			std::cout << "extract rays to level " << level.getIndex() << std::endl;
 			int numberOfRays = allRays->size();
 			//numberOfRays = 10000;
-			float numberOfRaysInv = 3.0f*(level.getNumberOfFaces()) / numberOfRays;
+			//float numberOfRaysInv = 2.5f*(level.getNumberOfFaces()) / numberOfRays; //for Porsche for vr
+			float numberOfRaysInv = 0.02f*(level.getNumberOfFaces()) / numberOfRays;  //for Audi 
 			for (int i = 0; i < numberOfRays; i++)
 			{
 				if (i % 1000000 == 0)

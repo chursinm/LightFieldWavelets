@@ -433,7 +433,7 @@ void SphereRenderer::generateLightfield()
 	//const auto planeSampler = make_shared<TexturedPlaneSampler>("E:\\crohmann\\tmp\\world_texture.jpg", 2.5f, vec3(0.1f), plane);
 
 
-	const auto rwrReader = make_shared<Generator::RWRReader>("c:/temp/leuchteKlein.rwr");
+	const auto rwrReader = make_shared<Generator::RWRReader>("c:/temp/V68_Audi.rwr");
 	mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData, spherePos, rwrReader);
 
 
