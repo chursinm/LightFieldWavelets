@@ -45,7 +45,7 @@ namespace Generator
 			int numberOfRays = allRays->size();
 			//numberOfRays = 10000;
 			//float numberOfRaysInv = 2.5f*(level.getNumberOfFaces()) / numberOfRays; //for Porsche for vr
-			float numberOfRaysInv = 0.02f*(level.getNumberOfFaces()) / numberOfRays;  //for Audi 
+			float numberOfRaysInv = 0.02f*(level.getNumberOfFaces()) / numberOfRays;  //for Audi for vr
 			for (int i = 0; i < numberOfRays; i++)
 			{
 				if (i % 1000000 == 0)
