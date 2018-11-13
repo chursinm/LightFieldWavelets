@@ -8,6 +8,7 @@
 #include "SetSampler.h"
 #include "CheckerboardSampler.h"
 #include "TexturedPlaneSampler.h"
+
 using namespace std; // too many std calls :D
 #define DEBUG_ROTATION_SPHERES 0
 #define RENDER_LIGHTFIELD 1
@@ -23,8 +24,12 @@ glm::vec3 spherePos(0.0, 1.3f, -1.5);
 
 
 
-SphereRenderer::SphereRenderer(unsigned int levelCount) :
-	mSphereData(make_shared<LightField::SubdivisionSphere>(levelCount)), mFacesCount(0), mCurrentLevel(0), mRenderMode(RenderMode::POSITION)
+SphereRenderer::SphereRenderer(const Parameters& prmIn) :
+	mSphereData(make_shared<LightField::SubdivisionSphere>(prmIn.numberOfLevels)),
+	mFacesCount(0), 
+	mCurrentLevel(0), 
+	mRenderMode(RenderMode::POSITION),
+	prm(prmIn)
 {
 	generateLightfield();
 }
@@ -433,11 +438,18 @@ void SphereRenderer::generateLightfield()
 	//const auto planeSampler = make_shared<TexturedPlaneSampler>("E:\\crohmann\\tmp\\world_texture.jpg", 2.5f, vec3(0.1f), plane);
 
 
-	const auto rwrReader = make_shared<Generator::RWRReader>("c:/temp/V68_Audi.rwr");
-	mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData, spherePos, rwrReader);
+	if (prm.startMode == StartMode::Checker)
+	{
+		const auto planeSampler = make_shared<CheckerboardSampler>(5.0f, vec3(0.1f), plane);
+		mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData, spherePos, planeSampler);
+	}
+	else
+	{		
+		auto rwrReader = make_shared<Generator::RWRReader>(prm.pathToRayFile, prm.scaleLuminance);		
+		mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData, spherePos, rwrReader);
+	}
 
 
-	//const auto planeSampler = make_shared<CheckerboardSampler>(5.0f, vec3(0.1f), plane);
-	//mLightfieldContainer = make_unique<Generator::LightFieldСontainer>(mSphereData, spherePos, planeSampler);
+
 
 }

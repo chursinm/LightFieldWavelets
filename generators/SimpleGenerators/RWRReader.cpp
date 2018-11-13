@@ -7,10 +7,16 @@
 
 namespace Generator
 {
-	RWRReader::RWRReader(const std::string nameOfRWRFileIn)
+	RWRReader::RWRReader(const std::string& nameOfRWRFileIn, double scaleLuminanceIn):
+	nameOfRWRFile(nameOfRWRFileIn), 
+	scaleLuminance(scaleLuminanceIn)
+	{
+		
+	}
+	void RWRReader::readRWRFile()
 	{
 		allRays = new std::vector<Ray>();
-		HellaRayExtractor::RayExtractor * rwrdata = new HellaRayExtractor::RayExtractor((char*)nameOfRWRFileIn.c_str());
+		HellaRayExtractor::RayExtractor * rwrdata = new HellaRayExtractor::RayExtractor((char*)nameOfRWRFile.c_str());
 		HellaRayExtractor::RayInfo info = rwrdata->getRayInfo();
 		unsigned __int64 numRays = rwrdata->getTotalNumberOfRays();
 		unsigned __int64 stepSize = numRays / 100;
@@ -18,19 +24,20 @@ namespace Generator
 		unsigned __int64 rayCount = 0;
 		allRays->reserve(numRays);
 		while (rwrdata->getNextRay(nextRay)) {
-			//if (rayCount % 1000 == 0)
+			//if (rayCount % 10000 == 0)
 			{
 				glm::vec3 origin(nextRay.startPoint[0], nextRay.startPoint[1], nextRay.startPoint[2]);
 				glm::vec3 direction(nextRay.direction[0], nextRay.direction[1], nextRay.direction[2]);
 				allRays->push_back(Ray(origin, direction, nextRay.intensity, nextRay.CIEx, nextRay.CIEy, nextRay.layer));
-				
+
 				//if (rayCount%10000000 == 0)
 				//std::cout << "read " << rayCount/1000 << " rays" << std::endl ;
 			}
 			rayCount++;
 		}
-		
-	};
+
+	}
+	
 	
 
 
@@ -45,7 +52,8 @@ namespace Generator
 			int numberOfRays = allRays->size();
 			//numberOfRays = 10000;
 			//float numberOfRaysInv = 2.5f*(level.getNumberOfFaces()) / numberOfRays; //for Porsche for vr
-			float numberOfRaysInv = 0.02f*(level.getNumberOfFaces()) / numberOfRays;  //for Audi for vr
+			//float numberOfRaysInv = 0.02f*(level.getNumberOfFaces()) / numberOfRays;  //for Audi for vr
+			float numberOfRaysInv = scaleLuminance *(level.getNumberOfFaces()) / numberOfRays;
 			for (int i = 0; i < numberOfRays; i++)
 			{
 				if (i % 1000000 == 0)
@@ -61,6 +69,7 @@ namespace Generator
 
 				//glm::vec3 spherePos = glm::sphericalRand(0.1f);
 				//glm::vec3 spherePos = glm::vec3(0.0f, 0.0f, 0.0f);
+
 				//glm::vec3 spherePos = glm::vec3(0.0f, 0.0f, 0.0f);
 				//glm::vec3 sphereRot =  glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
 				//glm::vec3 sphereRot = sphericalRand(1.0f);

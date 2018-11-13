@@ -139,6 +139,7 @@
     <ClInclude Include="GLUtility.h" />
     <ClInclude Include="HaarLiftingRenderer.h" />
     <ClInclude Include="HellaViewer.h" />
+    <ClInclude Include="Parameters.h" />
     <ClInclude Include="RayCaster.h" />
     <ClInclude Include="RenderContext.h" />
     <ClInclude Include="Renderer.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="GLUtility.cpp" />
     <ClCompile Include="HaarLiftingRenderer.cpp" />
     <ClCompile Include="HellaViewer.cpp" />
+    <ClCompile Include="Parameters.cpp" />
     <ClCompile Include="RayCaster.cpp" />
     <ClCompile Include="RenderContext.cpp" />
     <ClCompile Include="Renderer.cpp" />

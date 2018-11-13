@@ -11,12 +11,16 @@ namespace Generator
 	class RWRReader
 	{
 	public:
-		explicit RWRReader(const std::string nameOfRWRFileIn) ;
-		void projectRaysToSphere(std::shared_ptr<LightField::SubdivisionSphere> subsphere, LightField::LightFieldData& lightFieldData) ;		
+		RWRReader(const std::string& nameOfRWRFileIn, double bla) ;
+		void readRWRFile();
+		void projectRaysToSphere(std::shared_ptr<LightField::SubdivisionSphere> subsphere, LightField::LightFieldData& lightFieldData) ;
+		const auto getNameOfRWRFile() { return nameOfRWRFile; };
+
 	private:
 		std::vector<Ray>* allRays;
-		void accumilateRay(std::shared_ptr<LightField::SubdivisionSphere> subsphere, LightField::LightFieldData& lightFieldData,const LightField::SphereLevel& level, Ray& ray, float invEnergy, float mult);
-		
+		void accumilateRay(std::shared_ptr<LightField::SubdivisionSphere> subsphere, LightField::LightFieldData& lightFieldData,const LightField::SphereLevel& level, Ray& ray, float invEnergy, float mult);		
+		const std::string nameOfRWRFile="";
+		double scaleLuminance=1.0f;
 		
 	};
 }

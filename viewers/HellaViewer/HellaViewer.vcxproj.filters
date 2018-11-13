@@ -126,6 +126,9 @@
     <ClInclude Include="RayCaster.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="Parameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -192,6 +195,9 @@
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\thirdparty\tinyxml2\tinyxml2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Parameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "SubdivisionSphere.h"
 #include "Texture.h"
+#include "Parameters.h"
 
 
 class SphereRenderer :
@@ -12,7 +13,7 @@ public:
 	{
 		POSITION, ROTATION, LIGHTFIELD, LIGHTFIELD_SLICE
 	};
-	SphereRenderer(unsigned int levelCount);
+	SphereRenderer(const Parameters& prmIn);
 	~SphereRenderer();
 	void initialize() override;
 	void update(double timestep) override;
@@ -38,4 +39,5 @@ private:
 	std::vector<unsigned int> mHighlightFaces, mHighlightVertices;
 	std::unique_ptr<Texture> mDebugTexture;
 	RenderMode mRenderMode;
+	const Parameters& prm;
 };

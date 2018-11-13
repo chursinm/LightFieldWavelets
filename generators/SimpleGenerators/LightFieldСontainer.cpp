@@ -1,16 +1,20 @@
 ﻿#include "stdafx.h"
 #include "LightFieldСontainer.h"
+#include <iostream>
+#include <fstream>
+#include <iterator>
+#include <stdio.h>
 
 
 using namespace glm;
 
 Generator::LightFieldСontainer::LightFieldСontainer(std::shared_ptr<LightField::SubdivisionSphere> sphereIn, const glm::vec3& spherePosIn, std::shared_ptr<Sampler::Sampler> samplerIn):
-	subdivistionSphere(sphereIn),
+	subdivisionSphere(sphereIn),
 	sampler(samplerIn),
-	lightFieldData(subdivistionSphere),
+	lightFieldData(subdivisionSphere),
 	spherePos(spherePosIn)
 {
-	for (const auto& level : subdivistionSphere->getLevels())
+	for (const auto& level : subdivisionSphere->getLevels())
 	{
 		for (const auto& vPos : level.getVertices())
 		{
@@ -26,13 +30,71 @@ Generator::LightFieldСontainer::LightFieldСontainer(std::shared_ptr<LightField
 }
 
 Generator::LightFieldСontainer::LightFieldСontainer(std::shared_ptr<LightField::SubdivisionSphere> sphereIn, const glm::vec3& spherePosIn,  std::shared_ptr<Generator::RWRReader> rwrReaderIn):
-	subdivistionSphere(sphereIn),
+	subdivisionSphere(sphereIn),
 	rwrReader(rwrReaderIn),
-	lightFieldData(subdivistionSphere),
+	lightFieldData(subdivisionSphere),
 	spherePos(spherePosIn)
 {
-	rwrReader->projectRaysToSphere(subdivistionSphere,lightFieldData);
+	
+	std::string nameOfRwrFile = rwrReader->getNameOfRWRFile();	
+	std::string nameOfMtrFile = nameOfRwrFile;
+	size_t start_pos = nameOfRwrFile.find(".rwr");
+	if (start_pos == std::string::npos) nameOfMtrFile = "c:/tmp.mtr";
+	nameOfMtrFile.replace(start_pos, std::string(".rwr").length(),  std::string(".mtr"));
+	std::cout << "name of mtr file: " << nameOfMtrFile << std::endl;
+
+
+	
+	if (!tryToReadMtrFile(nameOfMtrFile))
+	{
+		rwrReader->readRWRFile();
+		rwrReader->projectRaysToSphere(subdivisionSphere, lightFieldData);
+		writeMrtFile(nameOfMtrFile);
+	}
+	
 }
+
+
+bool Generator::LightFieldСontainer::tryToReadMtrFile(const std::string fileName)
+{
+	std::ifstream file (fileName, std::ios::binary);
+	if (!file.good())
+		return false;
+	auto data = lightFieldData.getLevelMatrix(subdivisionSphere->getNumberOfLevels() - 1)->getData();
+	vec3 temp;
+	int numberOfElements = data->size();
+	
+	data->clear();
+	while (file.read((char*)&temp, sizeof(temp)))
+		data->push_back(temp);
+	file.close();
+	if (numberOfElements != data->size())
+	{
+		std::cout << "error in reading file. delete temp .mtr file" << std::endl;
+		std::remove(fileName.c_str());
+		throw "error reading file";
+		return false;
+	}
+	return true;
+}
+
+bool Generator::LightFieldСontainer::writeMrtFile(const std::string fileName)
+{
+	std::ofstream file(fileName, std::ios::binary);
+	auto data = lightFieldData.getLevelMatrix(subdivisionSphere->getNumberOfLevels()-1)->getData();
+	//data->at(2).y = 12.0;
+	for (const auto& element : *data)
+	{
+		file.write((char*)&element, sizeof(vec3));
+	}
+	//auto size = data->size() * sizeof(vec3);
+	//file.write((char*)data, size);
+	
+	file.close();
+	return true;
+}
+
+
 // see https://gamedev.stackexchange.com/a/49370
 // Compute barycentric coordinates (u, v, w) for
 // point p with respect to triangle (a, b, c)
@@ -54,12 +116,12 @@ Generator::LightFieldСontainer::LightFieldСontainer(std::shared_ptr<LightField
 std::vector<vec3> Generator::LightFieldСontainer::snapshot(const glm::vec3 & cameraPositionInPositionSphereSpace,int levelInd) const
 {
 	std:: vector<glm::vec3> result;
-	result.reserve(subdivistionSphere->getLevel(levelInd).getNumberOfVertices());
-	for (const auto& vPos : subdivistionSphere->getLevel(levelInd).getVertices())
+	result.reserve(subdivisionSphere->getLevel(levelInd).getNumberOfVertices());
+	for (const auto& vPos : subdivisionSphere->getLevel(levelInd).getVertices())
 	{
 		const auto localRotation = glm::normalize(cameraPositionInPositionSphereSpace - vPos.pos-spherePos);
-		const auto faceIndex = subdivistionSphere->vectorToFaceIndex(localRotation, levelInd);
-		const auto face = subdivistionSphere->getLevel(levelInd).getFace(faceIndex);
+		const auto faceIndex = subdivisionSphere->vectorToFaceIndex(localRotation, levelInd);
+		const auto face = subdivisionSphere->getLevel(levelInd).getFace(faceIndex);
 		vec3 uvw(0.f);
 		LightField::LightFieldData::Barycentric(localRotation, face.vertices[0]->pos, face.vertices[1]->pos, face.vertices[2]->pos, uvw);
 		
