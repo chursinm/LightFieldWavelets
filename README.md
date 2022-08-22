@@ -24,10 +24,9 @@ Light Guide
 # Future work
     Folding of dimension (analog to 2d square case)    
     Vertex dictionary and acceleration lookup 
-    Compression
-        how to get the original function in memory?
-            Ray Tracing
-            Patches on HDD/SSD            
+    Compression        
+            Ray Tracing 
+            Patches/paging on HDD/SSD            
     Reconstruction              
         Sparse vs Dense Representation
         Dropping test        
