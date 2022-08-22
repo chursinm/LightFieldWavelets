@@ -8,7 +8,7 @@ Light Field Structure
 
 ![Alt text](images/FullLightField.gif "Full Light Field")
 
-Simple checker test (light fild from background)
+Simple checker test (light field compared to the background)
 
 ![Alt text](images/Checker.gif "Checker")
 
