@@ -19,7 +19,9 @@ using namespace std; // too many std calls :D
 0.0f, 0.0f, 0.0f, 0.0f,
 0.0f, 1.0f, -2.0f, 0.0f };*/
 
-glm::vec3 spherePos(0.0, 1.3f, -1.5);
+//mch
+//glm::vec3 spherePos(0.0, 1.3f, -1.5);
+glm::vec3 spherePos(0.0, 0.0f, -1.5);
 
 
 
@@ -31,6 +33,8 @@ SphereRenderer::SphereRenderer(const Parameters& prmIn) :
 	mRenderMode(RenderMode::POSITION),
 	prm(prmIn)
 {
+	spherePos.y = prm.yCoord;
+	spherePos.z = prm.zCoord;
 	generateLightfield();
 }
 
@@ -64,6 +68,7 @@ void SphereRenderer::update(double timestep)
 
 void SphereRenderer::renderLightfield(const RenderData& renderData) const
 {
+
 
 	float hight[16] = { 0.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 0.0f,

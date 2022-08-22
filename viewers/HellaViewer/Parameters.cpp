@@ -18,7 +18,7 @@ Parameters::Parameters(int argc, char** argv)
 				}
 				catch (const std::exception& )
 				{
-					std::cout << "-NumOfLevels n -PathToRWR path" << std::endl;
+					std::cout << "-NumOfLevels n -PathToRWR path -ScaleLuminance scale -yCoord y -zCoord z" << std::endl;
 				}
 			}
 			if (nameOfParam == "-ScaleLuminance")
@@ -29,10 +29,35 @@ Parameters::Parameters(int argc, char** argv)
 				}
 				catch (const std::exception&)
 				{
-					std::cout << "-NumOfLevels n -PathToRWR path -ScaleLuminance scale" << std::endl;
+					std::cout << "-NumOfLevels n -PathToRWR path -ScaleLuminance scale -yCoord y -zCoord z" << std::endl;
 				}
 
 			}
+			if (nameOfParam == "-yCoord")
+			{
+				try
+				{
+					yCoord = std::stod((std::string)argv[i + 1]);
+				}
+				catch (const std::exception&)
+				{
+					std::cout << "-NumOfLevels n -PathToRWR path -ScaleLuminance scale -yCoord y -zCoord z" << std::endl;
+				}
+
+			}
+			if (nameOfParam == "-zCoord")
+			{
+				try
+				{
+					zCoord = std::stod((std::string)argv[i + 1]);
+				}
+				catch (const std::exception&)
+				{
+					std::cout << "-NumOfLevels n -PathToRWR path -ScaleLuminance scale -yCoord y -zCoord z" << std::endl;
+				}
+
+			}
+
 
 			if (nameOfParam == "-VR")
 			{
@@ -49,7 +74,7 @@ Parameters::Parameters(int argc, char** argv)
 				}
 				catch (const std::exception&)
 				{
-					std::cout << "-NumOfLevels n -PathToRWR path" << std::endl;
+					std::cout << "-NumOfLevels n -PathToRWR path -ScaleLuminance scale -yCoord y -zCoord z" << std::endl;
 				}
 			}
 
